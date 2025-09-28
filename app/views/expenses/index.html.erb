@@ -1,20 +1,61 @@
 <p style="color: green"><%= notice %></p>
 
+<!-- app/views/expenses/index.html.erb -->
 <% content_for :title, "Expenses" %>
 
-<h1>Expenses</h1>
+<h1 class="text-2xl font-bold mb-4">Gastos</h1>
 
-<div id="expenses">
-  <% if @expenses.any? %>
-    <% @expenses.each do |expense| %>
-      <%= render expense %>
-      <p>
-        <%= link_to "Show this expense", expense %>
-      </p>
-    <% end %>
-  <% else %>
-    <p>No expenses found.</p>
-  <% end %>
+<!-- Formulario de filtros -->
+<%= form_with url: expenses_path, method: :get, local: true, class: "mb-4 flex space-x-2" do |f| %>
+  <%= f.date_field :date_from, value: params[:date_from], class: "border p-2" %>
+  <%= f.date_field :date_to,   value: params[:date_to],   class: "border p-2" %>
+  <%= f.select :category_id, Category.all.pluck(:name, :id), { include_blank: "Todas" },
+               class: "border p-2" %>
+  <%= f.text_field :q, placeholder: "Descripción...", value: params[:q],
+                   class: "border p-2 flex-grow" %>
+  <%= f.submit "Filtrar", class: "px-4 py-2 bg-blue-500 text-white rounded" %>
+<% end %>
+
+
+<div class="mb-4 flex justify-between items-center">
+  <%= link_to "➕ Nuevo gasto", new_expense_path,
+      class: "px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600" %>
+  <!-- Aquí podrías añadir un campo de búsqueda o filtro -->
 </div>
 
-<%= link_to "New expense", new_expense_path %>
+<table class="min-w-full bg-white border">
+  <thead>
+    <tr class="bg-gray-100">
+      <th class="px-4 py-2 text-left">Fecha</th>
+      <th class="px-4 py-2 text-left">Categoría</th>
+      <th class="px-4 py-2 text-left">Descripción</th>
+      <th class="px-4 py-2 text-right">Monto</th>
+      <th class="px-4 py-2 text-center">Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @expenses.order(date: :desc).each do |expense| %>
+      <tr class="border-t">
+        <td class="px-4 py-2"><%= expense.date.strftime("%d %b %Y") %></td>
+        <td class="px-4 py-2"><%= expense.category.name %></td>
+        <td class="px-4 py-2"><%= expense.description %></td>
+        <td class="px-4 py-2 text-right"><%= number_to_currency(expense.amount) %></td>
+        <td class="px-4 py-2 text-center space-x-2">
+          <%= link_to "✏️", edit_expense_path(expense), class: "hover:text-blue-600" %>
+          <%= link_to "🗑️", expense, method: :delete,
+              data: { confirm: "¿Eliminar este gasto?" },
+              class: "hover:text-red-600" %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+  <tfoot>
+    <tr class="bg-gray-50 font-semibold">
+      <td colspan="3" class="px-4 py-2 text-right">Total:</td>
+      <td class="px-4 py-2 text-right">
+        <%= number_to_currency(@expenses.sum(:amount)) %>
+      </td>
+      <td></td>
+    </tr>
+  </tfoot>
+</table>
