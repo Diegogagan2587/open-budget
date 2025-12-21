@@ -1,0 +1,43 @@
+<%= form_with model: [@budget_period, @income_event].compact, local: true do |form| %>
+  <% if @income_event.errors.any? %>
+    <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
+      <h2 class="font-bold"><%= pluralize(@income_event.errors.count, "error") %> prohibited this income event from being saved:</h2>
+      <ul class="list-disc list-inside">
+        <% @income_event.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="mb-4">
+    <%= form.label :budget_period_id, "Budget Period (optional)", class: "block text-sm font-medium text-gray-700 mb-1" %>
+    <%= form.collection_select :budget_period_id, BudgetPeriod.all, :id, :name, { include_blank: "None" }, { class: "border rounded px-3 py-2 w-full" } %>
+  </div>
+
+  <div class="mb-4">
+    <%= form.label :description, class: "block text-sm font-medium text-gray-700 mb-1" %>
+    <%= form.text_field :description, class: "border rounded px-3 py-2 w-full" %>
+  </div>
+
+  <div class="mb-4">
+    <%= form.label :expected_date, class: "block text-sm font-medium text-gray-700 mb-1" %>
+    <%= form.date_field :expected_date, class: "border rounded px-3 py-2 w-full" %>
+  </div>
+
+  <div class="mb-4">
+    <%= form.label :expected_amount, class: "block text-sm font-medium text-gray-700 mb-1" %>
+    <%= form.number_field :expected_amount, step: 0.01, class: "border rounded px-3 py-2 w-full" %>
+  </div>
+
+  <div class="mb-4">
+    <%= form.label :status, class: "block text-sm font-medium text-gray-700 mb-1" %>
+    <%= form.select :status, [['Pending', 'pending'], ['Received', 'received'], ['Applied', 'applied']], {}, { class: "border rounded px-3 py-2 w-full" } %>
+  </div>
+
+  <div class="mb-4">
+    <%= form.submit class: "px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600" %>
+    <%= link_to "Cancel", @income_event.persisted? ? @income_event : income_events_path, class: "px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 ml-2" %>
+  </div>
+<% end %>
+
