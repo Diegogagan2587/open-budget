@@ -1,0 +1,48 @@
+<p style="color: green"><%= notice %></p>
+
+<h1 class="text-2xl font-bold mb-4">Expense Templates</h1>
+
+<div class="mb-4 flex justify-between items-center">
+  <%= link_to "➕ New Expense Template", new_expense_template_path,
+      class: "px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600" %>
+</div>
+
+<table class="min-w-full bg-white border">
+  <thead>
+    <tr class="bg-gray-100">
+      <th class="px-4 py-2 text-left">Name</th>
+      <th class="px-4 py-2 text-left">Category</th>
+      <th class="px-4 py-2 text-left">Total Amount</th>
+      <th class="px-4 py-2 text-left">Frequency</th>
+      <th class="px-4 py-2 text-left">Progress</th>
+      <th class="px-4 py-2 text-left">Status</th>
+      <th class="px-4 py-2 text-left">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @expense_templates.each do |template| %>
+      <tr class="border-t">
+        <td class="px-4 py-2"><%= template.name %></td>
+        <td class="px-4 py-2"><%= template.category.name %></td>
+        <td class="px-4 py-2"><%= number_to_currency(template.total_amount) %></td>
+        <td class="px-4 py-2"><%= template.frequency %></td>
+        <td class="px-4 py-2">
+          <%= number_to_currency(template.total_saved) %> of <%= number_to_currency(template.total_amount) %>
+          (<%= template.progress_percentage.round(1) %>%)
+        </td>
+        <td class="px-4 py-2">
+          <% if template.is_complete? %>
+            <span class="px-2 py-1 rounded text-xs bg-green-100 text-green-800">Complete</span>
+          <% else %>
+            <span class="px-2 py-1 rounded text-xs bg-yellow-100 text-yellow-800">In Progress</span>
+          <% end %>
+        </td>
+        <td class="px-4 py-2">
+          <%= link_to "View", template, class: "text-blue-500 hover:underline" %>
+          <%= link_to "Edit", edit_expense_template_path(template), class: "text-blue-500 hover:underline ml-2" %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
