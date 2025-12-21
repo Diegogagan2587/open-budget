@@ -25,7 +25,7 @@ class PlannedExpense < ApplicationRecord
       category_id: category_id,
       budget_period_id: budget_period_id
     )
-    update!(status: 'paid') unless status == 'paid'
+    update!(status: "paid") unless status == "paid"
   end
 
   def template_progress
@@ -44,4 +44,3 @@ class PlannedExpense < ApplicationRecord
     }
   end
 end
-

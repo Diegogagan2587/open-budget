@@ -1,6 +1,6 @@
 class PlannedExpensesController < ApplicationController
   before_action :set_income_event
-  before_action :set_planned_expense, only: [:show, :edit, :update, :destroy, :apply]
+  before_action :set_planned_expense, only: [ :show, :edit, :update, :destroy, :apply ]
 
   def index
     @planned_expenses = @income_event.planned_expenses_ordered
@@ -22,7 +22,7 @@ class PlannedExpensesController < ApplicationController
     respond_to do |format|
       if @planned_expense.save
         format.html { redirect_to income_event_planned_expenses_path(@income_event), notice: "Planned expense was successfully created." }
-        format.json { render :show, status: :created, location: [@income_event, @planned_expense] }
+        format.json { render :show, status: :created, location: [ @income_event, @planned_expense ] }
       else
         @expense_templates = ExpenseTemplate.includes(:category).all
         format.html { render :new, status: :unprocessable_entity }
@@ -39,7 +39,7 @@ class PlannedExpensesController < ApplicationController
     respond_to do |format|
       if @planned_expense.update(planned_expense_params)
         format.html { redirect_to income_event_planned_expenses_path(@income_event), notice: "Planned expense was successfully updated." }
-        format.json { render :show, status: :ok, location: [@income_event, @planned_expense] }
+        format.json { render :show, status: :ok, location: [ @income_event, @planned_expense ] }
       else
         @expense_templates = ExpenseTemplate.includes(:category).all
         format.html { render :edit, status: :unprocessable_entity }
@@ -73,7 +73,6 @@ class PlannedExpensesController < ApplicationController
   end
 
   def planned_expense_params
-    params.expect(planned_expense: [:category_id, :description, :amount, :notes, :status, :position, :expense_template_id])
+    params.expect(planned_expense: [ :category_id, :description, :amount, :notes, :status, :position, :expense_template_id ])
   end
 end
-

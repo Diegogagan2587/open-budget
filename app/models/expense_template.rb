@@ -31,4 +31,3 @@ class ExpenseTemplate < ApplicationRecord
     planned_expenses.group(:status).sum(:amount)
   end
 end
-

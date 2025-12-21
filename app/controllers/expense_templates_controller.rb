@@ -1,5 +1,5 @@
 class ExpenseTemplatesController < ApplicationController
-  before_action :set_expense_template, only: [:show, :edit, :update, :destroy]
+  before_action :set_expense_template, only: [ :show, :edit, :update, :destroy ]
 
   def index
     @expense_templates = ExpenseTemplate.includes(:category).all
@@ -58,7 +58,6 @@ class ExpenseTemplatesController < ApplicationController
   end
 
   def expense_template_params
-    params.expect(expense_template: [:name, :category_id, :description, :total_amount, :frequency, :notes])
+    params.expect(expense_template: [ :name, :category_id, :description, :total_amount, :frequency, :notes ])
   end
 end
-

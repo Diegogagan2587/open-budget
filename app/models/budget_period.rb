@@ -20,4 +20,3 @@ class BudgetPeriod < ApplicationRecord
     income_events.order(:expected_date)
   end
 end
-

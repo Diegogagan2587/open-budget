@@ -7,9 +7,9 @@ class IncomeEvent < ApplicationRecord
   validates :description, presence: true
   validates :status, presence: true, inclusion: { in: %w[pending received applied] }
 
-  scope :pending, -> { where(status: 'pending') }
-  scope :received, -> { where(status: 'received') }
-  scope :applied, -> { where(status: 'applied') }
+  scope :pending, -> { where(status: "pending") }
+  scope :received, -> { where(status: "received") }
+  scope :applied, -> { where(status: "applied") }
   scope :by_date, -> { order(expected_date: :desc) }
 
   def total_planned
@@ -29,7 +29,7 @@ class IncomeEvent < ApplicationRecord
     update!(
       received_date: date,
       received_amount: amount,
-      status: 'received'
+      status: "received"
     )
   end
 
@@ -37,7 +37,7 @@ class IncomeEvent < ApplicationRecord
     planned_expenses.where.not(status: %w[paid transferred spent]).find_each do |planned_expense|
       planned_expense.apply!
     end
-    update!(status: 'applied')
+    update!(status: "applied")
   end
 
   def is_received?
@@ -45,7 +45,6 @@ class IncomeEvent < ApplicationRecord
   end
 
   def is_applied?
-    status == 'applied'
+    status == "applied"
   end
 end
-

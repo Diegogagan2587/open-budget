@@ -1,6 +1,6 @@
 class IncomeEventsController < ApplicationController
-  before_action :set_income_event, only: [:show, :edit, :update, :destroy, :receive, :apply_all]
-  before_action :set_budget_period, only: [:index, :new, :create]
+  before_action :set_income_event, only: [ :show, :edit, :update, :destroy, :receive, :apply_all ]
+  before_action :set_budget_period, only: [ :index, :new, :create ]
 
   def index
     @income_events = if @budget_period
@@ -59,7 +59,7 @@ class IncomeEventsController < ApplicationController
 
   def receive
     if request.patch? || request.put?
-      if @income_event.update(receive_params.merge(status: 'received'))
+      if @income_event.update(receive_params.merge(status: "received"))
         redirect_to @income_event, notice: "Income event marked as received."
       else
         render :receive, status: :unprocessable_entity
@@ -83,11 +83,10 @@ class IncomeEventsController < ApplicationController
   end
 
   def income_event_params
-    params.expect(income_event: [:expected_date, :expected_amount, :description, :status, :budget_period_id])
+    params.expect(income_event: [ :expected_date, :expected_amount, :description, :status, :budget_period_id ])
   end
 
   def receive_params
-    params.expect(income_event: [:received_date, :received_amount])
+    params.expect(income_event: [ :received_date, :received_amount ])
   end
 end
-

@@ -1,5 +1,5 @@
 class BudgetPeriodsController < ApplicationController
-  before_action :set_budget_period, only: [:show, :edit, :update, :destroy]
+  before_action :set_budget_period, only: [ :show, :edit, :update, :destroy ]
 
   def index
     @budget_periods = BudgetPeriod.order(start_date: :desc)
@@ -59,7 +59,6 @@ class BudgetPeriodsController < ApplicationController
   end
 
   def budget_period_params
-    params.expect(budget_period: [:name, :period_type, :start_date, :end_date, :total_amount])
+    params.expect(budget_period: [ :name, :period_type, :start_date, :end_date, :total_amount ])
   end
 end
-

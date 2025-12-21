@@ -1,5 +1,5 @@
 class CategoriesController < ApplicationController
-  before_action :set_category, only: [:show, :edit, :update, :destroy]
+  before_action :set_category, only: [ :show, :edit, :update, :destroy ]
 
   def index
     @categories = Category.order(:name)
@@ -57,7 +57,6 @@ class CategoriesController < ApplicationController
   end
 
   def category_params
-    params.expect(category: [:name])
+    params.expect(category: [ :name ])
   end
 end
-
