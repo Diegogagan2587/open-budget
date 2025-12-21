@@ -1,0 +1,105 @@
+<p style="color: green"><%= notice %></p>
+
+<div class="mb-4">
+  <%= link_to "← Back to Income Event", @income_event, class: "text-blue-500 hover:underline" %>
+</div>
+
+<h1 class="text-2xl font-bold mb-4">Planned Expenses for <%= @income_event.description %></h1>
+
+<div class="bg-gray-50 p-4 rounded mb-4">
+  <div class="grid grid-cols-3 gap-4">
+    <div>
+      <p class="text-sm text-gray-600">Income Amount</p>
+      <p class="font-semibold text-lg"><%= number_to_currency(@running_balance) %></p>
+    </div>
+    <div>
+      <p class="text-sm text-gray-600">Total Planned</p>
+      <p class="font-semibold text-lg"><%= number_to_currency(@income_event.total_planned) %></p>
+    </div>
+    <div>
+      <p class="text-sm text-gray-600">Remaining</p>
+      <p class="font-semibold text-lg <%= @income_event.remaining_budget < 0 ? 'text-red-600' : 'text-green-600' %>">
+        <%= number_to_currency(@income_event.remaining_budget) %>
+      </p>
+    </div>
+  </div>
+</div>
+
+<div class="mb-4 flex justify-between items-center">
+  <%= link_to "➕ New Planned Expense", new_income_event_planned_expense_path(@income_event),
+      class: "px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600" %>
+</div>
+
+<% if @planned_expenses.any? %>
+  <table class="min-w-full bg-white border">
+    <thead>
+      <tr class="bg-gray-100">
+        <th class="px-4 py-2 text-left">Position</th>
+        <th class="px-4 py-2 text-left">Amount</th>
+        <th class="px-4 py-2 text-left">Category</th>
+        <th class="px-4 py-2 text-left">Description</th>
+        <th class="px-4 py-2 text-left">Template Progress</th>
+        <th class="px-4 py-2 text-left">Status</th>
+        <th class="px-4 py-2 text-left">% of Income</th>
+        <th class="px-4 py-2 text-left">Available After</th>
+        <th class="px-4 py-2 text-left">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% running_total = 0 %>
+      <% @planned_expenses.each do |planned_expense| %>
+        <% running_total += planned_expense.amount %>
+        <% available_after = @running_balance - running_total %>
+        <% progress = planned_expense.template_progress %>
+        <tr class="border-t">
+          <td class="px-4 py-2"><%= planned_expense.position || "-" %></td>
+          <td class="px-4 py-2"><%= number_to_currency(planned_expense.amount) %></td>
+          <td class="px-4 py-2"><%= planned_expense.category.name %></td>
+          <td class="px-4 py-2">
+            <%= planned_expense.description %>
+            <% if planned_expense.notes.present? %>
+              <span class="text-gray-500 text-xs" title="<%= planned_expense.notes %>">📝</span>
+            <% end %>
+          </td>
+          <td class="px-4 py-2">
+            <% if progress %>
+              <%= link_to progress[:complete] ? "✓ #{planned_expense.expense_template.name}" : planned_expense.expense_template.name, planned_expense.expense_template, class: "text-blue-500 hover:underline" %>
+              <br>
+              <span class="text-xs text-gray-600">
+                <%= number_to_currency(progress[:saved]) %> of <%= number_to_currency(progress[:total]) %> (<%= progress[:percentage].round(1) %>%)
+              </span>
+            <% else %>
+              -
+            <% end %>
+          </td>
+          <td class="px-4 py-2">
+            <span class="px-2 py-1 rounded text-xs <%= 
+              case planned_expense.status
+              when 'pending_to_pay', 'saved', 'transfer_to_savings' then 'bg-yellow-100 text-yellow-800'
+              when 'transferring' then 'bg-blue-100 text-blue-800'
+              when 'paid', 'transferred', 'spent' then 'bg-green-100 text-green-800'
+              else 'bg-gray-100 text-gray-800'
+              end
+            %>">
+              <%= planned_expense.status %>
+            </span>
+          </td>
+          <td class="px-4 py-2"><%= planned_expense.percentage_of_income.round(1) %>%</td>
+          <td class="px-4 py-2 <%= available_after < 0 ? 'text-red-600' : 'text-green-600' %>">
+            <%= number_to_currency(available_after) %>
+          </td>
+          <td class="px-4 py-2">
+            <%= link_to "Edit", edit_income_event_planned_expense_path(@income_event, planned_expense), class: "text-blue-500 hover:underline" %>
+            <% unless %w[paid transferred spent].include?(planned_expense.status) %>
+              <%= link_to "Apply", apply_income_event_planned_expense_path(@income_event, planned_expense), method: :patch, class: "text-green-500 hover:underline ml-2" %>
+            <% end %>
+            <%= link_to "Delete", [@income_event, planned_expense], method: :delete, data: { confirm: "Are you sure?" }, class: "text-red-500 hover:underline ml-2" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p class="text-gray-500">No planned expenses yet. <%= link_to "Add one", new_income_event_planned_expense_path(@income_event), class: "text-blue-500 hover:underline" %></p>
+<% end %>
+

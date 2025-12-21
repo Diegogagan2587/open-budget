@@ -1,0 +1,137 @@
+<%= form_with model: [@income_event, @planned_expense], local: true do |form| %>
+  <% if @planned_expense.errors.any? %>
+    <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
+      <h2 class="font-bold"><%= pluralize(@planned_expense.errors.count, "error") %> prohibited this planned expense from being saved:</h2>
+      <ul class="list-disc list-inside">
+        <% @planned_expense.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="mb-4 p-4 bg-blue-50 rounded">
+    <h3 class="font-semibold mb-2">Template Selection</h3>
+    <div class="mb-2">
+      <%= radio_button_tag :use_template, "no", !@planned_expense.expense_template_id.present?, id: "use_template_no" %>
+      <%= label_tag "use_template_no", "Create new planned expense", class: "ml-2" %>
+    </div>
+    <div class="mb-2">
+      <%= radio_button_tag :use_template, "yes", @planned_expense.expense_template_id.present?, id: "use_template_yes" %>
+      <%= label_tag "use_template_yes", "Use template", class: "ml-2" %>
+    </div>
+    <div id="template_selection" class="mt-2 <%= 'hidden' unless @planned_expense.expense_template_id.present? %>">
+      <%= form.collection_select :expense_template_id, @expense_templates, :id, :name, { include_blank: "Select a template" }, { class: "border rounded px-3 py-2 w-full", id: "expense_template_select" } %>
+      <div id="template_info" class="mt-2 text-sm text-gray-600"></div>
+    </div>
+  </div>
+
+  <div class="mb-4">
+    <%= form.label :category_id, "Category", class: "block text-sm font-medium text-gray-700 mb-1" %>
+    <%= form.collection_select :category_id, Category.all, :id, :name, { prompt: "Select a category" }, { class: "border rounded px-3 py-2 w-full", id: "category_select" } %>
+  </div>
+
+  <div class="mb-4">
+    <%= form.label :description, class: "block text-sm font-medium text-gray-700 mb-1" %>
+    <%= form.text_field :description, class: "border rounded px-3 py-2 w-full", id: "description_field" %>
+  </div>
+
+  <div class="mb-4">
+    <%= form.label :amount, class: "block text-sm font-medium text-gray-700 mb-1" %>
+    <%= form.number_field :amount, step: 0.01, class: "border rounded px-3 py-2 w-full", id: "amount_field" %>
+  </div>
+
+  <div class="mb-4">
+    <%= form.label :notes, class: "block text-sm font-medium text-gray-700 mb-1" %>
+    <%= form.text_area :notes, rows: 3, class: "border rounded px-3 py-2 w-full", id: "notes_field" %>
+  </div>
+
+  <div class="mb-4">
+    <%= form.label :status, class: "block text-sm font-medium text-gray-700 mb-1" %>
+    <%= form.select :status, [
+      ['Pending to Pay', 'pending_to_pay'],
+      ['Saved', 'saved'],
+      ['Transfer to Savings', 'transfer_to_savings'],
+      ['Transferring', 'transferring'],
+      ['Paid', 'paid'],
+      ['Transferred', 'transferred'],
+      ['Spent', 'spent']
+    ], {}, { class: "border rounded px-3 py-2 w-full" } %>
+  </div>
+
+  <div class="mb-4">
+    <%= form.label :position, class: "block text-sm font-medium text-gray-700 mb-1" %>
+    <%= form.number_field :position, class: "border rounded px-3 py-2 w-full" %>
+    <p class="text-xs text-gray-500 mt-1">Leave blank to auto-assign</p>
+  </div>
+
+  <div class="mb-4">
+    <%= form.submit class: "px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600" %>
+    <%= link_to "Cancel", income_event_planned_expenses_path(@income_event), class: "px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 ml-2" %>
+  </div>
+<% end %>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const useTemplateYes = document.getElementById('use_template_yes');
+    const useTemplateNo = document.getElementById('use_template_no');
+    const templateSelection = document.getElementById('template_selection');
+    const templateSelect = document.getElementById('expense_template_select');
+    const templateInfo = document.getElementById('template_info');
+    const categorySelect = document.getElementById('category_select');
+    const descriptionField = document.getElementById('description_field');
+    const amountField = document.getElementById('amount_field');
+    const notesField = document.getElementById('notes_field');
+
+    const templates = <%= @expense_templates.map { |t| { id: t.id, category_id: t.category_id, description: t.description, total_amount: t.total_amount.to_f, notes: t.notes, saved: t.total_saved.to_f } }.to_json.html_safe %>;
+
+    function toggleTemplateSelection() {
+      if (useTemplateYes.checked) {
+        templateSelection.classList.remove('hidden');
+      } else {
+        templateSelection.classList.add('hidden');
+        templateSelect.value = '';
+        updateFormFromTemplate(null);
+      }
+    }
+
+    function updateFormFromTemplate(template) {
+      if (template) {
+        categorySelect.value = template.category_id;
+        descriptionField.value = template.description || '';
+        amountField.value = '';
+        notesField.value = template.notes || '';
+        
+        const remaining = template.total_amount - template.saved;
+        const suggested = remaining > 0 ? remaining : template.total_amount / 2;
+        amountField.placeholder = `Suggested: ${suggested.toFixed(2)} (${template.total_amount - template.saved > 0 ? 'remaining' : 'split'})`;
+        
+        templateInfo.innerHTML = `
+          <p><strong>Total:</strong> ${template.total_amount.toFixed(2)}</p>
+          <p><strong>Saved:</strong> ${template.saved.toFixed(2)}</p>
+          <p><strong>Remaining:</strong> ${remaining.toFixed(2)}</p>
+        `;
+      } else {
+        amountField.placeholder = '';
+        templateInfo.innerHTML = '';
+      }
+    }
+
+    useTemplateYes.addEventListener('change', toggleTemplateSelection);
+    useTemplateNo.addEventListener('change', toggleTemplateSelection);
+
+    templateSelect.addEventListener('change', function() {
+      const templateId = parseInt(this.value);
+      const template = templates.find(t => t.id === templateId);
+      updateFormFromTemplate(template);
+    });
+
+    // Initialize if template is already selected
+    if (templateSelect.value) {
+      const templateId = parseInt(templateSelect.value);
+      const template = templates.find(t => t.id === templateId);
+      updateFormFromTemplate(template);
+    }
+  });
+</script>
+
