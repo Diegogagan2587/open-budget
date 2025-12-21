@@ -1,0 +1,65 @@
+class BudgetPeriodsController < ApplicationController
+  before_action :set_budget_period, only: [:show, :edit, :update, :destroy]
+
+  def index
+    @budget_periods = BudgetPeriod.order(start_date: :desc)
+  end
+
+  def show
+    @income_events = @budget_period.income_events_ordered
+    @planned_expenses = @budget_period.planned_expenses.includes(:category, :income_event, :expense_template)
+  end
+
+  def new
+    @budget_period = BudgetPeriod.new
+  end
+
+  def create
+    @budget_period = BudgetPeriod.new(budget_period_params)
+
+    respond_to do |format|
+      if @budget_period.save
+        format.html { redirect_to @budget_period, notice: "Budget period was successfully created." }
+        format.json { render :show, status: :created, location: @budget_period }
+      else
+        format.html { render :new, status: :unprocessable_entity }
+        format.json { render json: @budget_period.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  def edit
+  end
+
+  def update
+    respond_to do |format|
+      if @budget_period.update(budget_period_params)
+        format.html { redirect_to @budget_period, notice: "Budget period was successfully updated." }
+        format.json { render :show, status: :ok, location: @budget_period }
+      else
+        format.html { render :edit, status: :unprocessable_entity }
+        format.json { render json: @budget_period.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  def destroy
+    @budget_period.destroy!
+
+    respond_to do |format|
+      format.html { redirect_to budget_periods_path, status: :see_other, notice: "Budget period was successfully destroyed." }
+      format.json { head :no_content }
+    end
+  end
+
+  private
+
+  def set_budget_period
+    @budget_period = BudgetPeriod.find(params[:id])
+  end
+
+  def budget_period_params
+    params.expect(budget_period: [:name, :period_type, :start_date, :end_date, :total_amount])
+  end
+end
+

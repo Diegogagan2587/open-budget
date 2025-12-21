@@ -1,0 +1,44 @@
+<p style="color: green"><%= notice %></p>
+
+<h1 class="text-2xl font-bold mb-4">Budget Periods</h1>
+
+<div class="mb-4 flex justify-between items-center">
+  <%= link_to "➕ New Budget Period", new_budget_period_path,
+      class: "px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600" %>
+</div>
+
+<table class="min-w-full bg-white border">
+  <thead>
+    <tr class="bg-gray-100">
+      <th class="px-4 py-2 text-left">Name</th>
+      <th class="px-4 py-2 text-left">Period Type</th>
+      <th class="px-4 py-2 text-left">Start Date</th>
+      <th class="px-4 py-2 text-left">End Date</th>
+      <th class="px-4 py-2 text-left">Total Income</th>
+      <th class="px-4 py-2 text-left">Total Planned</th>
+      <th class="px-4 py-2 text-left">Remaining</th>
+      <th class="px-4 py-2 text-left">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @budget_periods.each do |budget_period| %>
+      <tr class="border-t">
+        <td class="px-4 py-2"><%= budget_period.name %></td>
+        <td class="px-4 py-2"><%= budget_period.period_type || "-" %></td>
+        <td class="px-4 py-2"><%= budget_period.start_date %></td>
+        <td class="px-4 py-2"><%= budget_period.end_date %></td>
+        <td class="px-4 py-2"><%= number_to_currency(budget_period.total_income) %></td>
+        <td class="px-4 py-2"><%= number_to_currency(budget_period.total_planned) %></td>
+        <td class="px-4 py-2 <%= budget_period.remaining_budget < 0 ? 'text-red-600' : 'text-green-600' %>">
+          <%= number_to_currency(budget_period.remaining_budget) %>
+        </td>
+        <td class="px-4 py-2">
+          <%= link_to "View", budget_period, class: "text-blue-500 hover:underline" %>
+          <%= link_to "Edit", edit_budget_period_path(budget_period), class: "text-blue-500 hover:underline ml-2" %>
+          <%= link_to "Income Events", budget_period_income_events_path(budget_period), class: "text-green-500 hover:underline ml-2" %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
