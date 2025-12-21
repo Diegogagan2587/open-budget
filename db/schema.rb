@@ -10,9 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_17_044448) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_21_035718) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "budget_line_items", force: :cascade do |t|
+    t.bigint "budget_period_id", null: false
+    t.bigint "category_id", null: false
+    t.string "description"
+    t.decimal "planned_amount", precision: 10, scale: 2
+    t.float "percentage_of_total"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["budget_period_id"], name: "index_budget_line_items_on_budget_period_id"
+    t.index ["category_id"], name: "index_budget_line_items_on_category_id"
+  end
 
   create_table "budget_periods", force: :cascade do |t|
     t.string "name"
@@ -29,4 +41,21 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_17_044448) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
+
+  create_table "expenses", force: :cascade do |t|
+    t.date "date"
+    t.decimal "amount", precision: 10, scale: 2
+    t.string "description"
+    t.bigint "category_id", null: false
+    t.bigint "budget_period_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["budget_period_id"], name: "index_expenses_on_budget_period_id"
+    t.index ["category_id"], name: "index_expenses_on_category_id"
+  end
+
+  add_foreign_key "budget_line_items", "budget_periods"
+  add_foreign_key "budget_line_items", "categories"
+  add_foreign_key "expenses", "budget_periods"
+  add_foreign_key "expenses", "categories"
 end
