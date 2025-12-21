@@ -18,9 +18,25 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   # root "posts#index"
   #
+  resources :expense_templates
+
   resources :budget_periods do
     resources :budget_line_items
     resources :expenses, only: [ :new, :create ]
+    resources :income_events
+  end
+
+  resources :income_events do
+    resources :planned_expenses do
+      member do
+        patch :apply
+      end
+    end
+    member do
+      get :receive
+      patch :receive
+      post :apply_all
+    end
   end
 
   resources :categories
