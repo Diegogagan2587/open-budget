@@ -75,7 +75,7 @@
       Edit
     <% end %>
     <% unless %w[paid transferred spent].include?(@planned_expense.status) %>
-      <%= link_to apply_income_event_planned_expense_path(@income_event, @planned_expense), method: :patch, class: "px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors" do %>
+      <%= link_to apply_income_event_planned_expense_path(@income_event, @planned_expense), data: { turbo_method: :patch }, class: "px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors" do %>
         Apply
       <% end %>
     <% end %>
