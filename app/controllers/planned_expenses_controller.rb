@@ -8,6 +8,10 @@ class PlannedExpensesController < ApplicationController
   end
 
   def show
+    respond_to do |format|
+      format.html
+      format.json { render json: @planned_expense }
+    end
   end
 
   def new
