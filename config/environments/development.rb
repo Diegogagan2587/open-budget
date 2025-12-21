@@ -1,6 +1,13 @@
 require "active_support/core_ext/integer/time"
 
 Rails.application.configure do
+  config.after_initialize do
+    require "socket"
+    ip = Socket.ip_address_list.find { |addr| addr.ipv4_private? } &.ip_address
+    port = ENV.fetch("PORT", 3000)
+    puts "\n Rails running at:"
+    puts "---> http://#{ip}:#{port}" if ip
+  end
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Make code changes take effect immediately without server restart.
