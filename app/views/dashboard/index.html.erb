@@ -6,6 +6,16 @@
     <p>View, create, and manage your monthly or quarterly budgets.</p>
   <% end %>
 
+  <%= link_to income_events_path, class: "block p-4 border rounded hover:shadow" do %>
+    <h2 class="text-xl">💰 Income Events</h2>
+    <p>Plan expenses for each payment you receive.</p>
+  <% end %>
+
+  <%= link_to expense_templates_path, class: "block p-4 border rounded hover:shadow" do %>
+    <h2 class="text-xl">📋 Expense Templates</h2>
+    <p>Create recurring expense templates for long-term planning.</p>
+  <% end %>
+
   <%= link_to expenses_path, class: "block p-4 border rounded hover:shadow" do %>
     <h2 class="text-xl">💸 Expenses</h2>
     <p>Log new expenses and review past spending.</p>
@@ -18,6 +28,10 @@
 
   <%= link_to new_budget_period_path, class: "block p-4 border rounded hover:shadow col-span-full" do %>
     <h2 class="text-xl">➕ New Budget Period</h2>
+  <% end %>
+
+  <%= link_to new_income_event_path, class: "block p-4 border rounded hover:shadow col-span-full" do %>
+    <h2 class="text-xl">➕ New Income Event</h2>
   <% end %>
   
   <%= link_to new_expense_path, class: "block p-4 border rounded hover:shadow col-span-full" do %>
