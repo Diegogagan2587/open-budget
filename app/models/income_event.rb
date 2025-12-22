@@ -55,27 +55,38 @@ class IncomeEvent < ApplicationRecord
     current_date = received_date || expected_date
     current_id = id
 
-    # Find previous event: ordered by received_date if present, otherwise expected_date
-    # Use COALESCE to handle NULL received_date values
-    previous = budget_period.income_events
-      .where.not(id: current_id)
-      .where(
-        "(COALESCE(received_date, expected_date) < ?) OR (COALESCE(received_date, expected_date) = ? AND id < ?)",
-        current_date, current_date, current_id
-      )
-      .order(
-        Arel.sql("COALESCE(received_date, expected_date) DESC, id DESC")
-      )
-      .first
-
-    previous
+    # Find previous event: the one with the highest effective date that is still before current
+    # Effective date = received_date if present, otherwise expected_date
+    # Load all events and calculate in Ruby for clarity and correctness
+    candidates = budget_period.income_events.where.not(id: current_id).to_a
+    
+    # Calculate effective date for current event
+    current_effective_date = current_date
+    
+    # Find all events that come before current (by effective date)
+    previous_events = candidates.select do |event|
+      event_effective_date = event.received_date || event.expected_date
+      event_effective_date < current_effective_date || 
+        (event_effective_date == current_effective_date && event.id < current_id)
+    end
+    
+    return nil if previous_events.empty?
+    
+    # Return the one with the highest effective date (most recent before current)
+    previous_events.max_by do |event|
+      event_effective_date = event.received_date || event.expected_date
+      [event_effective_date, event.id]
+    end
   end
 
   def previous_balance
     prev = previous_income_event
     return 0.0 unless prev
 
-    prev.remaining_budget
+    # Use effective_remaining_budget to account for cumulative carryover
+    # This ensures that if the previous event itself had a previous balance,
+    # we carry forward the complete effective balance
+    prev.effective_remaining_budget
   end
 
   def effective_remaining_budget
