@@ -1,0 +1,355 @@
+require "test_helper"
+
+class IncomeEventTest < ActiveSupport::TestCase
+  def setup
+    @budget_period = BudgetPeriod.create!(
+      name: "Test Period",
+      start_date: Date.new(2025, 1, 1),
+      end_date: Date.new(2025, 12, 31)
+    )
+  end
+
+  test "previous_income_event returns nil for first event in budget period" do
+    event = IncomeEvent.create!(
+      budget_period: @budget_period,
+      description: "First Event",
+      expected_date: Date.new(2025, 1, 15),
+      expected_amount: 1000.00,
+      status: "pending"
+    )
+
+    assert_nil event.previous_income_event
+    assert_equal 0.0, event.previous_balance
+  end
+
+  test "previous_income_event finds correct previous event by expected_date" do
+    event1 = IncomeEvent.create!(
+      budget_period: @budget_period,
+      description: "Event 1",
+      expected_date: Date.new(2025, 1, 15),
+      expected_amount: 1000.00,
+      status: "pending"
+    )
+
+    event2 = IncomeEvent.create!(
+      budget_period: @budget_period,
+      description: "Event 2",
+      expected_date: Date.new(2025, 2, 15),
+      expected_amount: 2000.00,
+      status: "pending"
+    )
+
+    assert_equal event1, event2.previous_income_event
+    assert_nil event1.previous_income_event
+  end
+
+  test "previous_income_event uses received_date when present for ordering" do
+    # Event 1: expected Jan 15, received Jan 12 (received before expected)
+    event1 = IncomeEvent.create!(
+      budget_period: @budget_period,
+      description: "Event 1",
+      expected_date: Date.new(2025, 1, 15),
+      expected_amount: 1000.00,
+      received_date: Date.new(2025, 1, 12),
+      received_amount: 1000.00,
+      status: "received"
+    )
+
+    # Event 2: expected Jan 18, not received yet
+    event2 = IncomeEvent.create!(
+      budget_period: @budget_period,
+      description: "Event 2",
+      expected_date: Date.new(2025, 1, 18),
+      expected_amount: 1500.00,
+      status: "pending"
+    )
+
+    # Event 3: expected Jan 25, not received yet
+    event3 = IncomeEvent.create!(
+      budget_period: @budget_period,
+      description: "Event 3",
+      expected_date: Date.new(2025, 1, 25),
+      expected_amount: 2000.00,
+      status: "pending"
+    )
+
+    # Event 2 should have event1 as previous (received Jan 12 comes before expected Jan 18)
+    assert_equal event1, event2.previous_income_event
+
+    # Event 3 should have event2 as previous (expected Jan 18 comes before expected Jan 25)
+    assert_equal event2, event3.previous_income_event
+  end
+
+  test "previous_income_event handles events on same date using id as tiebreaker" do
+    event1 = IncomeEvent.create!(
+      budget_period: @budget_period,
+      description: "Event 1",
+      expected_date: Date.new(2025, 1, 15),
+      expected_amount: 1000.00,
+      status: "pending"
+    )
+
+    event2 = IncomeEvent.create!(
+      budget_period: @budget_period,
+      description: "Event 2",
+      expected_date: Date.new(2025, 1, 15),
+      expected_amount: 2000.00,
+      status: "pending"
+    )
+
+    event3 = IncomeEvent.create!(
+      budget_period: @budget_period,
+      description: "Event 3",
+      expected_date: Date.new(2025, 1, 15),
+      expected_amount: 3000.00,
+      status: "pending"
+    )
+
+    # All events have same expected_date, so previous should be based on id
+    assert_equal event2, event3.previous_income_event
+    assert_equal event1, event2.previous_income_event
+    assert_nil event1.previous_income_event
+  end
+
+  test "previous_income_event only considers events in same budget period" do
+    other_period = BudgetPeriod.create!(
+      name: "Other Period",
+      start_date: Date.new(2026, 1, 1),
+      end_date: Date.new(2026, 12, 31)
+    )
+
+    event1 = IncomeEvent.create!(
+      budget_period: @budget_period,
+      description: "Event 1",
+      expected_date: Date.new(2025, 1, 15),
+      expected_amount: 1000.00,
+      status: "pending"
+    )
+
+    event2 = IncomeEvent.create!(
+      budget_period: other_period,
+      description: "Event 2",
+      expected_date: Date.new(2025, 1, 10), # Earlier date but different period
+      expected_amount: 2000.00,
+      status: "pending"
+    )
+
+    event3 = IncomeEvent.create!(
+      budget_period: @budget_period,
+      description: "Event 3",
+      expected_date: Date.new(2025, 2, 15),
+      expected_amount: 3000.00,
+      status: "pending"
+    )
+
+    # Event 3 should have event1 as previous, not event2 (different period)
+    assert_equal event1, event3.previous_income_event
+    assert_nil event2.previous_income_event
+  end
+
+  test "previous_balance returns remaining_budget of previous event" do
+    event1 = IncomeEvent.create!(
+      budget_period: @budget_period,
+      description: "Event 1",
+      expected_date: Date.new(2025, 1, 15),
+      expected_amount: 1000.00,
+      status: "pending"
+    )
+
+    # Create planned expense to create a negative balance
+    category = Category.create!(name: "Test Category")
+    PlannedExpense.create!(
+      income_event: event1,
+      category: category,
+      description: "Expense",
+      amount: 1500.00,
+      status: "pending_to_pay"
+    )
+
+    event2 = IncomeEvent.create!(
+      budget_period: @budget_period,
+      description: "Event 2",
+      expected_date: Date.new(2025, 2, 15),
+      expected_amount: 2000.00,
+      status: "pending"
+    )
+
+    # Event1 has remaining_budget of 1000 - 1500 = -500
+    assert_equal(-500.0, event1.remaining_budget)
+    # Event2 should have previous_balance of -500 (event1's remaining_budget)
+    assert_equal(-500.0, event2.previous_balance)
+  end
+
+  test "previous_balance uses effective_remaining_budget for cumulative carryover" do
+    event1 = IncomeEvent.create!(
+      budget_period: @budget_period,
+      description: "Event 1",
+      expected_date: Date.new(2025, 1, 15),
+      expected_amount: 1000.00,
+      status: "pending"
+    )
+
+    category = Category.create!(name: "Test Category")
+    PlannedExpense.create!(
+      income_event: event1,
+      category: category,
+      description: "Expense",
+      amount: 1500.00,
+      status: "pending_to_pay"
+    )
+
+    # Event1: remaining_budget = -500, effective_remaining_budget = -500 (no previous)
+    assert_equal(-500.0, event1.remaining_budget)
+    assert_equal(-500.0, event1.effective_remaining_budget)
+
+    event2 = IncomeEvent.create!(
+      budget_period: @budget_period,
+      description: "Event 2",
+      expected_date: Date.new(2025, 2, 15),
+      expected_amount: 2000.00,
+      status: "pending"
+    )
+
+    PlannedExpense.create!(
+      income_event: event2,
+      category: category,
+      description: "Expense 2",
+      amount: 500.00,
+      status: "pending_to_pay"
+    )
+
+    # Event2: remaining_budget = 2000 - 500 = 1500
+    # previous_balance = event1.effective_remaining_budget = -500
+    # effective_remaining_budget = 1500 + (-500) = 1000
+    assert_equal(1500.0, event2.remaining_budget)
+    assert_equal(-500.0, event2.previous_balance)
+    assert_equal(1000.0, event2.effective_remaining_budget)
+
+    event3 = IncomeEvent.create!(
+      budget_period: @budget_period,
+      description: "Event 3",
+      expected_date: Date.new(2025, 3, 15),
+      expected_amount: 3000.00,
+      status: "pending"
+    )
+
+    # Event3: remaining_budget = 3000 (no expenses)
+    # previous_balance = event2.effective_remaining_budget = 1000
+    # effective_remaining_budget = 3000 + 1000 = 4000
+    assert_equal(3000.0, event3.remaining_budget)
+    assert_equal(1000.0, event3.previous_balance)
+    assert_equal(4000.0, event3.effective_remaining_budget)
+  end
+
+  test "previous_balance handles events across year boundaries" do
+    event1 = IncomeEvent.create!(
+      budget_period: @budget_period,
+      description: "Event 2025",
+      expected_date: Date.new(2025, 12, 30),
+      expected_amount: 1000.00,
+      received_date: Date.new(2025, 12, 30),
+      received_amount: 1000.00,
+      status: "received"
+    )
+
+    event2 = IncomeEvent.create!(
+      budget_period: @budget_period,
+      description: "Event 2026",
+      expected_date: Date.new(2026, 1, 15),
+      expected_amount: 2000.00,
+      status: "pending"
+    )
+
+    # Event2 should find event1 as previous even though it's from previous year
+    assert_equal event1, event2.previous_income_event
+    assert_equal event1.remaining_budget, event2.previous_balance
+  end
+
+  test "previous_balance handles mixed received and pending events correctly" do
+    # Create events in chronological order
+    event1 = IncomeEvent.create!(
+      budget_period: @budget_period,
+      description: "Received Event",
+      expected_date: Date.new(2025, 1, 10),
+      expected_amount: 1000.00,
+      received_date: Date.new(2025, 1, 12),
+      received_amount: 1000.00,
+      status: "received"
+    )
+
+    event2 = IncomeEvent.create!(
+      budget_period: @budget_period,
+      description: "Pending Event",
+      expected_date: Date.new(2025, 1, 15),
+      expected_amount: 2000.00,
+      status: "pending"
+    )
+
+    event3 = IncomeEvent.create!(
+      budget_period: @budget_period,
+      description: "Another Received",
+      expected_date: Date.new(2025, 1, 20),
+      expected_amount: 3000.00,
+      received_date: Date.new(2025, 1, 18), # Received before expected
+      received_amount: 3000.00,
+      status: "received"
+    )
+
+    # Event2 should have event1 as previous (received Jan 12 < expected Jan 15)
+    assert_equal event1, event2.previous_income_event
+
+    # Event3 should have event2 as previous (expected Jan 15 < received Jan 18)
+    assert_equal event2, event3.previous_income_event
+  end
+
+  test "effective_remaining_budget correctly calculates with negative previous balance" do
+    event1 = IncomeEvent.create!(
+      budget_period: @budget_period,
+      description: "Event with Deficit",
+      expected_date: Date.new(2025, 1, 15),
+      expected_amount: 1000.00,
+      status: "pending"
+    )
+
+    category = Category.create!(name: "Test Category")
+    PlannedExpense.create!(
+      income_event: event1,
+      category: category,
+      description: "Large Expense",
+      amount: 2000.00,
+      status: "pending_to_pay"
+    )
+
+    # Event1 has -1000 remaining
+    assert_equal(-1000.0, event1.remaining_budget)
+    assert_equal(-1000.0, event1.effective_remaining_budget)
+
+    event2 = IncomeEvent.create!(
+      budget_period: @budget_period,
+      description: "Event After Deficit",
+      expected_date: Date.new(2025, 2, 15),
+      expected_amount: 2000.00,
+      status: "pending"
+    )
+
+    # Event2: remaining_budget = 2000, previous_balance = -1000
+    # effective_remaining_budget = 2000 + (-1000) = 1000
+    assert_equal(2000.0, event2.remaining_budget)
+    assert_equal(-1000.0, event2.previous_balance)
+    assert_equal(1000.0, event2.effective_remaining_budget)
+  end
+
+  test "previous_income_event returns nil when no budget_period" do
+    event = IncomeEvent.create!(
+      description: "Event Without Period",
+      expected_date: Date.new(2025, 1, 15),
+      expected_amount: 1000.00,
+      status: "pending",
+      budget_period: nil
+    )
+
+    assert_nil event.previous_income_event
+    assert_equal 0.0, event.previous_balance
+  end
+end
+
