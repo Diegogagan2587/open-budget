@@ -30,6 +30,7 @@ Rails.application.routes.draw do
     resources :planned_expenses do
       member do
         patch :apply
+        patch :move
       end
     end
     member do

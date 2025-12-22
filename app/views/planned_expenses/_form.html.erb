@@ -52,6 +52,27 @@
     </div>
   </div>
 
+  <!-- Income Event Assignment Section -->
+  <div class="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-6 border-2 border-purple-200">
+    <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+      <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
+      </svg>
+      Income Event Assignment
+    </h3>
+    <div class="bg-white rounded-lg p-4 border border-purple-200">
+      <p class="text-sm text-gray-600 mb-3">
+        <strong>Current:</strong> <%= @income_event.description %> - <%= number_to_currency(@income_event.expected_amount) %> 
+        (Expected: <%= @income_event.expected_date.strftime("%b %d, %Y") %>)
+      </p>
+      <div>
+        <%= form.label :income_event_id, "Assign to Income Event", class: "block text-sm font-medium text-gray-700 mb-2" %>
+        <%= form.collection_select :income_event_id, @income_events, :id, lambda { |ie| "#{ie.description} - #{number_to_currency(ie.expected_amount)} (Expected: #{ie.expected_date.strftime('%b %d, %Y')})" }, { selected: @income_event.id }, { class: "block w-full rounded-lg border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500" } %>
+        <p class="mt-1 text-xs text-gray-500">Change the income event to reassign this planned expense</p>
+      </div>
+    </div>
+  </div>
+
   <!-- Form Fields Section -->
   <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-6">
     <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">

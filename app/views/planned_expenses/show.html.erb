@@ -70,10 +70,13 @@
     <% end %>
   </div>
 
-  <div class="pt-6 border-t border-gray-200 flex items-center gap-3">
+  <div class="pt-6 border-t border-gray-200 flex items-center gap-3 flex-wrap">
     <%= link_to edit_income_event_planned_expense_path(@income_event, @planned_expense), class: "px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors" do %>
       Edit
     <% end %>
+    <button onclick="document.getElementById('move-modal').classList.remove('hidden')" class="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors">
+      Move to...
+    </button>
     <% unless %w[paid transferred spent].include?(@planned_expense.status) %>
       <%= link_to apply_income_event_planned_expense_path(@income_event, @planned_expense), data: { turbo_method: :patch }, class: "px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors" do %>
         Apply
@@ -88,5 +91,20 @@
 <div class="bg-gray-50 rounded-xl p-4 border border-gray-200">
   <p class="text-sm text-gray-600 mb-2">Income Event</p>
   <%= link_to @income_event.description, @income_event, class: "text-blue-600 hover:text-blue-800 font-medium" %>
+</div>
+
+<!-- Move Modal -->
+<div id="move-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onclick="if(event.target === this) this.classList.add('hidden')">
+  <div class="bg-white rounded-xl shadow-xl p-6 max-w-md w-full mx-4" onclick="event.stopPropagation()">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-xl font-bold text-gray-900">Move Planned Expense</h2>
+      <button onclick="document.getElementById('move-modal').classList.add('hidden')" class="text-gray-400 hover:text-gray-600">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+    <%= render "move_form" %>
+  </div>
 </div>
 
