@@ -47,4 +47,40 @@ class IncomeEvent < ApplicationRecord
   def is_applied?
     status == "applied"
   end
+
+  def previous_income_event
+    return nil unless budget_period_id
+
+    # Get the date to use for ordering: received_date if present, otherwise expected_date
+    current_date = received_date || expected_date
+    current_id = id
+
+    # Find previous event: ordered by received_date if present, otherwise expected_date
+    # Use COALESCE to handle NULL received_date values
+    previous = budget_period.income_events
+      .where.not(id: current_id)
+      .where(
+        "(COALESCE(received_date, expected_date) < ?) OR (COALESCE(received_date, expected_date) = ? AND id < ?)",
+        current_date, current_date, current_id
+      )
+      .order(
+        Arel.sql("COALESCE(received_date, expected_date) DESC, id DESC")
+      )
+      .first
+
+    previous
+  end
+
+  def previous_balance
+    prev = previous_income_event
+    return 0.0 unless prev
+
+    prev.remaining_budget
+  end
+
+  def effective_remaining_budget
+    # If previous_balance is negative (deficit), it reduces available budget
+    # If previous_balance is positive (surplus), it increases available budget
+    remaining_budget + previous_balance
+  end
 end

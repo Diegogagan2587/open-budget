@@ -43,7 +43,10 @@
   </div>
 
   <!-- Key Metrics -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+  <% prev_balance = @income_event.previous_balance %>
+  <% prev_event = @income_event.previous_income_event %>
+  <% has_previous = prev_balance != 0 || prev_event %>
+  <div class="grid grid-cols-1 md:grid-cols-2 <%= has_previous ? 'lg:grid-cols-4' : 'lg:grid-cols-3' %> gap-6">
     <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
       <p class="text-blue-100 text-sm mb-2">Income Amount</p>
       <p class="text-3xl font-bold"><%= number_to_currency(@income_event.received_amount || @income_event.expected_amount) %></p>
@@ -51,25 +54,60 @@
         <p class="text-blue-200 text-xs mt-2">Received: <%= @income_event.received_date.strftime("%b %d") %></p>
       <% end %>
     </div>
+    <% if prev_balance != 0 || prev_event %>
+      <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 border <%= prev_balance < 0 ? 'border-red-300/50 border-2' : 'border-white/20' %>">
+        <div class="flex items-center gap-2 mb-2">
+          <p class="text-blue-100 text-sm">Previous Balance</p>
+          <% if prev_balance < 0 %>
+            <svg class="w-4 h-4 text-red-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+            </svg>
+          <% end %>
+        </div>
+        <p class="text-3xl font-bold <%= prev_balance < 0 ? 'text-red-200' : 'text-green-200' %>">
+          <%= number_to_currency(prev_balance) %>
+        </p>
+        <% if prev_event %>
+          <p class="text-blue-200 text-xs mt-2">From: <%= prev_event.description %></p>
+        <% end %>
+      </div>
+    <% end %>
     <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
       <p class="text-blue-100 text-sm mb-2">Total Planned</p>
       <p class="text-3xl font-bold"><%= number_to_currency(@income_event.total_planned) %></p>
       <p class="text-blue-200 text-xs mt-2"><%= @planned_expenses.count %> expenses</p>
     </div>
     <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
-      <p class="text-blue-100 text-sm mb-2">Remaining Budget</p>
-      <p class="text-3xl font-bold <%= @income_event.remaining_budget < 0 ? 'text-red-200' : 'text-green-200' %>">
-        <%= number_to_currency(@income_event.remaining_budget) %>
+      <p class="text-blue-100 text-sm mb-2">Effective Remaining</p>
+      <p class="text-3xl font-bold <%= @income_event.effective_remaining_budget < 0 ? 'text-red-200' : 'text-green-200' %>">
+        <%= number_to_currency(@income_event.effective_remaining_budget) %>
       </p>
-      <% if @income_event.expected_amount > 0 %>
-        <div class="mt-2">
-          <div class="w-full bg-white/20 rounded-full h-2">
-            <div class="bg-white h-2 rounded-full transition-all duration-300" style="width: <%= [((@income_event.total_planned / @income_event.expected_amount) * 100), 100].min %>%"></div>
-          </div>
-        </div>
-      <% end %>
+      <p class="text-blue-200 text-xs mt-2">
+        <% if prev_balance != 0 %>
+          After carryover
+        <% else %>
+          Available budget
+        <% end %>
+      </p>
     </div>
   </div>
+  
+  <!-- Breakdown Section -->
+  <% if prev_balance != 0 || prev_event %>
+    <div class="mt-6 bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+      <p class="text-blue-100 text-sm">
+        <strong>Calculation:</strong> 
+        <%= number_to_currency(@income_event.received_amount || @income_event.expected_amount) %> (Income)
+        <% if prev_balance < 0 %>
+          - <%= number_to_currency(prev_balance.abs) %> (Previous deficit)
+        <% elsif prev_balance > 0 %>
+          + <%= number_to_currency(prev_balance) %> (Previous surplus)
+        <% end %>
+        - <%= number_to_currency(@income_event.total_planned) %> (Planned)
+        = <%= number_to_currency(@income_event.effective_remaining_budget) %> (Effective Remaining)
+      </p>
+    </div>
+  <% end %>
 </div>
 
 <!-- Action Buttons -->
