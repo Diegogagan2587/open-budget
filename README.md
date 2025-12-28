@@ -20,6 +20,38 @@ A comprehensive Ruby on Rails application to manage budgets, income events, and 
 - **Expense Templates**: Create recurring expense templates for long-term savings goals (e.g., vacation fund, emergency fund).
 - **Previous Balance Tracking**: Automatically track how negative balances from previous income events impact the current event's available budget, providing better visibility into financial flow.
 
+#### Planned Expenses vs. Actual Expenses
+
+The application uses two separate models to distinguish between **planned spending** and **actual spending**:
+
+**Planned Expenses (`PlannedExpense`)**
+- Represent your **intended spending** before money is actually spent
+- Created when you plan how to allocate an income event
+- Have a `status` field (e.g., "pending_to_pay", "saved", "spent", "paid", "transferred")
+- Automatically create an `Expense` record when status is set to "spent", "paid", or "transferred"
+- Can be manually applied using the "Apply" button to create an expense record
+
+**Actual Expenses (`Expense`)**
+- Represent **actual money spent** (real transactions)
+- Can be created in two ways:
+  1. **From Planned Expenses**: Automatically created when a planned expense status changes to "spent"/"paid"/"transferred", or manually via the "Apply" button
+  2. **Direct Expenses**: Created directly and assigned to an income event (for unplanned spending)
+
+**Key Relationships:**
+- A `PlannedExpense` can have one `Expense` (via `planned_expense_id`)
+- An `Expense` can belong to an `IncomeEvent` directly (for unplanned spending) or through a `PlannedExpense`
+- Both planned expenses and direct expenses are counted in the income event's "Total Planned" calculation
+- Only actual expenses are counted in "Total Spent"
+
+**Automatic Expense Creation:**
+- When you create a planned expense with status "spent", "paid", or "transferred", an expense record is automatically created
+- When you update a planned expense status to "spent", "paid", or "transferred", an expense record is automatically created
+- The "Apply" button appears for any planned expense that doesn't have an expense record yet, allowing you to manually create it
+
+**Handling Legacy Data:**
+- If you have planned expenses with status "spent" but no expense record (from before automatic creation was implemented), the "Apply" button will be visible
+- Click "Apply" to manually create the missing expense record
+
 #### Previous Balance Feature
 
 The Previous Balance feature provides visibility into how financial deficits carry forward between income events:
@@ -103,13 +135,18 @@ The Previous Balance feature provides visibility into how financial deficits car
     - Provides `effective_remaining_budget` that accounts for previous balance carryover
   * `PlannedExpense`: belongs to `IncomeEvent`, `Category`, and optionally `ExpenseTemplate`
     - Links planned expenses to income events
-    - Can be applied to create actual expenses
+    - Has one `Expense` (created automatically when status is "spent"/"paid"/"transferred")
+    - Can be manually applied to create actual expenses via `apply!` method
+    - Automatically creates expense records via callbacks when status changes to spent/paid/transferred
   * `ExpenseTemplate`: has many `PlannedExpense`
     - Tracks progress toward savings goals
     - Supports different frequencies (one-time, monthly, etc.)
   * `BudgetLineItem`: belongs to `BudgetPeriod` and `Category`
   * `Category`: has many `Expense`, `BudgetLineItem`, and `PlannedExpense`
-  * `Expense`: belongs to `Category` and optionally to `BudgetPeriod`
+  * `Expense`: belongs to `Category`, `BudgetPeriod`, and optionally to `IncomeEvent` and `PlannedExpense`
+    - Can be created from a planned expense (has `planned_expense_id`)
+    - Can be created directly and assigned to an income event (for unplanned spending)
+    - Both types are counted in income event calculations
 
 * **Controllers**:
 
