@@ -23,7 +23,8 @@ class PlannedExpense < ApplicationRecord
       amount: amount,
       description: description,
       category_id: category_id,
-      budget_period_id: budget_period_id
+      budget_period_id: budget_period_id,
+      income_event_id: income_event.id
     )
     update!(status: "paid") unless status == "paid"
   end
