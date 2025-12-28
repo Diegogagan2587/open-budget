@@ -1,6 +1,7 @@
 class IncomeEvent < ApplicationRecord
   belongs_to :budget_period, optional: true
   has_many :planned_expenses, dependent: :destroy
+  has_many :expenses, dependent: :nullify
 
   validates :expected_date, presence: true
   validates :expected_amount, presence: true, numericality: { greater_than: 0 }
