@@ -27,6 +27,12 @@ class ExpensesController < ApplicationController
   # POST /expenses or /expenses.json
   def create
     @expense = Expense.new(expense_params)
+    
+    # Auto-suggest budget_period from income_event if income_event is set and budget_period is not
+    if @expense.income_event_id.present? && @expense.budget_period_id.blank?
+      income_event = IncomeEvent.find(@expense.income_event_id)
+      @expense.budget_period_id = income_event.budget_period_id if income_event.budget_period_id
+    end
 
     respond_to do |format|
       if @expense.save
@@ -71,7 +77,7 @@ class ExpensesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def expense_params
-      params.expect(expense: [ :date, :amount, :description, :category_id, :budget_period_id ])
+      params.expect(expense: [ :date, :amount, :description, :category_id, :budget_period_id, :income_event_id ])
     end
 
     def set_budget_period
