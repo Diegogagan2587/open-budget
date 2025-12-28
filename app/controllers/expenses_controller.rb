@@ -48,8 +48,21 @@ class ExpensesController < ApplicationController
 
   # PATCH/PUT /expenses/1 or /expenses/1.json
   def update
+    old_income_event_id = @expense.income_event_id
+    new_income_event_id = expense_params[:income_event_id]
+    
     respond_to do |format|
       if @expense.update(expense_params)
+        # If income_event_id changed and expense has a planned_expense, sync it
+        if @expense.planned_expense.present?
+          old_id = old_income_event_id.to_i rescue 0
+          new_id = new_income_event_id.present? ? new_income_event_id.to_i : 0
+          
+          if new_id != old_id && new_income_event_id.present?
+            @expense.planned_expense.update(income_event_id: new_income_event_id)
+          end
+        end
+        
         format.html { redirect_to @expense, notice: "Expense was successfully updated." }
         format.json { render :show, status: :ok, location: @expense }
       else
