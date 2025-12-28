@@ -14,7 +14,17 @@ class IncomeEvent < ApplicationRecord
   scope :by_date, -> { order(expected_date: :desc) }
 
   def total_planned
-    planned_expenses.sum(:amount)
+    # Include:
+    # 1. All planned expenses (they represent planned spending, even if applied)
+    # 2. Expenses directly assigned (without a planned_expense_id)
+    # Note: Expenses created from planned expenses (with planned_expense_id) are NOT counted
+    # to avoid double-counting, as they're already represented by the planned expense
+    planned_expenses.sum(:amount) + expenses.where(planned_expense_id: nil).sum(:amount)
+  end
+
+  def total_spent
+    # Total of all expenses (both from planned and direct)
+    expenses.sum(:amount)
   end
 
   def remaining_budget
