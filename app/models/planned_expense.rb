@@ -2,6 +2,7 @@ class PlannedExpense < ApplicationRecord
   belongs_to :income_event
   belongs_to :category
   belongs_to :expense_template, optional: true
+  has_one :expense, dependent: :nullify
 
   validates :description, presence: true
   validates :amount, presence: true, numericality: { greater_than: 0 }
