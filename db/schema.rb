@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_28_213120) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_28_215332) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -63,9 +63,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_28_213120) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "income_event_id"
+    t.bigint "planned_expense_id"
     t.index ["budget_period_id"], name: "index_expenses_on_budget_period_id"
     t.index ["category_id"], name: "index_expenses_on_category_id"
     t.index ["income_event_id"], name: "index_expenses_on_income_event_id"
+    t.index ["planned_expense_id"], name: "index_expenses_on_planned_expense_id"
   end
 
   create_table "income_events", force: :cascade do |t|
@@ -103,6 +105,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_28_213120) do
   add_foreign_key "expenses", "budget_periods"
   add_foreign_key "expenses", "categories"
   add_foreign_key "expenses", "income_events"
+  add_foreign_key "expenses", "planned_expenses"
   add_foreign_key "income_events", "budget_periods"
   add_foreign_key "planned_expenses", "categories"
   add_foreign_key "planned_expenses", "expense_templates"
