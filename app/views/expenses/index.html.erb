@@ -29,6 +29,8 @@
       <th class="px-4 py-2 text-left">Fecha</th>
       <th class="px-4 py-2 text-left">Categoría</th>
       <th class="px-4 py-2 text-left">Descripción</th>
+      <th class="px-4 py-2 text-left">Periodo presupuestario</th>
+      <th class="px-4 py-2 text-left">Evento de ingreso</th>
       <th class="px-4 py-2 text-right">Monto</th>
       <th class="px-4 py-2 text-center">Acciones</th>
     </tr>
@@ -39,6 +41,20 @@
         <td class="px-4 py-2"><%= expense.date.strftime("%d %b %Y") %></td>
         <td class="px-4 py-2"><%= expense.category.name %></td>
         <td class="px-4 py-2"><%= expense.description %></td>
+        <td class="px-4 py-2">
+          <% if expense.budget_period %>
+            <%= link_to expense.budget_period.name, expense.budget_period, class: "text-blue-600 hover:underline" %>
+          <% else %>
+            <span class="text-gray-400">Sin asignar</span>
+          <% end %>
+        </td>
+        <td class="px-4 py-2">
+          <% if expense.income_event %>
+            <%= link_to expense.income_event.description, expense.income_event, class: "text-purple-600 hover:underline" %>
+          <% else %>
+            <span class="text-gray-400">Sin asignar</span>
+          <% end %>
+        </td>
         <td class="px-4 py-2 text-right"><%= number_to_currency(expense.amount) %></td>
         <td class="px-4 py-2 text-center space-x-2">
           <%= link_to "✏️", edit_expense_path(expense), class: "hover:text-blue-600" %>
@@ -51,7 +67,7 @@
   </tbody>
   <tfoot>
     <tr class="bg-gray-50 font-semibold">
-      <td colspan="3" class="px-4 py-2 text-right">Total:</td>
+      <td colspan="5" class="px-4 py-2 text-right">Total:</td>
       <td class="px-4 py-2 text-right">
         <%= number_to_currency(@expenses.sum(:amount)) %>
       </td>
