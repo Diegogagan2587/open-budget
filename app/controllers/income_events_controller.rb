@@ -12,6 +12,7 @@ class IncomeEventsController < ApplicationController
 
   def show
     @planned_expenses = @income_event.planned_expenses_ordered
+    @direct_expenses = @income_event.expenses.where(planned_expense_id: nil).order(date: :desc)
   end
 
   def new
