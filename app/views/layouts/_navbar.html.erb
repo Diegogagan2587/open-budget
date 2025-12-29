@@ -1,8 +1,15 @@
 <header class="bg-gray-100 p-4 mb-6">
-  <nav class="container mx-auto flex space-x-4">
-    <%= link_to "Dashboard", root_path, class: "font-semibold" %>
-    <%= link_to "Budgets", budget_periods_path %>
-    <%= link_to "Expenses", expenses_path %>
-    <%= link_to "Categories", categories_path %>
+  <nav class="container mx-auto flex justify-between items-center">
+    <div class="flex space-x-4">
+      <%= link_to "Dashboard", root_path, class: "font-semibold" %>
+      <%= link_to "Budgets", budget_periods_path %>
+      <%= link_to "Expenses", expenses_path %>
+      <%= link_to "Categories", categories_path %>
+    </div>
+    <% if authenticated? %>
+      <%= link_to session_path, data: { turbo_method: :delete }, class: "px-4 py-2 bg-gray-500 text-white text-sm rounded-lg hover:bg-gray-600 transition-colors" do %>
+        Log out
+      <% end %>
+    <% end %>
   </nav>
 </header>
