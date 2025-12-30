@@ -2,7 +2,7 @@ class ExpenseTemplatesController < ApplicationController
   before_action :set_expense_template, only: [ :show, :edit, :update, :destroy ]
 
   def index
-    @expense_templates = ExpenseTemplate.includes(:category).all
+    @expense_templates = ExpenseTemplate.for_account(Current.account).includes(:category).all
   end
 
   def show
@@ -14,7 +14,8 @@ class ExpenseTemplatesController < ApplicationController
   end
 
   def create
-    @expense_template = ExpenseTemplate.new(expense_template_params)
+    @expense_template = ExpenseTemplate.for_account(Current.account).new(expense_template_params)
+    @expense_template.account = Current.account
 
     respond_to do |format|
       if @expense_template.save
@@ -54,7 +55,7 @@ class ExpenseTemplatesController < ApplicationController
   private
 
   def set_expense_template
-    @expense_template = ExpenseTemplate.find(params[:id])
+    @expense_template = ExpenseTemplate.for_account(Current.account).find(params[:id])
   end
 
   def expense_template_params

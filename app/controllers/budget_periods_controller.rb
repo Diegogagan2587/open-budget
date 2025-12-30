@@ -2,7 +2,7 @@ class BudgetPeriodsController < ApplicationController
   before_action :set_budget_period, only: [ :show, :edit, :update, :destroy ]
 
   def index
-    @budget_periods = BudgetPeriod.order(start_date: :desc)
+    @budget_periods = BudgetPeriod.for_account(Current.account).order(start_date: :desc)
   end
 
   def show
@@ -15,7 +15,8 @@ class BudgetPeriodsController < ApplicationController
   end
 
   def create
-    @budget_period = BudgetPeriod.new(budget_period_params)
+    @budget_period = BudgetPeriod.for_account(Current.account).new(budget_period_params)
+    @budget_period.account = Current.account
 
     respond_to do |format|
       if @budget_period.save
@@ -55,7 +56,7 @@ class BudgetPeriodsController < ApplicationController
   private
 
   def set_budget_period
-    @budget_period = BudgetPeriod.find(params[:id])
+    @budget_period = BudgetPeriod.for_account(Current.account).find(params[:id])
   end
 
   def budget_period_params

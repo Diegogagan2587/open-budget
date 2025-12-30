@@ -5,11 +5,11 @@ class PlannedExpensesController < ApplicationController
   def index
     @planned_expenses = @income_event.planned_expenses_ordered
     @running_balance = @income_event.received_amount || @income_event.expected_amount
-    @income_events = IncomeEvent.all.order(:expected_date)
+    @income_events = IncomeEvent.for_account(Current.account).order(:expected_date)
   end
 
   def show
-    @income_events = IncomeEvent.all.order(:expected_date)
+    @income_events = IncomeEvent.for_account(Current.account).order(:expected_date)
     respond_to do |format|
       format.html
       format.json { render json: @planned_expense }
@@ -18,8 +18,8 @@ class PlannedExpensesController < ApplicationController
 
   def new
     @planned_expense = @income_event.planned_expenses.build
-    @expense_templates = ExpenseTemplate.includes(:category).all
-    @income_events = IncomeEvent.all.order(:expected_date)
+    @expense_templates = ExpenseTemplate.for_account(Current.account).includes(:category).all
+    @income_events = IncomeEvent.for_account(Current.account).order(:expected_date)
   end
 
   def create
@@ -40,8 +40,8 @@ class PlannedExpensesController < ApplicationController
   end
 
   def edit
-    @expense_templates = ExpenseTemplate.includes(:category).all
-    @income_events = IncomeEvent.all.order(:expected_date)
+    @expense_templates = ExpenseTemplate.for_account(Current.account).includes(:category).all
+    @income_events = IncomeEvent.for_account(Current.account).order(:expected_date)
   end
 
   def update
@@ -63,8 +63,8 @@ class PlannedExpensesController < ApplicationController
         end
         format.json { render :show, status: :ok, location: [ @income_event, @planned_expense ] }
       else
-        @expense_templates = ExpenseTemplate.includes(:category).all
-        @income_events = IncomeEvent.all.order(:expected_date)
+        @expense_templates = ExpenseTemplate.for_account(Current.account).includes(:category).all
+        @income_events = IncomeEvent.for_account(Current.account).order(:expected_date)
         format.html { render :edit, status: :unprocessable_entity }
         format.json { render json: @planned_expense.errors, status: :unprocessable_entity }
       end
@@ -93,7 +93,7 @@ class PlannedExpensesController < ApplicationController
       return
     end
 
-    target_income_event = IncomeEvent.find(target_income_event_id)
+    target_income_event = IncomeEvent.for_account(Current.account).find(target_income_event_id)
     
     if target_income_event.id == @income_event.id
       redirect_to income_event_planned_expenses_path(@income_event), alert: "The planned expense is already assigned to this income event."
@@ -114,7 +114,7 @@ class PlannedExpensesController < ApplicationController
   private
 
   def set_income_event
-    @income_event = IncomeEvent.find(params[:income_event_id])
+    @income_event = IncomeEvent.for_account(Current.account).find(params[:income_event_id])
   end
 
   def set_planned_expense
