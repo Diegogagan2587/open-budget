@@ -1,6 +1,11 @@
 class ExpenseTemplate < ApplicationRecord
+  belongs_to :account
   belongs_to :category
   has_many :planned_expenses, dependent: :nullify
+
+  before_validation :set_account, on: :create
+
+  scope :for_account, ->(account) { where(account: account) }
 
   validates :name, presence: true
   validates :total_amount, presence: true, numericality: { greater_than: 0 }
@@ -29,5 +34,11 @@ class ExpenseTemplate < ApplicationRecord
 
   def planned_expenses_by_status
     planned_expenses.group(:status).sum(:amount)
+  end
+
+  private
+
+  def set_account
+    self.account ||= Current.account if Current.account
   end
 end

@@ -1,6 +1,11 @@
 class IncomeEvent < ApplicationRecord
+  belongs_to :account
   belongs_to :budget_period, optional: true
   has_many :planned_expenses, dependent: :destroy
+
+  before_validation :set_account, on: :create
+
+  scope :for_account, ->(account) { where(account: account) }
 
   validates :expected_date, presence: true
   validates :expected_amount, presence: true, numericality: { greater_than: 0 }
@@ -93,5 +98,11 @@ class IncomeEvent < ApplicationRecord
     # If previous_balance is negative (deficit), it reduces available budget
     # If previous_balance is positive (surplus), it increases available budget
     remaining_budget + previous_balance
+  end
+
+  private
+
+  def set_account
+    self.account ||= Current.account if Current.account
   end
 end

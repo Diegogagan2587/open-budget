@@ -1,7 +1,12 @@
 class PlannedExpense < ApplicationRecord
+  belongs_to :account
   belongs_to :income_event
   belongs_to :category
   belongs_to :expense_template, optional: true
+
+  before_validation :set_account, on: :create
+
+  scope :for_account, ->(account) { where(account: account) }
 
   validates :description, presence: true
   validates :amount, presence: true, numericality: { greater_than: 0 }
@@ -23,7 +28,8 @@ class PlannedExpense < ApplicationRecord
       amount: amount,
       description: description,
       category_id: category_id,
-      budget_period_id: budget_period_id
+      budget_period_id: budget_period_id,
+      account_id: account_id
     )
     update!(status: "paid") unless status == "paid"
   end
@@ -42,5 +48,11 @@ class PlannedExpense < ApplicationRecord
       remaining: expense_template.remaining_amount,
       complete: expense_template.is_complete?
     }
+  end
+
+  private
+
+  def set_account
+    self.account ||= Current.account if Current.account
   end
 end
