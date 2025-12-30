@@ -10,7 +10,12 @@ class RegistrationsController < ApplicationController
     @user = User.new(user_params)
 
     if @user.save
+      # Create a default account for the new user
+      account = Account.create!(name: "#{@user.name}'s Account")
+      account.account_memberships.create!(user: @user, role: 'owner')
+      
       start_new_session_for @user
+      session[:current_account_id] = account.id
       flash[:notice] = "Account created successfully! Welcome!"
       redirect_to after_authentication_url
     else
