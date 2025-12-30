@@ -29,6 +29,12 @@ class ExpensesController < ApplicationController
   def create
     @expense = Expense.for_account(Current.account).new(expense_params)
     @expense.account = Current.account
+    
+    # Auto-suggest budget_period from income_event if income_event is set and budget_period is not
+    if @expense.income_event_id.present? && @expense.budget_period_id.blank?
+      income_event = IncomeEvent.find(@expense.income_event_id)
+      @expense.budget_period_id = income_event.budget_period_id if income_event.budget_period_id
+    end
 
     respond_to do |format|
       if @expense.save
@@ -44,8 +50,21 @@ class ExpensesController < ApplicationController
 
   # PATCH/PUT /expenses/1 or /expenses/1.json
   def update
+    old_income_event_id = @expense.income_event_id
+    new_income_event_id = expense_params[:income_event_id]
+    
     respond_to do |format|
       if @expense.update(expense_params)
+        # If income_event_id changed and expense has a planned_expense, sync it
+        if @expense.planned_expense.present?
+          old_id = old_income_event_id.to_i rescue 0
+          new_id = new_income_event_id.present? ? new_income_event_id.to_i : 0
+          
+          if new_id != old_id && new_income_event_id.present?
+            @expense.planned_expense.update(income_event_id: new_income_event_id)
+          end
+        end
+        
         format.html { redirect_to @expense, notice: "Expense was successfully updated." }
         format.json { render :show, status: :ok, location: @expense }
       else
@@ -73,7 +92,7 @@ class ExpensesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def expense_params
-      params.expect(expense: [ :date, :amount, :description, :category_id, :budget_period_id ])
+      params.expect(expense: [ :date, :amount, :description, :category_id, :budget_period_id, :income_event_id ])
     end
 
     def set_budget_period

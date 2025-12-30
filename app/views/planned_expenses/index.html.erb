@@ -145,7 +145,7 @@
             <button onclick="document.getElementById('move-modal-<%= planned_expense.id %>').classList.remove('hidden')" class="px-4 py-2 bg-purple-500 text-white text-sm rounded-lg hover:bg-purple-600 transition-colors">
               Move
             </button>
-            <% unless %w[paid transferred spent].include?(planned_expense.status) %>
+            <% if planned_expense.expense.nil? %>
               <%= link_to apply_income_event_planned_expense_path(@income_event, planned_expense), data: { turbo_method: :patch }, class: "px-4 py-2 bg-green-500 text-white text-sm rounded-lg hover:bg-green-600 transition-colors" do %>
                 Apply
               <% end %>

@@ -87,10 +87,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_29_183551) do
     t.bigint "budget_period_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "account_id", null: false
-    t.index ["account_id"], name: "index_expenses_on_account_id"
     t.index ["budget_period_id"], name: "index_expenses_on_budget_period_id"
     t.index ["category_id"], name: "index_expenses_on_category_id"
+    t.index ["income_event_id"], name: "index_expenses_on_income_event_id"
+    t.index ["planned_expense_id"], name: "index_expenses_on_planned_expense_id"
   end
 
   create_table "income_events", force: :cascade do |t|
@@ -156,7 +156,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_29_183551) do
   add_foreign_key "expenses", "accounts"
   add_foreign_key "expenses", "budget_periods"
   add_foreign_key "expenses", "categories"
-  add_foreign_key "income_events", "accounts"
   add_foreign_key "income_events", "budget_periods"
   add_foreign_key "planned_expenses", "accounts"
   add_foreign_key "planned_expenses", "categories"

@@ -1,0 +1,65 @@
+<p style="color: green"><%= notice %></p>
+
+<h1 class="text-2xl font-bold mb-4">Detalles del gasto</h1>
+
+<div class="bg-white border rounded-lg p-6 mb-4">
+  <div class="grid grid-cols-2 gap-4 mb-4">
+    <div>
+      <p class="text-sm text-gray-600">Fecha</p>
+      <p class="font-semibold"><%= @expense.date.strftime("%d %b %Y") %></p>
+    </div>
+    <div>
+      <p class="text-sm text-gray-600">Monto</p>
+      <p class="font-semibold text-lg"><%= number_to_currency(@expense.amount) %></p>
+    </div>
+    <div>
+      <p class="text-sm text-gray-600">Categoría</p>
+      <p class="font-semibold"><%= @expense.category.name %></p>
+    </div>
+    <div>
+      <p class="text-sm text-gray-600">Descripción</p>
+      <p class="font-semibold"><%= @expense.description %></p>
+    </div>
+  </div>
+
+  <div class="mt-4 pt-4 border-t">
+    <div class="mb-3">
+      <p class="text-sm text-gray-600 mb-1">Periodo presupuestario</p>
+      <% if @expense.budget_period %>
+        <%= link_to @expense.budget_period, class: "inline-flex items-center px-3 py-1 rounded-full bg-blue-100 text-blue-800 hover:bg-blue-200" do %>
+          <%= @expense.budget_period.name %>
+        <% end %>
+      <% else %>
+        <span class="inline-flex items-center px-3 py-1 rounded-full bg-gray-100 text-gray-800">Sin asignar</span>
+      <% end %>
+    </div>
+
+    <div class="mb-3">
+      <p class="text-sm text-gray-600 mb-1">Evento de ingreso</p>
+      <% if @expense.income_event %>
+        <%= link_to @expense.income_event, class: "inline-flex items-center px-3 py-1 rounded-full bg-purple-100 text-purple-800 hover:bg-purple-200" do %>
+          <%= @expense.income_event.description %> - <%= number_to_currency(@expense.income_event.expected_amount) %>
+        <% end %>
+      <% else %>
+        <span class="inline-flex items-center px-3 py-1 rounded-full bg-gray-100 text-gray-800">Sin asignar</span>
+      <% end %>
+    </div>
+
+    <% if @expense.planned_expense %>
+      <div>
+        <p class="text-sm text-gray-600 mb-1">Gasto planificado relacionado</p>
+        <%= link_to income_event_planned_expense_path(@expense.planned_expense.income_event, @expense.planned_expense), class: "inline-flex items-center px-3 py-1 rounded-full bg-green-100 text-green-800 hover:bg-green-200" do %>
+          <%= @expense.planned_expense.description %> - <%= number_to_currency(@expense.planned_expense.amount) %>
+        <% end %>
+        <p class="mt-1 text-xs text-gray-500">Este gasto fue creado desde un gasto planificado. Si cambias el evento de ingreso, el gasto planificado también se actualizará.</p>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<div class="flex gap-2">
+  <%= link_to "Editar", edit_expense_path(@expense), class: "px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600" %>
+  <%= link_to "Eliminar", @expense, method: :delete, data: { confirm: "¿Eliminar este gasto?" }, class: "px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600" %>
+  <%= link_to "Volver a gastos", expenses_path, class: "px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400" %>
+</div>
+
