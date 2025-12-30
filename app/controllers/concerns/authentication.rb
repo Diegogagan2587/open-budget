@@ -3,7 +3,9 @@ module Authentication
 
   included do
     before_action :require_authentication
+    before_action :set_current_account
     helper_method :authenticated?
+    helper_method :current_account
   end
 
   class_methods do
@@ -42,11 +44,32 @@ module Authentication
       user.sessions.create!(user_agent: request.user_agent, ip_address: request.remote_ip).tap do |session|
         Current.session = session
         cookies.signed.permanent[:session_id] = { value: session.id, httponly: true, same_site: :lax }
+        # Set default account to user's first account
+        set_current_account
       end
     end
 
     def terminate_session
       Current.session.destroy
+      Current.account = nil
       cookies.delete(:session_id)
+      session.delete(:current_account_id)
+    end
+
+    def set_current_account
+      return unless Current.user
+
+      account_id = session[:current_account_id]
+      if account_id
+        account = Current.user.accounts.find_by(id: account_id)
+        Current.account = account if account
+      end
+
+      # If no account is set, use the first account
+      Current.account ||= Current.user.accounts.first
+    end
+
+    def current_account
+      Current.account
     end
 end
