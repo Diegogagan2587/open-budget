@@ -1,9 +1,12 @@
 one:
   name: Groceries
+  account: one
 
 two:
   name: Rent
+  account: one
 
 three:
   name: Utilities
+  account: one
 
