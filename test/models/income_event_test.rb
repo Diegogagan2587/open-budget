@@ -2,11 +2,19 @@ require "test_helper"
 
 class IncomeEventTest < ActiveSupport::TestCase
   def setup
+    @account = Account.create!(name: "Test Account")
+    Current.account = @account
+
     @budget_period = BudgetPeriod.create!(
       name: "Test Period",
       start_date: Date.new(2025, 1, 1),
-      end_date: Date.new(2025, 12, 31)
+      end_date: Date.new(2025, 12, 31),
+      account: @account
     )
+  end
+
+  def teardown
+    Current.account = nil
   end
 
   test "previous_income_event returns nil for first event in budget period" do
@@ -15,7 +23,8 @@ class IncomeEventTest < ActiveSupport::TestCase
       description: "First Event",
       expected_date: Date.new(2025, 1, 15),
       expected_amount: 1000.00,
-      status: "pending"
+      status: "pending",
+      account: @account
     )
 
     assert_nil event.previous_income_event
@@ -28,7 +37,8 @@ class IncomeEventTest < ActiveSupport::TestCase
       description: "Event 1",
       expected_date: Date.new(2025, 1, 15),
       expected_amount: 1000.00,
-      status: "pending"
+      status: "pending",
+      account: @account
     )
 
     event2 = IncomeEvent.create!(
@@ -36,7 +46,8 @@ class IncomeEventTest < ActiveSupport::TestCase
       description: "Event 2",
       expected_date: Date.new(2025, 2, 15),
       expected_amount: 2000.00,
-      status: "pending"
+      status: "pending",
+      account: @account
     )
 
     assert_equal event1, event2.previous_income_event
@@ -52,7 +63,8 @@ class IncomeEventTest < ActiveSupport::TestCase
       expected_amount: 1000.00,
       received_date: Date.new(2025, 1, 12),
       received_amount: 1000.00,
-      status: "received"
+      status: "received",
+      account: @account
     )
 
     # Event 2: expected Jan 18, not received yet
@@ -61,7 +73,8 @@ class IncomeEventTest < ActiveSupport::TestCase
       description: "Event 2",
       expected_date: Date.new(2025, 1, 18),
       expected_amount: 1500.00,
-      status: "pending"
+      status: "pending",
+      account: @account
     )
 
     # Event 3: expected Jan 25, not received yet
@@ -70,7 +83,8 @@ class IncomeEventTest < ActiveSupport::TestCase
       description: "Event 3",
       expected_date: Date.new(2025, 1, 25),
       expected_amount: 2000.00,
-      status: "pending"
+      status: "pending",
+      account: @account
     )
 
     # Event 2 should have event1 as previous (received Jan 12 comes before expected Jan 18)
@@ -86,7 +100,8 @@ class IncomeEventTest < ActiveSupport::TestCase
       description: "Event 1",
       expected_date: Date.new(2025, 1, 15),
       expected_amount: 1000.00,
-      status: "pending"
+      status: "pending",
+      account: @account
     )
 
     event2 = IncomeEvent.create!(
@@ -94,7 +109,8 @@ class IncomeEventTest < ActiveSupport::TestCase
       description: "Event 2",
       expected_date: Date.new(2025, 1, 15),
       expected_amount: 2000.00,
-      status: "pending"
+      status: "pending",
+      account: @account
     )
 
     event3 = IncomeEvent.create!(
@@ -102,7 +118,8 @@ class IncomeEventTest < ActiveSupport::TestCase
       description: "Event 3",
       expected_date: Date.new(2025, 1, 15),
       expected_amount: 3000.00,
-      status: "pending"
+      status: "pending",
+      account: @account
     )
 
     # All events have same expected_date, so previous should be based on id
@@ -115,7 +132,8 @@ class IncomeEventTest < ActiveSupport::TestCase
     other_period = BudgetPeriod.create!(
       name: "Other Period",
       start_date: Date.new(2026, 1, 1),
-      end_date: Date.new(2026, 12, 31)
+      end_date: Date.new(2026, 12, 31),
+      account: @account
     )
 
     event1 = IncomeEvent.create!(
@@ -123,7 +141,8 @@ class IncomeEventTest < ActiveSupport::TestCase
       description: "Event 1",
       expected_date: Date.new(2025, 1, 15),
       expected_amount: 1000.00,
-      status: "pending"
+      status: "pending",
+      account: @account
     )
 
     event2 = IncomeEvent.create!(
@@ -131,7 +150,8 @@ class IncomeEventTest < ActiveSupport::TestCase
       description: "Event 2",
       expected_date: Date.new(2025, 1, 10), # Earlier date but different period
       expected_amount: 2000.00,
-      status: "pending"
+      status: "pending",
+      account: @account
     )
 
     event3 = IncomeEvent.create!(
@@ -139,7 +159,8 @@ class IncomeEventTest < ActiveSupport::TestCase
       description: "Event 3",
       expected_date: Date.new(2025, 2, 15),
       expected_amount: 3000.00,
-      status: "pending"
+      status: "pending",
+      account: @account
     )
 
     # Event 3 should have event1 as previous, not event2 (different period)
@@ -153,17 +174,19 @@ class IncomeEventTest < ActiveSupport::TestCase
       description: "Event 1",
       expected_date: Date.new(2025, 1, 15),
       expected_amount: 1000.00,
-      status: "pending"
+      status: "pending",
+      account: @account
     )
 
     # Create planned expense to create a negative balance
-    category = Category.create!(name: "Test Category")
+    category = Category.create!(name: "Test Category", account: @account)
     PlannedExpense.create!(
       income_event: event1,
       category: category,
       description: "Expense",
       amount: 1500.00,
-      status: "pending_to_pay"
+      status: "pending_to_pay",
+      account: @account
     )
 
     event2 = IncomeEvent.create!(
@@ -171,7 +194,8 @@ class IncomeEventTest < ActiveSupport::TestCase
       description: "Event 2",
       expected_date: Date.new(2025, 2, 15),
       expected_amount: 2000.00,
-      status: "pending"
+      status: "pending",
+      account: @account
     )
 
     # Event1 has remaining_budget of 1000 - 1500 = -500
@@ -186,16 +210,18 @@ class IncomeEventTest < ActiveSupport::TestCase
       description: "Event 1",
       expected_date: Date.new(2025, 1, 15),
       expected_amount: 1000.00,
-      status: "pending"
+      status: "pending",
+      account: @account
     )
 
-    category = Category.create!(name: "Test Category")
+    category = Category.create!(name: "Test Category", account: @account)
     PlannedExpense.create!(
       income_event: event1,
       category: category,
       description: "Expense",
       amount: 1500.00,
-      status: "pending_to_pay"
+      status: "pending_to_pay",
+      account: @account
     )
 
     # Event1: remaining_budget = -500, effective_remaining_budget = -500 (no previous)
@@ -207,7 +233,8 @@ class IncomeEventTest < ActiveSupport::TestCase
       description: "Event 2",
       expected_date: Date.new(2025, 2, 15),
       expected_amount: 2000.00,
-      status: "pending"
+      status: "pending",
+      account: @account
     )
 
     PlannedExpense.create!(
@@ -215,7 +242,8 @@ class IncomeEventTest < ActiveSupport::TestCase
       category: category,
       description: "Expense 2",
       amount: 500.00,
-      status: "pending_to_pay"
+      status: "pending_to_pay",
+      account: @account
     )
 
     # Event2: remaining_budget = 2000 - 500 = 1500
@@ -230,7 +258,8 @@ class IncomeEventTest < ActiveSupport::TestCase
       description: "Event 3",
       expected_date: Date.new(2025, 3, 15),
       expected_amount: 3000.00,
-      status: "pending"
+      status: "pending",
+      account: @account
     )
 
     # Event3: remaining_budget = 3000 (no expenses)
@@ -249,7 +278,8 @@ class IncomeEventTest < ActiveSupport::TestCase
       expected_amount: 1000.00,
       received_date: Date.new(2025, 12, 30),
       received_amount: 1000.00,
-      status: "received"
+      status: "received",
+      account: @account
     )
 
     event2 = IncomeEvent.create!(
@@ -257,7 +287,8 @@ class IncomeEventTest < ActiveSupport::TestCase
       description: "Event 2026",
       expected_date: Date.new(2026, 1, 15),
       expected_amount: 2000.00,
-      status: "pending"
+      status: "pending",
+      account: @account
     )
 
     # Event2 should find event1 as previous even though it's from previous year
@@ -274,7 +305,8 @@ class IncomeEventTest < ActiveSupport::TestCase
       expected_amount: 1000.00,
       received_date: Date.new(2025, 1, 12),
       received_amount: 1000.00,
-      status: "received"
+      status: "received",
+      account: @account
     )
 
     event2 = IncomeEvent.create!(
@@ -282,7 +314,8 @@ class IncomeEventTest < ActiveSupport::TestCase
       description: "Pending Event",
       expected_date: Date.new(2025, 1, 15),
       expected_amount: 2000.00,
-      status: "pending"
+      status: "pending",
+      account: @account
     )
 
     event3 = IncomeEvent.create!(
@@ -292,7 +325,8 @@ class IncomeEventTest < ActiveSupport::TestCase
       expected_amount: 3000.00,
       received_date: Date.new(2025, 1, 18), # Received before expected
       received_amount: 3000.00,
-      status: "received"
+      status: "received",
+      account: @account
     )
 
     # Event2 should have event1 as previous (received Jan 12 < expected Jan 15)
@@ -308,16 +342,18 @@ class IncomeEventTest < ActiveSupport::TestCase
       description: "Event with Deficit",
       expected_date: Date.new(2025, 1, 15),
       expected_amount: 1000.00,
-      status: "pending"
+      status: "pending",
+      account: @account
     )
 
-    category = Category.create!(name: "Test Category")
+    category = Category.create!(name: "Test Category", account: @account)
     PlannedExpense.create!(
       income_event: event1,
       category: category,
       description: "Large Expense",
       amount: 2000.00,
-      status: "pending_to_pay"
+      status: "pending_to_pay",
+      account: @account
     )
 
     # Event1 has -1000 remaining
@@ -329,7 +365,8 @@ class IncomeEventTest < ActiveSupport::TestCase
       description: "Event After Deficit",
       expected_date: Date.new(2025, 2, 15),
       expected_amount: 2000.00,
-      status: "pending"
+      status: "pending",
+      account: @account
     )
 
     # Event2: remaining_budget = 2000, previous_balance = -1000
@@ -345,7 +382,8 @@ class IncomeEventTest < ActiveSupport::TestCase
       expected_date: Date.new(2025, 1, 15),
       expected_amount: 1000.00,
       status: "pending",
-      budget_period: nil
+      budget_period: nil,
+      account: @account
     )
 
     assert_nil event.previous_income_event
