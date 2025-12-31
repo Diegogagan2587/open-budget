@@ -2,7 +2,7 @@ class CategoriesController < ApplicationController
   before_action :set_category, only: [ :show, :edit, :update, :destroy ]
 
   def index
-    @categories = Category.order(:name)
+    @categories = Category.for_account(Current.account).order(:name)
   end
 
   def show
@@ -13,7 +13,8 @@ class CategoriesController < ApplicationController
   end
 
   def create
-    @category = Category.new(category_params)
+    @category = Category.for_account(Current.account).new(category_params)
+    @category.account = Current.account
 
     respond_to do |format|
       if @category.save
@@ -53,7 +54,7 @@ class CategoriesController < ApplicationController
   private
 
   def set_category
-    @category = Category.find(params[:id])
+    @category = Category.for_account(Current.account).find(params[:id])
   end
 
   def category_params

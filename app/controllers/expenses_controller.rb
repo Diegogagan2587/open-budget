@@ -4,7 +4,7 @@ class ExpensesController < ApplicationController
 
 
   def index
-    @expenses = Expense.all
+    @expenses = Expense.for_account(Current.account).all
     @expenses = @expenses.where("date >= ?", params[:date_from]) if params[:date_from].present?
     @expenses = @expenses.where("date <= ?", params[:date_to])   if params[:date_to].present?
     @expenses = @expenses.where(category_id: params[:category_id]) if params[:category_id].present?
@@ -13,7 +13,8 @@ class ExpensesController < ApplicationController
 
   # GET /expenses or /expenses.json
   def new
-    @expense = @budget_period ? @budget_period.expenses.build : Expense.new
+    @expense = @budget_period ? @budget_period.expenses.build : Expense.for_account(Current.account).new
+    @expense.account = Current.account unless @expense.account
   end
 
   # GET /expenses/1 or /expenses/1.json
@@ -26,8 +27,9 @@ class ExpensesController < ApplicationController
 
   # POST /expenses or /expenses.json
   def create
-    @expense = Expense.new(expense_params)
-    
+    @expense = Expense.for_account(Current.account).new(expense_params)
+    @expense.account = Current.account
+
     # Auto-suggest budget_period from income_event if income_event is set and budget_period is not
     if @expense.income_event_id.present? && @expense.budget_period_id.blank?
       income_event = IncomeEvent.find(@expense.income_event_id)
@@ -50,19 +52,19 @@ class ExpensesController < ApplicationController
   def update
     old_income_event_id = @expense.income_event_id
     new_income_event_id = expense_params[:income_event_id]
-    
+
     respond_to do |format|
       if @expense.update(expense_params)
         # If income_event_id changed and expense has a planned_expense, sync it
         if @expense.planned_expense.present?
           old_id = old_income_event_id.to_i rescue 0
           new_id = new_income_event_id.present? ? new_income_event_id.to_i : 0
-          
+
           if new_id != old_id && new_income_event_id.present?
             @expense.planned_expense.update(income_event_id: new_income_event_id)
           end
         end
-        
+
         format.html { redirect_to @expense, notice: "Expense was successfully updated." }
         format.json { render :show, status: :ok, location: @expense }
       else
@@ -85,7 +87,7 @@ class ExpensesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_expense
-      @expense = Expense.find(params.expect(:id))
+      @expense = Expense.for_account(Current.account).find(params.expect(:id))
     end
 
     # Only allow a list of trusted parameters through.
@@ -95,7 +97,7 @@ class ExpensesController < ApplicationController
 
     def set_budget_period
       if params[:budget_period_id]
-        @budget_period = BudgetPeriod.find(params[:budget_period_id])
+        @budget_period = BudgetPeriod.for_account(Current.account).find(params[:budget_period_id])
       end
     end
 end

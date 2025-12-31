@@ -10,9 +10,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_28_215332) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_29_183551) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "account_memberships", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "account_id", null: false
+    t.string "role", default: "member", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_account_memberships_on_account_id"
+    t.index ["user_id", "account_id"], name: "index_account_memberships_on_user_id_and_account_id", unique: true
+    t.index ["user_id"], name: "index_account_memberships_on_user_id"
+  end
+
+  create_table "accounts", force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "budget_line_items", force: :cascade do |t|
     t.bigint "budget_period_id", null: false
@@ -22,6 +39,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_28_215332) do
     t.float "percentage_of_total"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "account_id", null: false
+    t.index ["account_id"], name: "index_budget_line_items_on_account_id"
     t.index ["budget_period_id"], name: "index_budget_line_items_on_budget_period_id"
     t.index ["category_id"], name: "index_budget_line_items_on_category_id"
   end
@@ -34,12 +53,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_28_215332) do
     t.decimal "total_amount", precision: 10, scale: 2
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "account_id", null: false
+    t.index ["account_id"], name: "index_budget_periods_on_account_id"
   end
 
   create_table "categories", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "account_id", null: false
+    t.index ["account_id"], name: "index_categories_on_account_id"
   end
 
   create_table "expense_templates", force: :cascade do |t|
@@ -51,6 +74,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_28_215332) do
     t.text "notes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "account_id", null: false
+    t.index ["account_id"], name: "index_expense_templates_on_account_id"
     t.index ["category_id"], name: "index_expense_templates_on_category_id"
   end
 
@@ -62,8 +87,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_28_215332) do
     t.bigint "budget_period_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "account_id", null: false
     t.bigint "income_event_id"
     t.bigint "planned_expense_id"
+    t.index ["account_id"], name: "index_expenses_on_account_id"
     t.index ["budget_period_id"], name: "index_expenses_on_budget_period_id"
     t.index ["category_id"], name: "index_expenses_on_category_id"
     t.index ["income_event_id"], name: "index_expenses_on_income_event_id"
@@ -80,6 +107,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_28_215332) do
     t.string "status", default: "pending", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "account_id", null: false
+    t.index ["account_id"], name: "index_income_events_on_account_id"
     t.index ["budget_period_id"], name: "index_income_events_on_budget_period_id"
   end
 
@@ -94,20 +123,50 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_28_215332) do
     t.integer "position"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "account_id", null: false
+    t.index ["account_id"], name: "index_planned_expenses_on_account_id"
     t.index ["category_id"], name: "index_planned_expenses_on_category_id"
     t.index ["expense_template_id"], name: "index_planned_expenses_on_expense_template_id"
     t.index ["income_event_id"], name: "index_planned_expenses_on_income_event_id"
   end
 
+  create_table "sessions", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "ip_address"
+    t.string "user_agent"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_sessions_on_user_id"
+  end
+
+  create_table "users", force: :cascade do |t|
+    t.string "email_address", null: false
+    t.string "password_digest", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "name", null: false
+    t.index ["email_address"], name: "index_users_on_email_address", unique: true
+  end
+
+  add_foreign_key "account_memberships", "accounts"
+  add_foreign_key "account_memberships", "users"
+  add_foreign_key "budget_line_items", "accounts"
   add_foreign_key "budget_line_items", "budget_periods"
   add_foreign_key "budget_line_items", "categories"
+  add_foreign_key "budget_periods", "accounts"
+  add_foreign_key "categories", "accounts"
+  add_foreign_key "expense_templates", "accounts"
   add_foreign_key "expense_templates", "categories"
+  add_foreign_key "expenses", "accounts"
   add_foreign_key "expenses", "budget_periods"
   add_foreign_key "expenses", "categories"
   add_foreign_key "expenses", "income_events"
   add_foreign_key "expenses", "planned_expenses"
+  add_foreign_key "income_events", "accounts"
   add_foreign_key "income_events", "budget_periods"
+  add_foreign_key "planned_expenses", "accounts"
   add_foreign_key "planned_expenses", "categories"
   add_foreign_key "planned_expenses", "expense_templates"
   add_foreign_key "planned_expenses", "income_events"
+  add_foreign_key "sessions", "users"
 end

@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  resource :session
+  resource :registration, only: [ :new, :create ]
+  resources :passwords, param: :token
   get "dashboard/index"
   # resources :budget_line_items
   # resources :expenses
@@ -42,5 +45,11 @@ Rails.application.routes.draw do
 
   resources :categories
   resources :expenses
+
+  resources :accounts do
+    resources :account_memberships, except: [ :show ]
+  end
+  post "account_switches", to: "account_switches#create", as: :account_switch
+
   root "dashboard#index"
 end

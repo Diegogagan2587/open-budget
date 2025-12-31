@@ -1,12 +1,39 @@
 require "test_helper"
 
 class PlannedExpensesControllerTest < ActionDispatch::IntegrationTest
-  setup do
+  def setup
+    @user = users(:one)
+    @account = accounts(:one)
     @income_event = income_events(:one)
     @category = categories(:one)
+
+    # Create session for authentication
+    @session = @user.sessions.create!(
+      user_agent: "Test Agent",
+      ip_address: "127.0.0.1"
+    )
+  end
+
+  # Helper to sign in by making a request to the sessions controller
+  # This properly sets up the session cookie
+  def sign_in
+    # First, ensure the user has a password set in fixtures
+    # Then sign in through the sessions controller
+    post session_path, params: {
+      email_address: @user.email_address,
+      password: "password"  # From fixtures
+    }
+    # After signing in, set Current.account
+    Current.account = @account
+  end
+
+  def teardown
+    Current.account = nil
+    Current.session = nil
   end
 
   test "should get new" do
+    sign_in
     get new_income_event_planned_expense_path(@income_event)
     assert_response :success
     assert_select "h1", "New Planned Expense"
@@ -14,28 +41,31 @@ class PlannedExpensesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "new action should load income events for assignment" do
+    sign_in
     get new_income_event_planned_expense_path(@income_event)
     assert_response :success
-    
+
     # Verify the form includes income event assignment section
     assert_select "h3", text: /Income Event Assignment/
-    
+
     # Verify income events dropdown is present
     assert_select "select[name='planned_expense[income_event_id]']"
-    
+
     # Verify at least the current income event is in the options
     assert_select "select[name='planned_expense[income_event_id]'] option[value='#{@income_event.id}']"
   end
 
   test "new action should load expense templates" do
+    sign_in
     get new_income_event_planned_expense_path(@income_event)
     assert_response :success
-    
+
     # Verify template selection section is present
     assert_select "h3", text: /Template Selection/
   end
 
   test "should create planned expense" do
+    sign_in
     assert_difference("PlannedExpense.count") do
       post income_event_planned_expenses_path(@income_event), params: {
         planned_expense: {
@@ -51,6 +81,7 @@ class PlannedExpensesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should not create planned expense with invalid data" do
+    sign_in
     assert_no_difference("PlannedExpense.count") do
       post income_event_planned_expenses_path(@income_event), params: {
         planned_expense: {
@@ -67,4 +98,3 @@ class PlannedExpensesControllerTest < ActionDispatch::IntegrationTest
     assert_select "select[name='planned_expense[income_event_id]']"
   end
 end
-

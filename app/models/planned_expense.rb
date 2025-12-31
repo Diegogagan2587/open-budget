@@ -1,8 +1,13 @@
 class PlannedExpense < ApplicationRecord
+  belongs_to :account
   belongs_to :income_event
   belongs_to :category
   belongs_to :expense_template, optional: true
   has_one :expense, dependent: :nullify
+
+  before_validation :set_account, on: :create
+
+  scope :for_account, ->(account) { where(account: account) }
 
   validates :description, presence: true
   validates :amount, presence: true, numericality: { greater_than: 0 }
@@ -30,7 +35,8 @@ class PlannedExpense < ApplicationRecord
       category_id: category_id,
       budget_period_id: budget_period_id,
       income_event_id: income_event.id,
-      planned_expense_id: id
+      planned_expense_id: id,
+      account_id: account_id
     )
     update!(status: "paid") unless status == "paid"
   end
@@ -52,6 +58,10 @@ class PlannedExpense < ApplicationRecord
   end
 
   private
+
+  def set_account
+    self.account ||= Current.account if Current.account
+  end
 
   def create_expense_if_spent_on_create
     # Create expense if status is spent/paid/transferred on creation

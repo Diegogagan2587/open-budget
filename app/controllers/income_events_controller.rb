@@ -6,7 +6,7 @@ class IncomeEventsController < ApplicationController
     @income_events = if @budget_period
       @budget_period.income_events.by_date
     else
-      IncomeEvent.by_date
+      IncomeEvent.for_account(Current.account).by_date
     end
   end
 
@@ -20,7 +20,8 @@ class IncomeEventsController < ApplicationController
   end
 
   def create
-    @income_event = IncomeEvent.new(income_event_params)
+    @income_event = IncomeEvent.for_account(Current.account).new(income_event_params)
+    @income_event.account = Current.account
     @income_event.budget_period = @budget_period if @budget_period
 
     respond_to do |format|
@@ -76,11 +77,11 @@ class IncomeEventsController < ApplicationController
   private
 
   def set_income_event
-    @income_event = IncomeEvent.find(params[:id])
+    @income_event = IncomeEvent.for_account(Current.account).find(params[:id])
   end
 
   def set_budget_period
-    @budget_period = BudgetPeriod.find(params[:budget_period_id]) if params[:budget_period_id]
+    @budget_period = BudgetPeriod.for_account(Current.account).find(params[:budget_period_id]) if params[:budget_period_id]
   end
 
   def income_event_params
