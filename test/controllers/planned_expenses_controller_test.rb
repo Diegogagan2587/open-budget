@@ -6,7 +6,7 @@ class PlannedExpensesControllerTest < ActionDispatch::IntegrationTest
     @account = accounts(:one)
     @income_event = income_events(:one)
     @category = categories(:one)
-    
+
     # Create session for authentication
     @session = @user.sessions.create!(
       user_agent: "Test Agent",
