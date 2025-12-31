@@ -47,7 +47,7 @@ class PlannedExpensesController < ApplicationController
   def update
     old_income_event = @income_event
     new_income_event_id = planned_expense_params[:income_event_id]
-    
+
     respond_to do |format|
       if @planned_expense.update(planned_expense_params)
         # If income_event_id changed, redirect to the new income event
@@ -87,14 +87,14 @@ class PlannedExpensesController < ApplicationController
 
   def move
     target_income_event_id = params[:target_income_event_id]
-    
+
     unless target_income_event_id.present?
       redirect_to income_event_planned_expenses_path(@income_event), alert: "Please select a target income event."
       return
     end
 
     target_income_event = IncomeEvent.for_account(Current.account).find(target_income_event_id)
-    
+
     if target_income_event.id == @income_event.id
       redirect_to income_event_planned_expenses_path(@income_event), alert: "The planned expense is already assigned to this income event."
       return
@@ -102,7 +102,7 @@ class PlannedExpensesController < ApplicationController
 
     old_income_event = @income_event
     @planned_expense.update(income_event_id: target_income_event.id)
-    
+
     # Update position if needed
     if @planned_expense.position.nil?
       @planned_expense.update(position: (target_income_event.planned_expenses.maximum(:position) || 0) + 1)

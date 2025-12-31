@@ -75,23 +75,23 @@ class IncomeEvent < ApplicationRecord
     # Effective date = received_date if present, otherwise expected_date
     # Load all events and calculate in Ruby for clarity and correctness
     candidates = budget_period.income_events.where.not(id: current_id).to_a
-    
+
     # Calculate effective date for current event
     current_effective_date = current_date
-    
+
     # Find all events that come before current (by effective date)
     previous_events = candidates.select do |event|
       event_effective_date = event.received_date || event.expected_date
-      event_effective_date < current_effective_date || 
+      event_effective_date < current_effective_date ||
         (event_effective_date == current_effective_date && event.id < current_id)
     end
-    
+
     return nil if previous_events.empty?
-    
+
     # Return the one with the highest effective date (most recent before current)
     previous_events.max_by do |event|
       event_effective_date = event.received_date || event.expected_date
-      [event_effective_date, event.id]
+      [ event_effective_date, event.id ]
     end
   end
 

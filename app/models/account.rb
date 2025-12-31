@@ -16,4 +16,3 @@ class Account < ApplicationRecord
     account_memberships.owners.first&.user
   end
 end
-

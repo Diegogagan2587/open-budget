@@ -12,8 +12,8 @@ class RegistrationsController < ApplicationController
     if @user.save
       # Create a default account for the new user
       account = Account.create!(name: "#{@user.name}'s Account")
-      account.account_memberships.create!(user: @user, role: 'owner')
-      
+      account.account_memberships.create!(user: @user, role: "owner")
+
       start_new_session_for @user
       session[:current_account_id] = account.id
       flash[:notice] = "Account created successfully! Welcome!"
@@ -29,4 +29,3 @@ class RegistrationsController < ApplicationController
       params.require(:user).permit(:name, :email_address, :password, :password_confirmation)
     end
 end
-

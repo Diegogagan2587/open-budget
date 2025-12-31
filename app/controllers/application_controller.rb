@@ -10,4 +10,3 @@ class ApplicationController < ActionController::Base
     Current.account
   end
 end
-

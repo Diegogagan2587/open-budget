@@ -352,4 +352,3 @@ class IncomeEventTest < ActiveSupport::TestCase
     assert_equal 0.0, event.previous_balance
   end
 end
-

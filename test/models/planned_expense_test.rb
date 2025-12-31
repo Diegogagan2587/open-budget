@@ -7,7 +7,7 @@ class PlannedExpenseTest < ActiveSupport::TestCase
       start_date: Date.new(2025, 1, 1),
       end_date: Date.new(2025, 12, 31)
     )
-    
+
     @income_event = IncomeEvent.create!(
       budget_period: @budget_period,
       description: "Test Income Event",
@@ -15,7 +15,7 @@ class PlannedExpenseTest < ActiveSupport::TestCase
       expected_amount: 1000.00,
       status: "pending"
     )
-    
+
     @category = Category.create!(name: "Test Category")
   end
 
@@ -34,7 +34,7 @@ class PlannedExpenseTest < ActiveSupport::TestCase
     # Should have created an expense
     assert planned_expense.expense.present?, "Expense should be created automatically"
     assert_equal 1, Expense.count, "Should have exactly one expense"
-    
+
     expense = planned_expense.expense
     assert_equal planned_expense.amount, expense.amount
     assert_equal planned_expense.description, expense.description
@@ -145,4 +145,3 @@ class PlannedExpenseTest < ActiveSupport::TestCase
     assert_equal 1, Expense.count
   end
 end
-

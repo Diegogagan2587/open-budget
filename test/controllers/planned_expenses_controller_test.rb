@@ -16,13 +16,13 @@ class PlannedExpensesControllerTest < ActionDispatch::IntegrationTest
   test "new action should load income events for assignment" do
     get new_income_event_planned_expense_path(@income_event)
     assert_response :success
-    
+
     # Verify the form includes income event assignment section
     assert_select "h3", text: /Income Event Assignment/
-    
+
     # Verify income events dropdown is present
     assert_select "select[name='planned_expense[income_event_id]']"
-    
+
     # Verify at least the current income event is in the options
     assert_select "select[name='planned_expense[income_event_id]'] option[value='#{@income_event.id}']"
   end
@@ -30,7 +30,7 @@ class PlannedExpensesControllerTest < ActionDispatch::IntegrationTest
   test "new action should load expense templates" do
     get new_income_event_planned_expense_path(@income_event)
     assert_response :success
-    
+
     # Verify template selection section is present
     assert_select "h3", text: /Template Selection/
   end
@@ -67,4 +67,3 @@ class PlannedExpensesControllerTest < ActionDispatch::IntegrationTest
     assert_select "select[name='planned_expense[income_event_id]']"
   end
 end
-

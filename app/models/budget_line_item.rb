@@ -13,4 +13,3 @@ class BudgetLineItem < ApplicationRecord
     self.account ||= Current.account if Current.account
   end
 end
-

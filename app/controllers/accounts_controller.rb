@@ -1,8 +1,8 @@
 class AccountsController < ApplicationController
-  skip_account_scoping only: [:index, :new, :create]
-  before_action :set_account, only: [:show, :edit, :update, :destroy]
-  before_action :ensure_account_access, only: [:show, :edit, :update, :destroy]
-  before_action :ensure_owner, only: [:edit, :update, :destroy]
+  skip_account_scoping only: [ :index, :new, :create ]
+  before_action :set_account, only: [ :show, :edit, :update, :destroy ]
+  before_action :ensure_account_access, only: [ :show, :edit, :update, :destroy ]
+  before_action :ensure_owner, only: [ :edit, :update, :destroy ]
 
   def index
     @accounts = Current.user.accounts
@@ -22,7 +22,7 @@ class AccountsController < ApplicationController
     respond_to do |format|
       if @account.save
         # Create membership for current user as owner
-        @account.account_memberships.create!(user: Current.user, role: 'owner')
+        @account.account_memberships.create!(user: Current.user, role: "owner")
         format.html { redirect_to @account, notice: "Account was successfully created." }
         format.json { render :show, status: :created, location: @account }
       else
@@ -75,7 +75,6 @@ class AccountsController < ApplicationController
   end
 
   def account_params
-    params.expect(account: [:name])
+    params.expect(account: [ :name ])
   end
 end
-

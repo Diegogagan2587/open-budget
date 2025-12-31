@@ -1,7 +1,7 @@
 class AccountMembershipsController < ApplicationController
   before_action :set_account
   before_action :ensure_owner
-  before_action :set_membership, only: [:update, :destroy]
+  before_action :set_membership, only: [ :update, :destroy ]
 
   def index
     @memberships = @account.account_memberships.includes(:user)
@@ -21,7 +21,7 @@ class AccountMembershipsController < ApplicationController
       return
     end
 
-    @membership = @account.account_memberships.build(user: user, role: params[:role] || 'member')
+    @membership = @account.account_memberships.build(user: user, role: params[:role] || "member")
 
     respond_to do |format|
       if @membership.save
@@ -81,7 +81,6 @@ class AccountMembershipsController < ApplicationController
   end
 
   def membership_params
-    params.expect(account_membership: [:role])
+    params.expect(account_membership: [ :role ])
   end
 end
-

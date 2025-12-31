@@ -11,6 +11,6 @@ class User < ApplicationRecord
   validates :password, length: { minimum: 8 }, if: -> { new_record? || !password.nil? }
 
   def owned_accounts
-    accounts.joins(:account_memberships).where(account_memberships: { role: 'owner' })
+    accounts.joins(:account_memberships).where(account_memberships: { role: "owner" })
   end
 end

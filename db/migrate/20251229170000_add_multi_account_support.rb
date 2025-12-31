@@ -47,7 +47,7 @@ class AddMultiAccountSupport < ActiveRecord::Migration[8.0]
       t.timestamps
     end
 
-    add_index :account_memberships, [:user_id, :account_id], unique: true
+    add_index :account_memberships, [ :user_id, :account_id ], unique: true
 
     # Add account_id columns (nullable initially for data migration)
     add_reference :budget_periods, :account, null: true, foreign_key: true
@@ -91,18 +91,18 @@ class AddMultiAccountSupport < ActiveRecord::Migration[8.0]
   def migrate_existing_data_to_first_account
     # Find the first user (by created_at)
     first_user = User.order(:created_at).first
-    
+
     # If no users exist, create a default admin user
     if first_user.nil?
       # Check if there are any records that need an account
-      has_records = BudgetPeriod.exists? || 
-                    Category.exists? || 
-                    Expense.exists? || 
-                    ExpenseTemplate.exists? || 
-                    IncomeEvent.exists? || 
-                    PlannedExpense.exists? || 
+      has_records = BudgetPeriod.exists? ||
+                    Category.exists? ||
+                    Expense.exists? ||
+                    ExpenseTemplate.exists? ||
+                    IncomeEvent.exists? ||
+                    PlannedExpense.exists? ||
                     BudgetLineItem.exists?
-      
+
       if has_records
         # Create default admin user with temporary password
         # Handle name field - it might not exist yet at this point in migration
@@ -110,12 +110,12 @@ class AddMultiAccountSupport < ActiveRecord::Migration[8.0]
           email_address: "admin@example.com",
           password_digest: BCrypt::Password.create("changeme123")  # Simple password that meets 8 char minimum
         }
-        
+
         # Add name if the column exists
         if User.column_names.include?('name')
           user_attrs[:name] = "Admin User"
         end
-        
+
         first_user = User.create!(user_attrs)
       else
         # No users and no records, nothing to migrate
@@ -144,4 +144,3 @@ class AddMultiAccountSupport < ActiveRecord::Migration[8.0]
     BudgetLineItem.where(account_id: nil).update_all(account_id: account.id)
   end
 end
-
