@@ -3,10 +3,12 @@ one:
   expected_date: <%= 1.month.from_now.to_date %>
   expected_amount: 5000.00
   status: pending
+  account: one
 
 two:
   description: "Test Income Event 2"
   expected_date: <%= 2.months.from_now.to_date %>
   expected_amount: 3000.00
   status: pending
+  account: one
 
