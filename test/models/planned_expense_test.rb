@@ -2,10 +2,14 @@ require "test_helper"
 
 class PlannedExpenseTest < ActiveSupport::TestCase
   def setup
+    @account = Account.create!(name: "Test Account")
+    Current.account = @account
+
     @budget_period = BudgetPeriod.create!(
       name: "Test Period",
       start_date: Date.new(2025, 1, 1),
-      end_date: Date.new(2025, 12, 31)
+      end_date: Date.new(2025, 12, 31),
+      account: @account
     )
 
     @income_event = IncomeEvent.create!(
@@ -13,10 +17,15 @@ class PlannedExpenseTest < ActiveSupport::TestCase
       description: "Test Income Event",
       expected_date: Date.new(2025, 1, 15),
       expected_amount: 1000.00,
-      status: "pending"
+      status: "pending",
+      account: @account
     )
 
-    @category = Category.create!(name: "Test Category")
+    @category = Category.create!(name: "Test Category", account: @account)
+  end
+
+  def teardown
+    Current.account = nil
   end
 
   test "creating planned expense with spent status automatically creates expense" do
