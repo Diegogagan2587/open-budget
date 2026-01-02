@@ -150,9 +150,10 @@
                 Apply
               <% end %>
             <% end %>
-            <%= link_to [@income_event, planned_expense], data: { turbo_method: :delete, turbo_confirm: "Are you sure?" }, class: "px-4 py-2 bg-red-500 text-white text-sm rounded-lg hover:bg-red-600 transition-colors" do %>
-              Delete
-            <% end %>
+            <%= render DeleteButtonComponent.new(
+              path: [@income_event, planned_expense],
+              size: :small
+            ) %>
           </div>
           
           <!-- Move Modal for this expense -->
