@@ -1,6 +1,6 @@
 # Open Budget - Personal Budget Management App
 
-A comprehensive Ruby on Rails application to manage budgets, income events, and expenses with PostgreSQL as the database. It allows you to create budget periods (monthly, quarterly, custom), plan expenses for each income payment, track expenses by category, and view dynamic pace calculations to monitor spending.
+A comprehensive Ruby on Rails application to manage budgets, income events, expenses, shopping lists, and home inventory with PostgreSQL as the database. It allows you to create budget periods (monthly, quarterly, custom), plan expenses for each income payment, track expenses by category, manage shopping lists with budget integration, track household inventory, and view dynamic pace calculations to monitor spending.
 
 ## Features
 
@@ -66,6 +66,30 @@ The Previous Balance feature provides visibility into how financial deficits car
 
 **Example**: If your January 15th income had a -$500 deficit and your February 1st income is $2000, the effective remaining budget after planning expenses will be reduced by $500, giving you a true picture of available funds.
 
+### Shopping List & Inventory Management
+- **Shopping List**: Track items you need to buy with optional links to planned expenses and categories.
+  - Quick add items (name required only, all other fields optional)
+  - Mark items as purchased
+  - Support for one-time and recurring purchases
+  - Filter by status (pending/purchased)
+  - Convert shopping items to planned expenses or actual expenses
+  - Link shopping items to existing planned expenses
+  - Estimated amounts help plan your budget before spending
+- **Home Inventory**: Track household items with stock level awareness.
+  - Track stock states: in stock, low, or empty
+  - Visual indicators (colored circles) for quick status recognition
+  - One-click "Add to Shopping List" for low or empty items
+  - Categorize items and mark as consumable/non-consumable
+  - Filter inventory by stock state
+  - Checklist-style interface for easy scanning
+
+**Integration with Budget System:**
+- Shopping items can be converted to `PlannedExpense` to plan spending before money arrives
+- Shopping items can be converted to `Expense` to record actual spending
+- Shopping items can be linked to existing planned expenses
+- Estimated amounts from shopping items contribute to budget planning
+- Inventory items automatically create shopping items when stock is low or empty
+
 ### User Interface
 - **Responsive UI**: Browse expenses in table or card grid layouts with Tailwind CSS.
 - **Visual Indicators**: Color-coded displays for negative balances, warnings, and status indicators.
@@ -111,7 +135,7 @@ The Previous Balance feature provides visibility into how financial deficits car
 
 ## Usage
 
-* **Dashboard**: Homepage shows quick links to manage budgets, income events, expenses, and categories.
+* **Dashboard**: Homepage shows quick links to manage budgets, income events, expenses, categories, shopping list, and inventory.
 * **Budget Periods**: Create a new budget period, add line items, and view pace checks.
 * **Income Events**: 
   - Create income events for expected payments (salary, freelance, etc.)
@@ -123,6 +147,19 @@ The Previous Balance feature provides visibility into how financial deficits car
 * **Expense Templates**: Create templates for recurring savings goals with progress tracking.
 * **Expenses**: Add, edit, and delete expenses. Link expenses to budget periods automatically when using the nested form.
 * **Categories**: Define or edit expense categories.
+* **Shopping List**: 
+  - Add items you need to buy (quick add with name only, or full details)
+  - Mark items as purchased when you buy them
+  - Set estimated amounts to plan your budget
+  - Convert items to planned expenses or actual expenses
+  - Filter by status (pending items shown by default)
+  - Support for recurring purchases with frequency tracking
+* **Home Inventory**: 
+  - Track household items and their stock levels
+  - Set stock state: in stock, low, or empty
+  - One-click add to shopping list when items are low or empty
+  - Visual indicators for quick status recognition
+  - Filter by stock state to see what needs restocking
 
 ## Code Structure
 
@@ -142,11 +179,22 @@ The Previous Balance feature provides visibility into how financial deficits car
     - Tracks progress toward savings goals
     - Supports different frequencies (one-time, monthly, etc.)
   * `BudgetLineItem`: belongs to `BudgetPeriod` and `Category`
-  * `Category`: has many `Expense`, `BudgetLineItem`, and `PlannedExpense`
+  * `Category`: has many `Expense`, `BudgetLineItem`, `PlannedExpense`, `ShoppingItem`, and `InventoryItem`
   * `Expense`: belongs to `Category`, `BudgetPeriod`, and optionally to `IncomeEvent` and `PlannedExpense`
     - Can be created from a planned expense (has `planned_expense_id`)
     - Can be created directly and assigned to an income event (for unplanned spending)
+    - Has one `ShoppingItem` (optional, for items converted from shopping list)
     - Both types are counted in income event calculations
+  * `ShoppingItem`: belongs to `Account`, `Category` (optional), `PlannedExpense` (optional), and `Expense` (optional)
+    - Tracks items to buy with status (pending/purchased) and type (one_time/recurring)
+    - Can be converted to `PlannedExpense` or `Expense`
+    - Can be linked to existing `PlannedExpense`
+    - Supports estimated amounts for budget planning
+  * `InventoryItem`: belongs to `Account` and `Category` (optional)
+    - Tracks household inventory with stock states (in_stock/low/empty)
+    - Can create `ShoppingItem` when stock is low or empty
+    - Supports consumable/non-consumable classification
+  * `PlannedExpense`: belongs to `ShoppingItem` (optional) - can be linked to shopping items
 
 * **Controllers**:
 
@@ -158,6 +206,8 @@ The Previous Balance feature provides visibility into how financial deficits car
   * `BudgetLineItemsController` — manage line items inside a budget.
   * `ExpensesController` — CRUD for expenses (nested under budgets for new/create).
   * `CategoriesController` — CRUD for categories.
+  * `ShoppingItemsController` — CRUD for shopping items with custom actions (mark_as_purchased, convert_to_planned_expense, convert_to_expense, link_to_planned_expense).
+  * `InventoryItemsController` — CRUD for inventory items with add_to_shopping_list action.
 
 * **Views**: Implemented with Tailwind CSS in ERB templates. Key pages:
 
@@ -166,6 +216,8 @@ The Previous Balance feature provides visibility into how financial deficits car
   * Income event detail with effective remaining budget (`app/views/income_events/show.html.erb`)
   * Budget period overview with pace check (`app/views/budget_periods/show.html.erb`)
   * Expenses index as table or card grid (`app/views/expenses/index.html.erb`)
+  * Shopping list index with status filtering (`app/views/shopping_items/index.html.erb`)
+  * Inventory checklist-style view (`app/views/inventory_items/index.html.erb`)
 
 * **Helpers**:
 
@@ -198,15 +250,6 @@ The `IncomeEvent` model includes comprehensive tests for:
 See `test/models/income_event_test.rb` for full test coverage.
 
 ## Future Improvements
-
-### Planned Features
-
-* **Shopping List**: Create and manage shopping lists linked to planned expenses and categories. Track items needed, quantities, and estimated costs before shopping trips.
-* **Home Inventory Management**: Track inventory of household items (food, toilet paper, cleaning supplies, etc.) with:
-  - Stock levels and low-stock alerts
-  - Expiration date tracking for perishables
-  - Automatic shopping list generation when items run low
-  - Integration with planned expenses to budget for restocking
 
 ### Additional Enhancements
 
