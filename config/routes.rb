@@ -46,6 +46,24 @@ Rails.application.routes.draw do
   resources :categories
   resources :expenses
 
+  resources :shopping_items do
+    member do
+      patch :mark_as_purchased
+      get :convert_to_planned_expense
+      post :convert_to_planned_expense
+      get :convert_to_expense
+      post :convert_to_expense
+      get :link_to_planned_expense
+      patch :link_to_planned_expense
+    end
+  end
+
+  resources :inventory_items do
+    member do
+      post :add_to_shopping_list
+    end
+  end
+
   resources :accounts do
     resources :account_memberships, except: [ :show ]
   end

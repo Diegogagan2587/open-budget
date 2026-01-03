@@ -3,6 +3,7 @@ class PlannedExpense < ApplicationRecord
   belongs_to :income_event
   belongs_to :category
   belongs_to :expense_template, optional: true
+  belongs_to :shopping_item, optional: true
   has_one :expense, dependent: :nullify
 
   before_validation :set_account, on: :create

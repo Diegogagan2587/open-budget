@@ -4,6 +4,8 @@ class Category < ApplicationRecord
   has_many :expenses, dependent: :destroy
   has_many :budget_line_items, dependent: :destroy
   has_many :planned_expenses, dependent: :destroy
+  has_many :shopping_items, dependent: :destroy
+  has_many :inventory_items, dependent: :destroy
 
   validates :name, presence: true
   validates :name, uniqueness: { scope: :account_id }
