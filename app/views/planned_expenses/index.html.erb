@@ -33,12 +33,10 @@
 </div>
 
 <div class="mb-6 flex justify-between items-center">
-  <%= link_to new_income_event_planned_expense_path(@income_event), class: "px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg shadow-md hover:shadow-lg hover:from-green-600 hover:to-green-700 transition-all duration-200 flex items-center gap-2" do %>
-    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-    </svg>
-    New Planned Expense
-  <% end %>
+  <%= render AddButtonComponent.new(
+    label: "New Planned Expense",
+    path: new_income_event_planned_expense_path(@income_event)
+  ) %>
 </div>
 
 <% if @planned_expenses.any? %>
@@ -183,12 +181,10 @@
     <h3 class="mt-2 text-sm font-medium text-gray-900">No planned expenses</h3>
     <p class="mt-1 text-sm text-gray-500">Start planning how to allocate this income.</p>
     <div class="mt-6">
-      <%= link_to new_income_event_planned_expense_path(@income_event), class: "inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700" do %>
-        <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-        </svg>
-        Add Planned Expense
-      <% end %>
+      <%= render AddButtonComponent.new(
+        label: "Add Planned Expense",
+        path: new_income_event_planned_expense_path(@income_event)
+      ) %>
     </div>
   </div>
 <% end %>

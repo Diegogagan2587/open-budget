@@ -1,10 +1,9 @@
 <%= render 'shared/flash' %>
 
-<h1 class="text-2xl font-bold mb-4">Accounts</h1>
+<h1 class="text-2xl font-bold mb-4 px-2">Accounts</h1>
 
-<div class="mb-4">
-  <%= link_to "➕ New Account", new_account_path,
-      class: "px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600" %>
+<div class="mb-4 flex justify-end px-8">
+  <%= render AddButtonComponent.new( label: "New Account", path: new_account_path ) %>
 </div>
 
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
