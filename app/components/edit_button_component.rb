@@ -9,7 +9,7 @@ class EditButtonComponent < ViewComponent::Base
 
   def classes
     base_classes = "bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors flex items-center gap-2"
-    
+
     case @size
     when :small
       "px-3 py-1 text-sm #{base_classes}"
@@ -20,4 +20,3 @@ class EditButtonComponent < ViewComponent::Base
     end
   end
 end
-

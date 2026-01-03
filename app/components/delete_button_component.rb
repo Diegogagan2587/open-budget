@@ -10,7 +10,7 @@ class DeleteButtonComponent < ViewComponent::Base
 
   def classes
     base_classes = "bg-red-500 text-white rounded hover:bg-red-600 transition-colors flex items-center gap-2"
-    
+
     case @size
     when :small
       "px-3 py-1 text-sm #{base_classes}"
@@ -28,4 +28,3 @@ class DeleteButtonComponent < ViewComponent::Base
     }
   end
 end
-

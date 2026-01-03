@@ -27,7 +27,7 @@ class ActionButtonComponent < ViewComponent::Base
     end
 
     base_classes = "#{color_classes} text-white rounded transition-colors flex items-center gap-2"
-    
+
     case @size
     when :small
       "px-3 py-1 text-sm #{base_classes}"
@@ -56,4 +56,3 @@ class ActionButtonComponent < ViewComponent::Base
     end
   end
 end
-
