@@ -28,6 +28,16 @@
     <p>Define and edit expense categories.</p>
   <% end %>
 
+  <%= link_to shopping_items_path, class: "block p-4 border rounded hover:shadow" do %>
+    <h2 class="text-xl">🛒 Shopping List</h2>
+    <p>Track items you need to buy and plan purchases.</p>
+  <% end %>
+
+  <%= link_to inventory_items_path, class: "block p-4 border rounded hover:shadow" do %>
+    <h2 class="text-xl">📦 Home Inventory</h2>
+    <p>Track household items and stock levels.</p>
+  <% end %>
+
   <%= link_to new_budget_period_path, class: "block p-4 border rounded hover:shadow col-span-full" do %>
     <h2 class="text-xl">➕ New Budget Period</h2>
   <% end %>
@@ -38,5 +48,9 @@
   
   <%= link_to new_expense_path, class: "block p-4 border rounded hover:shadow col-span-full" do %>
     <h2 class="text-xl">➕ Add Expense</h2>
+  <% end %>
+
+  <%= link_to new_shopping_item_path, class: "block p-4 border rounded hover:shadow col-span-full" do %>
+    <h2 class="text-xl">➕ Add Shopping Item</h2>
   <% end %>
 </nav>

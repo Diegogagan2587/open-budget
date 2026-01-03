@@ -9,6 +9,8 @@ class Account < ApplicationRecord
   has_many :income_events, dependent: :destroy
   has_many :planned_expenses, dependent: :destroy
   has_many :budget_line_items, dependent: :destroy
+  has_many :shopping_items, dependent: :destroy
+  has_many :inventory_items, dependent: :destroy
 
   validates :name, presence: true
 

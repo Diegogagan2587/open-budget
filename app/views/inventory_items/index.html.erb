@@ -1,0 +1,71 @@
+<p style="color: green"><%= notice %></p>
+
+<h1 class="text-2xl font-bold mb-4">Home Inventory</h1>
+
+<div class="mb-4 flex justify-between items-center">
+  <%= render AddButtonComponent.new(
+      label: "Add Item",
+      path: new_inventory_item_path
+    ) %>
+  
+  <div class="flex gap-2">
+    <%= link_to "All", inventory_items_path(stock_state: "all"), 
+        class: "px-3 py-1 rounded #{@stock_filter == 'all' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}" %>
+    <%= link_to "In Stock", inventory_items_path(stock_state: "in_stock"), 
+        class: "px-3 py-1 rounded #{@stock_filter == 'in_stock' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}" %>
+    <%= link_to "Low", inventory_items_path(stock_state: "low"), 
+        class: "px-3 py-1 rounded #{@stock_filter == 'low' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}" %>
+    <%= link_to "Empty", inventory_items_path(stock_state: "empty"), 
+        class: "px-3 py-1 rounded #{@stock_filter == 'empty' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}" %>
+  </div>
+</div>
+
+<% if @inventory_items.any? %>
+  <div class="space-y-2">
+    <% @inventory_items.each do |inventory_item| %>
+      <div class="bg-white border rounded p-4 flex items-center justify-between hover:bg-gray-50">
+        <div class="flex items-center gap-4 flex-1">
+          <div class="flex-shrink-0">
+            <% if inventory_item.stock_state == "in_stock" %>
+              <div class="w-6 h-6 rounded-full bg-green-500"></div>
+            <% elsif inventory_item.stock_state == "low" %>
+              <div class="w-6 h-6 rounded-full bg-yellow-500"></div>
+            <% else %>
+              <div class="w-6 h-6 rounded-full bg-red-500"></div>
+            <% end %>
+          </div>
+          <div class="flex-1">
+            <h3 class="font-semibold"><%= inventory_item.name %></h3>
+            <div class="text-sm text-gray-600">
+              <%= inventory_item.category&.name || "No category" %>
+              <% if inventory_item.consumable? %>
+                <span class="ml-2 text-xs bg-gray-100 px-2 py-1 rounded">Consumable</span>
+              <% end %>
+            </div>
+          </div>
+          <div class="flex-shrink-0">
+            <span class="px-2 py-1 rounded text-xs 
+              <%= inventory_item.stock_state == 'in_stock' ? 'bg-green-100 text-green-800' : 
+                  inventory_item.stock_state == 'low' ? 'bg-yellow-100 text-yellow-800' : 
+                  'bg-red-100 text-red-800' %>">
+              <%= inventory_item.stock_state.humanize %>
+            </span>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 ml-4">
+          <% if inventory_item.stock_state == "empty" || inventory_item.stock_state == "low" %>
+            <%= link_to "Add to Shopping List", add_to_shopping_list_inventory_item_path(inventory_item), 
+                data: { turbo_method: :post }, 
+                class: "px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 text-sm" %>
+          <% end %>
+          <%= link_to "View", inventory_item, class: "text-blue-500 hover:underline text-sm" %>
+          <%= link_to "Edit", edit_inventory_item_path(inventory_item), class: "text-blue-500 hover:underline text-sm ml-2" %>
+          <%= link_to "Delete", inventory_item, method: :delete, data: { confirm: "Are you sure?" }, class: "text-red-500 hover:underline text-sm ml-2" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <p class="text-gray-500">No inventory items found.</p>
+<% end %>
+

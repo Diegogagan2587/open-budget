@@ -1,0 +1,68 @@
+<p style="color: green"><%= notice %></p>
+
+<h1 class="text-2xl font-bold mb-4">Shopping List</h1>
+
+<div class="mb-4 flex justify-between items-center">
+  <%= render AddButtonComponent.new(
+      label: "Add Item",
+      path: new_shopping_item_path
+    ) %>
+  
+  <div class="flex gap-2">
+    <%= link_to "Pending", shopping_items_path(status: "pending"), 
+        class: "px-3 py-1 rounded #{@status_filter == 'pending' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}" %>
+    <%= link_to "Purchased", shopping_items_path(status: "purchased"), 
+        class: "px-3 py-1 rounded #{@status_filter == 'purchased' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}" %>
+    <%= link_to "All", shopping_items_path(status: "all"), 
+        class: "px-3 py-1 rounded #{@status_filter == 'all' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}" %>
+  </div>
+</div>
+
+<% if @shopping_items.any? %>
+  <table class="min-w-full bg-white border">
+    <thead>
+      <tr class="bg-gray-100">
+        <th class="px-4 py-2 text-left">Name</th>
+        <th class="px-4 py-2 text-left">Category</th>
+        <th class="px-4 py-2 text-left">Quantity</th>
+        <th class="px-4 py-2 text-left">Estimated Amount</th>
+        <th class="px-4 py-2 text-left">Status</th>
+        <th class="px-4 py-2 text-left">Type</th>
+        <th class="px-4 py-2 text-left">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @shopping_items.each do |shopping_item| %>
+        <tr class="border-t">
+          <td class="px-4 py-2"><%= shopping_item.name %></td>
+          <td class="px-4 py-2"><%= shopping_item.category&.name || "-" %></td>
+          <td class="px-4 py-2"><%= shopping_item.quantity || "-" %></td>
+          <td class="px-4 py-2"><%= shopping_item.estimated_amount ? number_to_currency(shopping_item.estimated_amount) : "-" %></td>
+          <td class="px-4 py-2">
+            <span class="px-2 py-1 rounded text-xs <%= shopping_item.status == 'pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800' %>">
+              <%= shopping_item.status.humanize %>
+            </span>
+          </td>
+          <td class="px-4 py-2">
+            <span class="px-2 py-1 rounded text-xs bg-gray-100 text-gray-800">
+              <%= shopping_item.item_type.humanize %>
+            </span>
+          </td>
+          <td class="px-4 py-2">
+            <%= link_to "View", shopping_item, class: "text-blue-500 hover:underline" %>
+            <%= link_to "Edit", edit_shopping_item_path(shopping_item), class: "text-blue-500 hover:underline ml-2" %>
+            <% if shopping_item.status == "pending" %>
+              <%= link_to "Mark Purchased", mark_as_purchased_shopping_item_path(shopping_item), 
+                  data: { turbo_method: :patch }, 
+                  class: "text-green-500 hover:underline ml-2" %>
+            <% end %>
+            <%= link_to "Delete", shopping_item, method: :delete, data: { confirm: "Are you sure?" }, class: "text-red-500 hover:underline ml-2" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p class="text-gray-500">No shopping items found.</p>
+<% end %>
+
