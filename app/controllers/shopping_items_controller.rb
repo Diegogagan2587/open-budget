@@ -73,9 +73,7 @@ class ShoppingItemsController < ApplicationController
   end
 
   def convert_to_planned_expense
-    if request.get?
-      @income_events = IncomeEvent.for_account(Current.account).order(:expected_date)
-    else
+    if request.post?
       income_event_id = params[:income_event_id]
       unless income_event_id.present?
         @income_events = IncomeEvent.for_account(Current.account).order(:expected_date)
@@ -92,13 +90,13 @@ class ShoppingItemsController < ApplicationController
       else
         redirect_to @shopping_item, alert: "Cannot convert: estimated amount is required."
       end
+    else
+      @income_events = IncomeEvent.for_account(Current.account).order(:expected_date)
     end
   end
 
   def convert_to_expense
-    if request.get?
-      @budget_periods = BudgetPeriod.for_account(Current.account).order(start_date: :desc)
-    else
+    if request.post?
       budget_period_id = params[:budget_period_id]
       unless budget_period_id.present?
         @budget_periods = BudgetPeriod.for_account(Current.account).order(start_date: :desc)
@@ -115,13 +113,13 @@ class ShoppingItemsController < ApplicationController
       else
         redirect_to @shopping_item, alert: "Cannot convert: estimated amount is required."
       end
+    else
+      @budget_periods = BudgetPeriod.for_account(Current.account).order(start_date: :desc)
     end
   end
 
   def link_to_planned_expense
-    if request.get?
-      @planned_expenses = PlannedExpense.for_account(Current.account).where(shopping_item_id: nil).includes(:income_event, :category).order(created_at: :desc)
-    else
+    if request.patch?
       planned_expense_id = params[:planned_expense_id]
       unless planned_expense_id.present?
         @planned_expenses = PlannedExpense.for_account(Current.account).where(shopping_item_id: nil).includes(:income_event, :category).order(created_at: :desc)
@@ -133,6 +131,8 @@ class ShoppingItemsController < ApplicationController
       planned_expense = PlannedExpense.for_account(Current.account).find(planned_expense_id)
       @shopping_item.link_to_planned_expense(planned_expense)
       redirect_to @shopping_item, notice: "Shopping item linked to planned expense."
+    else
+      @planned_expenses = PlannedExpense.for_account(Current.account).where(shopping_item_id: nil).includes(:income_event, :category).order(created_at: :desc)
     end
   end
 
