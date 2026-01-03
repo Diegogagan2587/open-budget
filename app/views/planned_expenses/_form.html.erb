@@ -1,4 +1,5 @@
-<%= form_with model: [@income_event, @planned_expense], local: true, class: "space-y-6" do |form| %>
+<% templates_json = (@expense_templates || []).map { |t| { id: t.id, category_id: t.category_id, description: t.description, total_amount: t.total_amount.to_f, notes: t.notes, saved: t.total_saved.to_f } }.to_json.html_safe %>
+<%= form_with model: [@income_event, @planned_expense], local: true, class: "space-y-6", data: { controller: "template-selector", template_selector_templates_value: templates_json } do |form| %>
   <% if @planned_expense.errors.any? %>
     <div class="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 rounded mb-6">
       <div class="flex">
@@ -29,27 +30,39 @@
       </svg>
       Template Selection
     </h3>
-    <div class="space-y-3">
-      <label class="flex items-center p-4 bg-white rounded-lg border-2 cursor-pointer hover:border-indigo-300 transition-colors <%= 'border-indigo-500' unless @planned_expense.expense_template_id.present? %>">
-        <%= radio_button_tag :use_template, "no", !@planned_expense.expense_template_id.present?, id: "use_template_no", class: "text-indigo-600 focus:ring-indigo-500" %>
-        <div class="ml-3">
-          <p class="font-medium text-gray-900">Create new planned expense</p>
-          <p class="text-sm text-gray-500">Start from scratch</p>
-        </div>
-      </label>
-      <label class="flex items-center p-4 bg-white rounded-lg border-2 cursor-pointer hover:border-indigo-300 transition-colors <%= 'border-indigo-500' if @planned_expense.expense_template_id.present? %>">
-        <%= radio_button_tag :use_template, "yes", @planned_expense.expense_template_id.present?, id: "use_template_yes", class: "text-indigo-600 focus:ring-indigo-500" %>
-        <div class="ml-3">
-          <p class="font-medium text-gray-900">Use template</p>
-          <p class="text-sm text-gray-500">Select from existing expense templates</p>
-        </div>
-      </label>
-    </div>
-    <div id="template_selection" class="mt-4 <%= 'hidden' unless @planned_expense.expense_template_id.present? %>">
-      <label class="block text-sm font-medium text-gray-700 mb-2">Select Template</label>
-      <%= form.collection_select :expense_template_id, @expense_templates, :id, :name, { include_blank: "Choose a template..." }, { class: "block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500", id: "expense_template_select" } %>
-      <div id="template_info" class="mt-4 p-4 bg-white rounded-lg border border-indigo-200"></div>
-    </div>
+    <% if (@expense_templates || []).any? %>
+      <div class="space-y-3">
+        <label class="flex items-center p-4 bg-white rounded-lg border-2 cursor-pointer hover:border-indigo-300 transition-colors <%= 'border-indigo-500' unless @planned_expense.expense_template_id.present? %>">
+          <%= radio_button_tag :use_template, "no", !@planned_expense.expense_template_id.present?, id: "use_template_no", class: "text-indigo-600 focus:ring-indigo-500", data: { action: "change->template-selector#toggle" } %>
+          <div class="ml-3">
+            <p class="font-medium text-gray-900">Create new planned expense</p>
+            <p class="text-sm text-gray-500">Start from scratch</p>
+          </div>
+        </label>
+        <label class="flex items-center p-4 bg-white rounded-lg border-2 cursor-pointer hover:border-indigo-300 transition-colors <%= 'border-indigo-500' if @planned_expense.expense_template_id.present? %>">
+          <%= radio_button_tag :use_template, "yes", @planned_expense.expense_template_id.present?, id: "use_template_yes", class: "text-indigo-600 focus:ring-indigo-500", data: { action: "change->template-selector#toggle" } %>
+          <div class="ml-3">
+            <p class="font-medium text-gray-900">Use template</p>
+            <p class="text-sm text-gray-500">Select from <%= pluralize((@expense_templates || []).count, 'existing template') %></p>
+          </div>
+        </label>
+      </div>
+      <div data-template-selector-target="selection" class="mt-4" style="<%= 'display: none;' unless @planned_expense.expense_template_id.present? %>">
+        <label class="block text-sm font-medium text-gray-700 mb-2">Select Template</label>
+        <%= form.collection_select :expense_template_id, (@expense_templates || []), :id, :name, { include_blank: "Choose a template..." }, { class: "block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500", data: { template_selector_target: "select", action: "change->template-selector#selectTemplate" } } %>
+        <div data-template-selector-target="info" class="mt-4 p-4 bg-white rounded-lg border border-indigo-200"></div>
+      </div>
+    <% else %>
+      <div class="bg-white rounded-lg p-4 border border-indigo-200">
+        <p class="text-sm text-gray-600 mb-3">No expense templates available. Create templates to quickly add recurring expenses to your budget.</p>
+        <%= link_to new_expense_template_path, class: "inline-flex items-center px-4 py-2 bg-indigo-600 text-white text-sm rounded-lg hover:bg-indigo-700 transition-colors" do %>
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+          </svg>
+          Create Your First Template
+        <% end %>
+      </div>
+    <% end %>
   </div>
 
   <!-- Income Event Assignment Section -->
@@ -85,7 +98,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <div>
         <%= form.label :category_id, "Category", class: "block text-sm font-medium text-gray-700 mb-2" %>
-        <%= form.collection_select :category_id, Category.all, :id, :name, { prompt: "Select a category" }, { class: "block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500", id: "category_select" } %>
+        <%= form.collection_select :category_id, Category.for_account(Current.account), :id, :name, { prompt: "Select a category" }, { class: "block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500", data: { template_selector_target: "categorySelect" } } %>
         <p class="mt-1 text-xs text-gray-500">Choose the expense category</p>
       </div>
 
@@ -95,21 +108,21 @@
           <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <span class="text-gray-500 sm:text-sm">$</span>
           </div>
-          <%= form.number_field :amount, step: 0.01, class: "block w-full pl-7 rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500", id: "amount_field", placeholder: "0.00" %>
+          <%= form.number_field :amount, step: 0.01, class: "block w-full pl-7 rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500", data: { template_selector_target: "amountField" }, placeholder: "0.00" %>
         </div>
-        <p class="mt-1 text-xs text-gray-500" id="amount_hint"></p>
+        <p class="mt-1 text-xs text-gray-500" data-template-selector-target="amountHint"></p>
       </div>
     </div>
 
     <div>
       <%= form.label :description, "Description", class: "block text-sm font-medium text-gray-700 mb-2" %>
-      <%= form.text_field :description, class: "block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500", id: "description_field", placeholder: "e.g., Groceries, Rent, Utilities..." %>
+      <%= form.text_field :description, class: "block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500", data: { template_selector_target: "descriptionField" }, placeholder: "e.g., Groceries, Rent, Utilities..." %>
       <p class="mt-1 text-xs text-gray-500">Brief description of the expense</p>
     </div>
 
     <div>
       <%= form.label :notes, "Notes (Optional)", class: "block text-sm font-medium text-gray-700 mb-2" %>
-      <%= form.text_area :notes, rows: 3, class: "block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500", id: "notes_field", placeholder: "Additional notes or reminders..." %>
+      <%= form.text_area :notes, rows: 3, class: "block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500", data: { template_selector_target: "notesField" }, placeholder: "Additional notes or reminders..." %>
       <p class="mt-1 text-xs text-gray-500">Add any additional information or reminders</p>
     </div>
 
@@ -144,94 +157,3 @@
     <%= form.submit "Save Planned Expense", class: "px-6 py-3 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white rounded-lg shadow-md hover:shadow-lg hover:from-indigo-700 hover:to-indigo-800 transition-all duration-200 font-medium" %>
   </div>
 <% end %>
-
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const useTemplateYes = document.getElementById('use_template_yes');
-    const useTemplateNo = document.getElementById('use_template_no');
-    const templateSelection = document.getElementById('template_selection');
-    const templateSelect = document.getElementById('expense_template_select');
-    const templateInfo = document.getElementById('template_info');
-    const categorySelect = document.getElementById('category_select');
-    const descriptionField = document.getElementById('description_field');
-    const amountField = document.getElementById('amount_field');
-    const amountHint = document.getElementById('amount_hint');
-    const notesField = document.getElementById('notes_field');
-
-    const templates = <%= @expense_templates.map { |t| { id: t.id, category_id: t.category_id, description: t.description, total_amount: t.total_amount.to_f, notes: t.notes, saved: t.total_saved.to_f } }.to_json.html_safe %>;
-
-    function toggleTemplateSelection() {
-      const labels = document.querySelectorAll('label[for="use_template_yes"], label[for="use_template_no"]');
-      labels.forEach(label => label.classList.remove('border-indigo-500'));
-      
-      if (useTemplateYes.checked) {
-        templateSelection.classList.remove('hidden');
-        document.querySelector('label[for="use_template_yes"]').classList.add('border-indigo-500');
-      } else {
-        templateSelection.classList.add('hidden');
-        document.querySelector('label[for="use_template_no"]').classList.add('border-indigo-500');
-        templateSelect.value = '';
-        updateFormFromTemplate(null);
-      }
-    }
-
-    function updateFormFromTemplate(template) {
-      if (template) {
-        categorySelect.value = template.category_id;
-        descriptionField.value = template.description || '';
-        amountField.value = '';
-        notesField.value = template.notes || '';
-        
-        const remaining = template.total_amount - template.saved;
-        const suggested = remaining > 0 ? remaining : template.total_amount / 2;
-        amountField.placeholder = suggested.toFixed(2);
-        amountHint.textContent = `Suggested: ${suggested.toFixed(2)} (${remaining > 0 ? 'remaining amount' : 'split amount'})`;
-        
-        templateInfo.innerHTML = `
-          <div class="space-y-2">
-            <h4 class="font-medium text-gray-900">${template.description || 'Template'}</h4>
-            <div class="grid grid-cols-3 gap-4 text-sm">
-              <div>
-                <p class="text-gray-600">Total</p>
-                <p class="font-semibold text-gray-900">$${template.total_amount.toFixed(2)}</p>
-              </div>
-              <div>
-                <p class="text-gray-600">Saved</p>
-                <p class="font-semibold text-green-600">$${template.saved.toFixed(2)}</p>
-              </div>
-              <div>
-                <p class="text-gray-600">Remaining</p>
-                <p class="font-semibold text-indigo-600">$${remaining.toFixed(2)}</p>
-              </div>
-            </div>
-            <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
-              <div class="bg-indigo-600 h-2 rounded-full transition-all duration-300" style="width: ${Math.min((template.saved / template.total_amount) * 100, 100)}%"></div>
-            </div>
-          </div>
-        `;
-      } else {
-        amountField.placeholder = '0.00';
-        amountHint.textContent = '';
-        templateInfo.innerHTML = '';
-      }
-    }
-
-    useTemplateYes.addEventListener('change', toggleTemplateSelection);
-    useTemplateNo.addEventListener('change', toggleTemplateSelection);
-
-    templateSelect.addEventListener('change', function() {
-      const templateId = parseInt(this.value);
-      const template = templates.find(t => t.id === templateId);
-      updateFormFromTemplate(template);
-    });
-
-    // Initialize if template is already selected
-    if (templateSelect.value) {
-      const templateId = parseInt(templateSelect.value);
-      const template = templates.find(t => t.id === templateId);
-      updateFormFromTemplate(template);
-    }
-    
-    toggleTemplateSelection();
-  });
-</script>
