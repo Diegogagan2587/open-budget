@@ -2,7 +2,7 @@
 
 <div class="flex justify-between items-center mb-4">
   <h1 class="text-2xl font-bold">Manage Members - <%= @account.name %></h1>
-  <%= link_to "Back to Account", @account, class: "px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600" %>
+  <%= render ViewButtonComponent.new(path: @account, label: "Back to Account", color: :gray) %>
 </div>
 
 <h2 class="text-xl font-semibold mb-4">Add Member</h2>

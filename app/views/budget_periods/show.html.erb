@@ -7,8 +7,13 @@
 <h1 class="text-2xl font-bold mb-4"><%= @budget_period.name %></h1>
 
 <div class="mb-4 flex space-x-2">
-  <%= link_to "Edit", edit_budget_period_path(@budget_period), class: "px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600" %>
-  <%= link_to "Income Events", budget_period_income_events_path(@budget_period), class: "px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600" %>
+  <%= render EditButtonComponent.new(path: edit_budget_period_path(@budget_period)) %>
+  <%= render ActionButtonComponent.new(
+    path: budget_period_income_events_path(@budget_period),
+    label: "Income Events",
+    color: :green
+  ) %>
+
   <%= render AddButtonComponent.new(
     label: "New Income Event",
     path: new_budget_period_income_event_path(@budget_period)

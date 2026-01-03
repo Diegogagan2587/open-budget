@@ -15,9 +15,9 @@
         Role: <span class="font-semibold"><%= membership&.role&.capitalize %></span>
       </p>
       <div class="flex space-x-2">
-        <%= link_to "View", account, class: "px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600" %>
+        <%= render ViewButtonComponent.new(path: account, size: :small) %>
         <% if membership&.owner? %>
-          <%= link_to "Edit", edit_account_path(account), class: "px-3 py-1 bg-gray-500 text-white text-sm rounded hover:bg-gray-600" %>
+          <%= render EditButtonComponent.new(path: edit_account_path(account), size: :small) %>
         <% end %>
         <% if account == current_account %>
           <span class="px-3 py-1 bg-green-100 text-green-800 text-sm rounded">Current</span>
