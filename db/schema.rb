@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_29_183551) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_02_233452) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -74,6 +74,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_29_183551) do
     t.text "notes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "payment_day"
+    t.date "payment_date"
     t.bigint "account_id", null: false
     t.index ["account_id"], name: "index_expense_templates_on_account_id"
     t.index ["category_id"], name: "index_expense_templates_on_category_id"
@@ -87,9 +89,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_29_183551) do
     t.bigint "budget_period_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "account_id", null: false
     t.bigint "income_event_id"
     t.bigint "planned_expense_id"
+    t.bigint "account_id", null: false
     t.index ["account_id"], name: "index_expenses_on_account_id"
     t.index ["budget_period_id"], name: "index_expenses_on_budget_period_id"
     t.index ["category_id"], name: "index_expenses_on_category_id"
@@ -112,6 +114,21 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_29_183551) do
     t.index ["budget_period_id"], name: "index_income_events_on_budget_period_id"
   end
 
+  create_table "inventory_items", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "stock_state", default: "in_stock", null: false
+    t.boolean "consumable", default: true, null: false
+    t.bigint "category_id"
+    t.text "notes"
+    t.bigint "account_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_inventory_items_on_account_id"
+    t.index ["category_id"], name: "index_inventory_items_on_category_id"
+    t.index ["consumable"], name: "index_inventory_items_on_consumable"
+    t.index ["stock_state"], name: "index_inventory_items_on_stock_state"
+  end
+
   create_table "planned_expenses", force: :cascade do |t|
     t.bigint "income_event_id", null: false
     t.bigint "category_id", null: false
@@ -124,10 +141,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_29_183551) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "account_id", null: false
+    t.bigint "shopping_item_id"
     t.index ["account_id"], name: "index_planned_expenses_on_account_id"
     t.index ["category_id"], name: "index_planned_expenses_on_category_id"
     t.index ["expense_template_id"], name: "index_planned_expenses_on_expense_template_id"
     t.index ["income_event_id"], name: "index_planned_expenses_on_income_event_id"
+    t.index ["shopping_item_id"], name: "index_planned_expenses_on_shopping_item_id"
   end
 
   create_table "sessions", force: :cascade do |t|
@@ -137,6 +156,29 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_29_183551) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_sessions_on_user_id"
+  end
+
+  create_table "shopping_items", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "status", default: "pending", null: false
+    t.string "item_type", default: "one_time", null: false
+    t.string "quantity"
+    t.decimal "estimated_amount", precision: 10, scale: 2
+    t.bigint "category_id"
+    t.bigint "planned_expense_id"
+    t.bigint "expense_id"
+    t.string "frequency"
+    t.date "last_purchased_at"
+    t.text "notes"
+    t.bigint "account_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_shopping_items_on_account_id"
+    t.index ["category_id"], name: "index_shopping_items_on_category_id"
+    t.index ["expense_id"], name: "index_shopping_items_on_expense_id"
+    t.index ["item_type"], name: "index_shopping_items_on_item_type"
+    t.index ["planned_expense_id"], name: "index_shopping_items_on_planned_expense_id"
+    t.index ["status"], name: "index_shopping_items_on_status"
   end
 
   create_table "users", force: :cascade do |t|
@@ -164,9 +206,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_29_183551) do
   add_foreign_key "expenses", "planned_expenses"
   add_foreign_key "income_events", "accounts"
   add_foreign_key "income_events", "budget_periods"
+  add_foreign_key "inventory_items", "accounts"
+  add_foreign_key "inventory_items", "categories"
   add_foreign_key "planned_expenses", "accounts"
   add_foreign_key "planned_expenses", "categories"
   add_foreign_key "planned_expenses", "expense_templates"
   add_foreign_key "planned_expenses", "income_events"
+  add_foreign_key "planned_expenses", "shopping_items"
   add_foreign_key "sessions", "users"
+  add_foreign_key "shopping_items", "accounts"
+  add_foreign_key "shopping_items", "categories"
+  add_foreign_key "shopping_items", "expenses"
+  add_foreign_key "shopping_items", "planned_expenses"
 end
