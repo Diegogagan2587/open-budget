@@ -5,4 +5,3 @@ class ShoppingItemRowComponent < ViewComponent::Base
     @shopping_item = shopping_item
   end
 end
-

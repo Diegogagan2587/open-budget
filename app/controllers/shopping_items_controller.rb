@@ -4,13 +4,13 @@ class ShoppingItemsController < ApplicationController
   def index
     @status_filter = params[:status] || "pending"
     @shopping_items = ShoppingItem.for_account(Current.account)
-    
+
     if @status_filter == "pending"
       @shopping_items = @shopping_items.pending
     elsif @status_filter == "purchased"
       @shopping_items = @shopping_items.purchased
     end
-    
+
     @shopping_items = @shopping_items.order(created_at: :desc)
   end
 
@@ -146,4 +146,3 @@ class ShoppingItemsController < ApplicationController
     params.expect(shopping_item: [ :name, :status, :item_type, :quantity, :estimated_amount, :category_id, :frequency, :notes ])
   end
 end
-

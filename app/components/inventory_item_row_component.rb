@@ -18,4 +18,3 @@ class InventoryItemRowComponent < ViewComponent::Base
     end
   end
 end
-

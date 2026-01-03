@@ -30,4 +30,3 @@ class CreateShoppingItems < ActiveRecord::Migration[8.0]
     add_foreign_key :shopping_items, :expenses
   end
 end
-

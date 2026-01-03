@@ -20,4 +20,3 @@ class CreateInventoryItems < ActiveRecord::Migration[8.0]
     add_foreign_key :inventory_items, :categories
   end
 end
-

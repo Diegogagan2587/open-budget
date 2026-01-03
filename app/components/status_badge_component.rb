@@ -39,4 +39,3 @@ class StatusBadgeComponent < ViewComponent::Base
     @status.humanize
   end
 end
-

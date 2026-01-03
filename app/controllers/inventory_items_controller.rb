@@ -4,11 +4,11 @@ class InventoryItemsController < ApplicationController
   def index
     @stock_filter = params[:stock_state] || "all"
     @inventory_items = InventoryItem.for_account(Current.account)
-    
+
     if @stock_filter != "all"
       @inventory_items = @inventory_items.where(stock_state: @stock_filter)
     end
-    
+
     @inventory_items = @inventory_items.order(:name)
   end
 
@@ -77,4 +77,3 @@ class InventoryItemsController < ApplicationController
     params.expect(inventory_item: [ :name, :stock_state, :consumable, :category_id, :notes ])
   end
 end
-
