@@ -58,8 +58,8 @@
 </div>
 
 <div class="flex gap-2">
-  <%= link_to "Editar", edit_expense_path(@expense), class: "px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600" %>
-  <%= link_to "Eliminar", @expense, method: :delete, data: { confirm: "¿Eliminar este gasto?" }, class: "px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600" %>
-  <%= link_to "Volver a gastos", expenses_path, class: "px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400" %>
+  <%= render EditButtonComponent.new(path: edit_expense_path(@expense), label: "Editar") %>
+  <%= render DeleteButtonComponent.new(path: @expense, label: "Eliminar", confirm_message: "¿Eliminar este gasto?") %>
+  <%= render ViewButtonComponent.new(path: expenses_path, label: "Volver a gastos", color: :gray) %>
 </div>
 
