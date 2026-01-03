@@ -3,12 +3,10 @@
 <div class="mb-6">
   <div class="flex justify-between items-center mb-6">
     <h1 class="text-3xl font-bold text-gray-900">Expense Templates</h1>
-    <%= link_to new_expense_template_path, class: "px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg shadow-md hover:shadow-lg hover:from-green-600 hover:to-green-700 transition-all duration-200 flex items-center gap-2" do %>
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-      </svg>
-      New Expense Template
-    <% end %>
+    <%= render AddButtonComponent.new(
+      label: "New Expense Template",
+      path: new_expense_template_path
+    ) %>
   </div>
 </div>
 
@@ -83,16 +81,8 @@
 
         <!-- Card Footer -->
         <div class="bg-gray-50 px-6 py-4 border-t border-gray-200 flex items-center justify-between">
-          <%= link_to template, class: "px-4 py-2 bg-indigo-500 text-white text-sm rounded-lg hover:bg-indigo-600 transition-colors flex items-center gap-2" do %>
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-            </svg>
-            View
-          <% end %>
-          <%= link_to edit_expense_template_path(template), class: "px-4 py-2 bg-gray-200 text-gray-700 text-sm rounded-lg hover:bg-gray-300 transition-colors" do %>
-            Edit
-          <% end %>
+          <%= render ViewButtonComponent.new(path: template, color: :indigo, size: :small) %>
+          <%= render EditButtonComponent.new(path: edit_expense_template_path(template), size: :small) %>
         </div>
       </div>
     <% end %>
@@ -106,12 +96,10 @@
     <h3 class="mt-2 text-sm font-medium text-gray-900">No expense templates</h3>
     <p class="mt-1 text-sm text-gray-500">Create templates for recurring expenses like bills and subscriptions.</p>
     <div class="mt-6">
-      <%= link_to new_expense_template_path, class: "inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700" do %>
-        <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-        </svg>
-        New Expense Template
-      <% end %>
+      <%= render AddButtonComponent.new(
+        label: "New Expense Template",
+        path: new_expense_template_path
+      ) %>
     </div>
   </div>
 <% end %>

@@ -119,52 +119,45 @@
 
 <!-- Action Buttons -->
 <div class="flex flex-wrap gap-3 mb-8">
-  <%= link_to edit_income_event_path(@income_event), class: "px-6 py-3 bg-blue-500 text-white rounded-lg shadow-md hover:shadow-lg hover:bg-blue-600 transition-all duration-200 flex items-center gap-2" do %>
-    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-    </svg>
-    Edit
-  <% end %>
+  <%= render EditButtonComponent.new(path: edit_income_event_path(@income_event), size: :large) %>
   <% unless @income_event.is_received? %>
-    <%= link_to receive_income_event_path(@income_event), class: "px-6 py-3 bg-green-500 text-white rounded-lg shadow-md hover:shadow-lg hover:bg-green-600 transition-all duration-200 flex items-center gap-2" do %>
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-      </svg>
-      Mark as Received
-    <% end %>
+    <%= render ActionButtonComponent.new(
+      path: receive_income_event_path(@income_event),
+      label: "Mark as Received",
+      color: :green,
+      size: :large
+    ) %>
   <% end %>
   <% if @income_event.is_received? && !@income_event.is_applied? %>
-    <%= link_to apply_all_income_event_path(@income_event), method: :post, class: "px-6 py-3 bg-purple-500 text-white rounded-lg shadow-md hover:shadow-lg hover:bg-purple-600 transition-all duration-200 flex items-center gap-2" do %>
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-      </svg>
-      Apply All Expenses
-    <% end %>
+    <%= render ActionButtonComponent.new(
+      path: apply_all_income_event_path(@income_event),
+      label: "Apply All Expenses",
+      color: :purple,
+      method: :post,
+      size: :large
+    ) %>
   <% end %>
-  <%= link_to income_event_planned_expenses_path(@income_event), class: "px-6 py-3 bg-indigo-500 text-white rounded-lg shadow-md hover:shadow-lg hover:bg-indigo-600 transition-all duration-200 flex items-center gap-2" do %>
-    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
-    </svg>
-    Plan Expenses
-  <% end %>
-  <%= link_to @income_event, data: { turbo_method: :delete, turbo_confirm: "Are you sure? This will delete this income event and all associated planned expenses." }, class: "px-6 py-3 bg-red-500 text-white rounded-lg shadow-md hover:shadow-lg hover:bg-red-600 transition-all duration-200 flex items-center gap-2" do %>
-    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-    </svg>
-    Delete
-  <% end %>
+  <%= render ActionButtonComponent.new(
+    path: income_event_planned_expenses_path(@income_event),
+    label: "Plan Expenses",
+    color: :indigo,
+    size: :large
+  ) %>
+  <%= render DeleteButtonComponent.new(
+    path: @income_event,
+    confirm_message: "Are you sure? This will delete this income event and all associated planned expenses.",
+    size: :large
+  ) %>
 </div>
 
 <!-- Planned Expenses Section -->
 <div class="mb-6">
   <div class="flex items-center justify-between mb-4">
     <h2 class="text-2xl font-bold text-gray-900">Planned Expenses</h2>
-    <%= link_to new_income_event_planned_expense_path(@income_event), class: "px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors flex items-center gap-2" do %>
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-      </svg>
-      Add Expense
-    <% end %>
+    <%= render AddButtonComponent.new(
+      label: "Add Expense",
+      path: new_income_event_planned_expense_path(@income_event)
+    ) %>
   </div>
 
   <% if @planned_expenses.any? %>
@@ -217,12 +210,10 @@
       <h3 class="mt-2 text-sm font-medium text-gray-900">No planned expenses</h3>
       <p class="mt-1 text-sm text-gray-500">Start planning how to use this income.</p>
       <div class="mt-6">
-        <%= link_to new_income_event_planned_expense_path(@income_event), class: "inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700" do %>
-          <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-          </svg>
-          Add Planned Expense
-        <% end %>
+        <%= render AddButtonComponent.new(
+          label: "Add Planned Expense",
+          path: new_income_event_planned_expense_path(@income_event)
+        ) %>
       </div>
     </div>
   <% end %>

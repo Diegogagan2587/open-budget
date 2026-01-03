@@ -44,7 +44,12 @@
 
   <div class="mb-4">
     <%= form.submit "Guardar", class: "px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600" %>
-    <%= link_to "Cancelar", @budget_period ? @budget_period : expenses_path, class: "px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 ml-2" %>
+    <span class="ml-2">
+      <%= render CancelButtonComponent.new(
+        path: @budget_period ? @budget_period : expenses_path,
+        label: "Cancelar"
+      ) %>
+    </span>
   </div>
 <% end %>
 

@@ -3,8 +3,10 @@
 <h1 class="text-2xl font-bold mb-4">Categories</h1>
 
 <div class="mb-4 flex justify-between items-center">
-  <%= link_to "➕ New Category", new_category_path,
-      class: "px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600" %>
+  <%= render AddButtonComponent.new(
+      label: "New Category",
+      path: new_category_path
+    ) %>
 </div>
 
 <table class="min-w-full bg-white border">
