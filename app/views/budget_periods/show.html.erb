@@ -102,41 +102,76 @@
 <h2 class="text-xl font-bold mb-4">All Planned Expenses</h2>
 
 <% if @planned_expenses.any? %>
-  <table class="min-w-full bg-white border">
-    <thead>
-      <tr class="bg-gray-100">
-        <th class="px-4 py-2 text-left">Income Event</th>
-        <th class="px-4 py-2 text-left">Amount</th>
-        <th class="px-4 py-2 text-left">Category</th>
-        <th class="px-4 py-2 text-left">Description</th>
-        <th class="px-4 py-2 text-left">Status</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @planned_expenses.each do |planned_expense| %>
-        <tr class="border-t">
-          <td class="px-4 py-2">
-            <%= link_to planned_expense.income_event.description, planned_expense.income_event, class: "text-blue-500 hover:underline" %>
-          </td>
-          <td class="px-4 py-2"><%= number_to_currency(planned_expense.amount) %></td>
-          <td class="px-4 py-2"><%= planned_expense.category.name %></td>
-          <td class="px-4 py-2"><%= planned_expense.description %></td>
-          <td class="px-4 py-2">
-            <span class="px-2 py-1 rounded text-xs <%= 
-              case planned_expense.status
-              when 'pending_to_pay', 'saved', 'transfer_to_savings' then 'bg-yellow-100 text-yellow-800'
-              when 'transferring' then 'bg-blue-100 text-blue-800'
-              when 'paid', 'transferred', 'spent' then 'bg-green-100 text-green-800'
-              else 'bg-gray-100 text-gray-800'
-              end
-            %>">
-              <%= planned_expense.status %>
-            </span>
-          </td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
+  <% @planned_expenses.group_by(&:income_event).each do |income_event, planned_expenses| %>
+    <div class="mb-6 border rounded bg-white">
+      <div class="px-4 py-3 bg-gray-50 border-b flex flex-wrap items-center gap-4">
+        <div class="min-w-[200px]">
+          <p class="text-sm text-gray-600">Income Event</p>
+          <p class="font-semibold">
+            <%= link_to income_event.description, income_event, class: "text-blue-500 hover:underline" %>
+          </p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-600">Expected Date</p>
+          <p class="font-semibold"><%= income_event.expected_date %></p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-600">Expected Amount</p>
+          <p class="font-semibold"><%= number_to_currency(income_event.expected_amount) %></p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-600">Status</p>
+          <span class="px-2 py-1 rounded text-xs <%= 
+            case income_event.status
+            when 'pending' then 'bg-yellow-100 text-yellow-800'
+            when 'received' then 'bg-blue-100 text-blue-800'
+            when 'applied' then 'bg-green-100 text-green-800'
+            else 'bg-gray-100 text-gray-800'
+            end
+          %>">
+            <%= income_event.status %>
+          </span>
+        </div>
+      </div>
+      <table class="min-w-full bg-white">
+        <thead>
+          <tr class="bg-gray-100">
+            <th class="px-4 py-2 text-left">Income Event</th>
+            <th class="px-4 py-2 text-left">Expected Date</th>
+            <th class="px-4 py-2 text-left">Amount</th>
+            <th class="px-4 py-2 text-left">Category</th>
+            <th class="px-4 py-2 text-left">Description</th>
+            <th class="px-4 py-2 text-left">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% planned_expenses.each do |planned_expense| %>
+            <tr class="border-t">
+              <td class="px-4 py-2">
+                <%= link_to income_event.description, income_event, class: "text-blue-500 hover:underline" %>
+              </td>
+              <td class="px-4 py-2"><%= income_event.expected_date %></td>
+              <td class="px-4 py-2"><%= number_to_currency(planned_expense.amount) %></td>
+              <td class="px-4 py-2"><%= planned_expense.category.name %></td>
+              <td class="px-4 py-2"><%= planned_expense.description %></td>
+              <td class="px-4 py-2">
+                <span class="px-2 py-1 rounded text-xs <%= 
+                  case planned_expense.status
+                  when 'pending_to_pay', 'saved', 'transfer_to_savings' then 'bg-yellow-100 text-yellow-800'
+                  when 'transferring' then 'bg-blue-100 text-blue-800'
+                  when 'paid', 'transferred', 'spent' then 'bg-green-100 text-green-800'
+                  else 'bg-gray-100 text-gray-800'
+                  end
+                %>">
+                  <%= planned_expense.status %>
+                </span>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
 <% else %>
   <p class="text-gray-500">No planned expenses yet.</p>
 <% end %>

@@ -7,7 +7,15 @@ class BudgetPeriodsController < ApplicationController
 
   def show
     @income_events = @budget_period.income_events_ordered
-    @planned_expenses = @budget_period.planned_expenses.includes(:category, :income_event, :expense_template)
+    @planned_expenses = @budget_period
+      .planned_expenses
+      .includes(:category, :income_event, :expense_template)
+      .references(:income_event)
+      .order(
+        Arel.sql("income_events.expected_date ASC"),
+        Arel.sql("COALESCE(planned_expenses.position, 2147483647) ASC"),
+        Arel.sql("planned_expenses.created_at ASC")
+      )
   end
 
   def new
