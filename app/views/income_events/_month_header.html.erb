@@ -1,0 +1,61 @@
+<% 
+  month_date = local_assigns[:month_date]
+  events = local_assigns[:events] || []
+  
+  # Calculate month summaries
+  total_expected = events.sum { |ie| ie.expected_amount }
+  total_received = events.sum { |ie| ie.received_amount || 0 }
+  pending_count = events.count { |ie| ie.status == 'pending' }
+  received_count = events.count { |ie| ie.status == 'received' || ie.status == 'applied' }
+  event_count = events.count
+%>
+
+<div class="mb-6 mt-8 first:mt-0" id="month-<%= month_date.strftime('%Y-%m') %>">
+  <!-- Month Header -->
+  <div class="bg-gradient-to-r from-indigo-50 to-indigo-100 rounded-lg px-6 py-4 border-l-4 border-indigo-500 shadow-sm mb-4">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div>
+        <h2 class="text-2xl font-bold text-indigo-900">
+          <%= month_date.strftime("%B %Y") %>
+        </h2>
+        <p class="text-sm text-indigo-700 mt-1">
+          <%= pluralize(event_count, 'income event') %>
+        </p>
+      </div>
+      
+      <!-- Month Summary Stats -->
+      <div class="flex flex-wrap gap-4 md:gap-6">
+        <div class="flex items-center gap-2">
+          <div class="bg-white rounded-lg px-3 py-2 shadow-sm">
+            <p class="text-xs text-gray-600">Expected</p>
+            <p class="text-sm font-bold text-gray-900"><%= number_to_currency(total_expected) %></p>
+          </div>
+        </div>
+        
+        <% if total_received > 0 %>
+          <div class="flex items-center gap-2">
+            <div class="bg-white rounded-lg px-3 py-2 shadow-sm">
+              <p class="text-xs text-gray-600">Received</p>
+              <p class="text-sm font-bold text-green-700"><%= number_to_currency(total_received) %></p>
+            </div>
+          </div>
+        <% end %>
+        
+        <div class="flex items-center gap-2">
+          <div class="flex gap-2">
+            <% if pending_count > 0 %>
+              <span class="px-2 py-1 rounded text-xs font-medium bg-yellow-100 text-yellow-800 border border-yellow-200">
+                <%= pending_count %> pending
+              </span>
+            <% end %>
+            <% if received_count > 0 %>
+              <span class="px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-800 border border-green-200">
+                <%= received_count %> received
+              </span>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
