@@ -8,6 +8,26 @@ class IncomeEventsController < ApplicationController
     else
       IncomeEvent.for_account(Current.account).by_date
     end
+
+    # Group by month/year for display
+    @grouped_events = @income_events.group_by { |ie|
+      ie.expected_date.beginning_of_month
+    }.sort_by { |month, _| month }.reverse
+
+    # Support month filter via params
+    @selected_month = nil
+    if params[:month].present?
+      begin
+        @selected_month = Date.parse(params[:month])
+        @grouped_events = @grouped_events.select { |month, _| month == @selected_month.beginning_of_month }
+      rescue ArgumentError
+        # Invalid date format, ignore filter
+        @selected_month = nil
+      end
+    end
+
+    # Get available months for the selector
+    @available_months = @income_events.map { |ie| ie.expected_date.beginning_of_month }.uniq.sort.reverse
   end
 
   def show
