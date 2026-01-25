@@ -15,6 +15,8 @@ class ExpensesController < ApplicationController
   def new
     @expense = @budget_period ? @budget_period.expenses.build : Expense.for_account(Current.account).new
     @expense.account = Current.account unless @expense.account
+    # Load income events for dynamic filtering
+    @income_events = IncomeEvent.for_account(Current.account).order(expected_date: :desc)
   end
 
   # GET /expenses/1 or /expenses/1.json
@@ -23,6 +25,8 @@ class ExpensesController < ApplicationController
 
   # GET /expenses/1/edit
   def edit
+    # Load income events for dynamic filtering
+    @income_events = IncomeEvent.for_account(Current.account).order(expected_date: :desc)
   end
 
   # POST /expenses or /expenses.json
@@ -42,6 +46,8 @@ class ExpensesController < ApplicationController
         format.html { redirect_to target, notice: "Expense was successfully created." }
         format.json { render :show, status: :created, location: @expense }
       else
+        # Load income events for form re-render on error
+        @income_events = IncomeEvent.for_account(Current.account).order(expected_date: :desc)
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @expense.errors, status: :unprocessable_entity }
       end
@@ -68,6 +74,8 @@ class ExpensesController < ApplicationController
         format.html { redirect_to @expense, notice: "Expense was successfully updated." }
         format.json { render :show, status: :ok, location: @expense }
       else
+        # Load income events for form re-render on error
+        @income_events = IncomeEvent.for_account(Current.account).order(expected_date: :desc)
         format.html { render :edit, status: :unprocessable_entity }
         format.json { render json: @expense.errors, status: :unprocessable_entity }
       end
