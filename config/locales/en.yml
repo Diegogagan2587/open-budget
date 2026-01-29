@@ -29,3 +29,17 @@
 
 en:
   hello: "Hello world"
+
+  settings:
+    title: "Settings"
+    language: "Language"
+    update: "Save changes"
+    updated: "Settings updated."
+    cancel: "Cancel"
+
+  nav:
+    settings: "Settings"
+
+  locales:
+    en: "English"
+    es: "Español"
