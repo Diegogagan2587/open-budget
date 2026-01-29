@@ -22,6 +22,7 @@
           </div>
           <%= link_to "Accounts", accounts_path, class: "text-sm text-gray-700 hover:text-gray-900" %>
         <% end %>
+        <%= link_to t("nav.settings"), edit_settings_path, class: "text-sm text-gray-700 hover:text-gray-900" %>
         <%= link_to session_path, data: { turbo_method: :delete }, class: "px-4 py-2 bg-gray-500 text-white text-sm rounded-lg hover:bg-gray-600 transition-colors" do %>
           Log out
         <% end %>
