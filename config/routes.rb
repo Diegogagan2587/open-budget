@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   resource :session
   resource :registration, only: [ :new, :create ]
+  resource :settings, only: [ :edit, :update ]
   resources :passwords, param: :token
   get "dashboard/index"
   # resources :budget_line_items
