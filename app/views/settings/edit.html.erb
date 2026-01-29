@@ -1,0 +1,34 @@
+<%= render "shared/flash" %>
+
+<div class="container mx-auto px-4 py-6">
+  <h1 class="text-2xl font-bold mb-4"><%= t("settings.title") %></h1>
+
+  <%= form_with model: Current.user, url: settings_path, method: :patch, local: true do |f| %>
+    <% if Current.user.errors.any? %>
+      <div class="mb-4 p-4 bg-red-50 border border-red-200 rounded">
+        <h2 class="font-bold text-red-800"><%= pluralize(Current.user.errors.count, "error") %> prohibited settings from being updated:</h2>
+        <ul class="list-disc list-inside text-red-700">
+          <% Current.user.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="mb-4">
+      <%= f.label :locale, t("settings.language"), class: "block text-sm font-medium text-gray-700 mb-1" %>
+      <%= f.select :locale,
+          options_for_select(
+            I18n.available_locales.map { |l| [t("locales.#{l}"), l.to_s] },
+            Current.user.locale
+          ),
+          {},
+          class: "w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+    </div>
+
+    <div class="flex space-x-2">
+      <%= f.submit t("settings.update"), class: "px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600" %>
+      <%= render CancelButtonComponent.new(path: root_path, label: t("settings.cancel")) %>
+    </div>
+  <% end %>
+</div>
