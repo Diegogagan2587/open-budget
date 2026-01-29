@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_02_233452) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_29_203647) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -74,8 +74,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_02_233452) do
     t.text "notes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "payment_day"
-    t.date "payment_date"
     t.bigint "account_id", null: false
     t.index ["account_id"], name: "index_expense_templates_on_account_id"
     t.index ["category_id"], name: "index_expense_templates_on_category_id"
@@ -187,6 +185,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_02_233452) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "name", null: false
+    t.string "locale", default: "en"
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
   end
 
