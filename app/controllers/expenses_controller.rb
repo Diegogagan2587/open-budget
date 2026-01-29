@@ -43,7 +43,7 @@ class ExpensesController < ApplicationController
     respond_to do |format|
       if @expense.save
         target = @expense.budget_period || @expense
-        format.html { redirect_to target, notice: "Expense was successfully created." }
+        format.html { redirect_to target, notice: t("expenses.flash.created") }
         format.json { render :show, status: :created, location: @expense }
       else
         # Load income events for form re-render on error
@@ -71,7 +71,7 @@ class ExpensesController < ApplicationController
           end
         end
 
-        format.html { redirect_to @expense, notice: "Expense was successfully updated." }
+        format.html { redirect_to @expense, notice: t("expenses.flash.updated") }
         format.json { render :show, status: :ok, location: @expense }
       else
         # Load income events for form re-render on error
@@ -87,7 +87,7 @@ class ExpensesController < ApplicationController
     @expense.destroy!
 
     respond_to do |format|
-      format.html { redirect_to expenses_path, status: :see_other, notice: "Expense was successfully destroyed." }
+      format.html { redirect_to expenses_path, status: :see_other, notice: t("expenses.flash.destroyed") }
       format.json { head :no_content }
     end
   end

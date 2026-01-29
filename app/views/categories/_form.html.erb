@@ -1,7 +1,7 @@
 <%= form_with model: @category, local: true do |form| %>
   <% if @category.errors.any? %>
     <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
-      <h2 class="font-bold"><%= pluralize(@category.errors.count, "error") %> prohibited this category from being saved:</h2>
+      <h2 class="font-bold"><%= t("shared.errors_prohibited_save", count: @category.errors.count, resource: t("activerecord.models.category").downcase) %></h2>
       <ul class="list-disc list-inside">
         <% @category.errors.full_messages.each do |message| %>
           <li><%= message %></li>
@@ -11,13 +11,13 @@
   <% end %>
 
   <div class="mb-4">
-    <%= form.label :name, class: "block text-sm font-medium text-gray-700 mb-1" %>
+    <%= form.label :name, t("categories.form.name"), class: "block text-sm font-medium text-gray-700 mb-1" %>
     <%= form.text_field :name, class: "border rounded px-3 py-2 w-full" %>
   </div>
 
   <div class="mb-4">
     <%= form.submit class: "px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600" %>
-    <%= link_to "Cancel", @category.persisted? ? @category : categories_path, class: "px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 ml-2" %>
+    <%= link_to t("shared.cancel"), @category.persisted? ? @category : categories_path, class: "px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 ml-2" %>
   </div>
 <% end %>
 

@@ -107,7 +107,7 @@
                 else 'bg-gray-100 text-gray-800 border border-gray-200'
                 end
               %>">
-                <%= income_event.status.humanize %>
+                <%= t("activerecord.attributes.income_event.status.#{income_event.status}") %>
               </span>
             </div>
             <p class="text-sm text-gray-600">

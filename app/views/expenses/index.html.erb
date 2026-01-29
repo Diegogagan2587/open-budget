@@ -1,40 +1,37 @@
 <p style="color: green"><%= notice %></p>
 
 <!-- app/views/expenses/index.html.erb -->
-<% content_for :title, "Expenses" %>
+<% content_for :title, t("expenses.index.title") %>
 
-<h1 class="text-2xl font-bold mb-4">Gastos</h1>
+<h1 class="text-2xl font-bold mb-4"><%= t("expenses.index.title") %></h1>
 
-<!-- Formulario de filtros -->
 <%= form_with url: expenses_path, method: :get, local: true, class: "mb-4 flex space-x-2" do |f| %>
   <%= f.date_field :date_from, value: params[:date_from], class: "border p-2" %>
   <%= f.date_field :date_to,   value: params[:date_to],   class: "border p-2" %>
-  <%= f.select :category_id, Category.all.pluck(:name, :id), { include_blank: "Todas" },
+  <%= f.select :category_id, Category.all.pluck(:name, :id), { include_blank: t("expenses.index.all_categories") },
                class: "border p-2" %>
-  <%= f.text_field :q, placeholder: "Descripción...", value: params[:q],
+  <%= f.text_field :q, placeholder: t("expenses.index.description_placeholder"), value: params[:q],
                    class: "border p-2 flex-grow" %>
-  <%= f.submit "Filtrar", class: "px-4 py-2 bg-blue-500 text-white rounded" %>
+  <%= f.submit t("expenses.index.filter"), class: "px-4 py-2 bg-blue-500 text-white rounded" %>
 <% end %>
-
 
 <div class="mb-4 flex justify-between items-center">
   <%= render AddButtonComponent.new(
-    label: "Nuevo Gasto",
+    label: t("expenses.index.new_expense"),
     path: new_expense_path
   ) %>
-  <!-- Aquí podrías añadir un campo de búsqueda o filtro -->
 </div>
 
 <table class="min-w-full bg-white border">
   <thead>
     <tr class="bg-gray-100">
-      <th class="px-4 py-2 text-left">Fecha</th>
-      <th class="px-4 py-2 text-left">Categoría</th>
-      <th class="px-4 py-2 text-left">Descripción</th>
-      <th class="px-4 py-2 text-left">Periodo presupuestario</th>
-      <th class="px-4 py-2 text-left">Evento de ingreso</th>
-      <th class="px-4 py-2 text-right">Monto</th>
-      <th class="px-4 py-2 text-center">Acciones</th>
+      <th class="px-4 py-2 text-left"><%= t("expenses.index.date") %></th>
+      <th class="px-4 py-2 text-left"><%= t("expenses.index.category") %></th>
+      <th class="px-4 py-2 text-left"><%= t("expenses.index.description") %></th>
+      <th class="px-4 py-2 text-left"><%= t("expenses.index.budget_period") %></th>
+      <th class="px-4 py-2 text-left"><%= t("expenses.index.income_event") %></th>
+      <th class="px-4 py-2 text-right"><%= t("expenses.index.amount") %></th>
+      <th class="px-4 py-2 text-center"><%= t("shared.actions") %></th>
     </tr>
   </thead>
   <tbody>
@@ -47,21 +44,21 @@
           <% if expense.budget_period %>
             <%= link_to expense.budget_period.name, expense.budget_period, class: "text-blue-600 hover:underline" %>
           <% else %>
-            <span class="text-gray-400">Sin asignar</span>
+            <span class="text-gray-400"><%= t("expenses.index.unassigned") %></span>
           <% end %>
         </td>
         <td class="px-4 py-2">
           <% if expense.income_event %>
             <%= link_to expense.income_event.description, expense.income_event, class: "text-purple-600 hover:underline" %>
           <% else %>
-            <span class="text-gray-400">Sin asignar</span>
+            <span class="text-gray-400"><%= t("expenses.index.unassigned") %></span>
           <% end %>
         </td>
         <td class="px-4 py-2 text-right"><%= number_to_currency(expense.amount) %></td>
         <td class="px-4 py-2 text-center space-x-2">
           <%= link_to "✏️", edit_expense_path(expense), class: "hover:text-blue-600" %>
           <%= link_to "🗑️", expense, method: :delete,
-              data: { confirm: "¿Eliminar este gasto?" },
+              data: { confirm: t("expenses.index.confirm_destroy") },
               class: "hover:text-red-600" %>
         </td>
       </tr>

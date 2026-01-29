@@ -20,7 +20,7 @@
       else 'bg-gray-100 text-gray-800 border border-gray-200'
       end
     %>">
-      <%= @planned_expense.status.humanize %>
+      <%= t("activerecord.attributes.planned_expense.status.#{@planned_expense.status}") %>
     </span>
   </div>
 

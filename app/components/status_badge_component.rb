@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
 class StatusBadgeComponent < ViewComponent::Base
-  def initialize(status:, type: :status)
+  def initialize(status:, type: :status, translation_scope: nil)
     @status = status
     @type = type
+    @translation_scope = translation_scope
   end
 
   def classes
@@ -36,6 +37,10 @@ class StatusBadgeComponent < ViewComponent::Base
   end
 
   def display_text
-    @status.humanize
+    if @translation_scope
+      I18n.t("#{@translation_scope}.#{@status}", default: @status.humanize)
+    else
+      @status.humanize
+    end
   end
 end

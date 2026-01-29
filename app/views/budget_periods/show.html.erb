@@ -1,7 +1,7 @@
 <p style="color: green"><%= notice %></p>
 
 <div class="mb-4">
-  <%= link_to "← Back to Budget Periods", budget_periods_path, class: "text-blue-500 hover:underline" %>
+  <%= link_to "← " + t("budget_periods.show.back"), budget_periods_path, class: "text-blue-500 hover:underline" %>
 </div>
 
 <h1 class="text-2xl font-bold mb-4"><%= @budget_period.name %></h1>
@@ -15,7 +15,7 @@
   ) %>
 
   <%= render AddButtonComponent.new(
-    label: "New Income Event",
+    label: t("income_events.new_income_event"),
     path: new_budget_period_income_event_path(@budget_period)
   ) %>
 </div>
@@ -96,7 +96,7 @@
     </tbody>
   </table>
 <% else %>
-  <p class="text-gray-500 mb-6">No income events yet. <%= link_to "Add one", new_budget_period_income_event_path(@budget_period), class: "text-blue-500 hover:underline" %></p>
+  <p class="text-gray-500 mb-6"><%= t("budget_periods.show.no_income_events") %> <%= link_to t("budget_periods.show.add_one"), new_budget_period_income_event_path(@budget_period), class: "text-blue-500 hover:underline" %></p>
 <% end %>
 
 <h2 class="text-xl font-bold mb-4">All Planned Expenses</h2>

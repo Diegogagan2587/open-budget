@@ -1,5 +1,99 @@
+# Spanish locale - user-facing strings
 es:
   hello: "Hola mundo"
+
+  nav:
+    dashboard: "Panel"
+    budgets: "Presupuestos"
+    expenses: "Gastos"
+    categories: "Categorías"
+    accounts: "Cuentas"
+    settings: "Ajustes"
+    log_out: "Cerrar sesión"
+
+  shared:
+    view: "Ver"
+    edit: "Editar"
+    delete: "Eliminar"
+    cancel: "Cancelar"
+    back: "Volver"
+    actions: "Acciones"
+    name: "Nombre"
+    email: "Correo"
+    role: "Rol"
+    current: "Actual"
+    confirm_destroy: "¿Estás seguro?"
+    confirm_destroy_category: "¿Estás seguro? Esto eliminará todos los gastos, plantillas y gastos planificados asociados."
+    confirm_remove_member: "¿Estás seguro de que quieres eliminar a %{name} de esta cuenta?"
+    errors_prohibited_save:
+      one: "1 error impidió guardar este %{resource}:"
+      other: "%{count} errores impidieron guardar este %{resource}:"
+    errors_prohibited_create:
+      one: "1 error impidió crear esta cuenta:"
+      other: "%{count} errores impidieron crear esta cuenta:"
+    error: "error"
+    errors: "errores"
+
+  account_scoping:
+    select_account: "Por favor selecciona una cuenta para continuar."
+
+  sessions:
+    title: "Iniciar sesión"
+    email_placeholder: "Introduce tu correo electrónico"
+    password_placeholder: "Introduce tu contraseña"
+    submit: "Iniciar sesión"
+    forgot_password: "¿Olvidaste tu contraseña?"
+    sign_up_link: "¿No tienes cuenta? Regístrate"
+    signed_in: "¡Sesión iniciada correctamente!"
+    signed_out: "Sesión cerrada correctamente"
+    invalid_credentials: "Prueba otro correo o contraseña."
+    try_again_later: "Inténtalo más tarde."
+
+  registrations:
+    title: "Registrarse"
+    name_placeholder: "Introduce tu nombre"
+    email_placeholder: "Introduce tu correo electrónico"
+    password_placeholder: "Introduce tu contraseña (mínimo 8 caracteres)"
+    password_confirmation_placeholder: "Confirma tu contraseña"
+    submit: "Registrarse"
+    sign_in_link: "¿Ya tienes cuenta? Iniciar sesión"
+    account_created: "¡Cuenta creada correctamente! ¡Bienvenido!"
+    try_again_later: "Inténtalo más tarde."
+
+  passwords:
+    forgot_title: "¿Olvidaste tu contraseña?"
+    email_placeholder: "Introduce tu correo electrónico"
+    submit: "Enviar instrucciones"
+    edit_title: "Actualiza tu contraseña"
+    password_placeholder: "Introduce la nueva contraseña"
+    password_confirmation_placeholder: "Repite la nueva contraseña"
+    save: "Guardar"
+    instructions_sent: "Instrucciones enviadas (si existe un usuario con ese correo)."
+    reset_success: "La contraseña se ha restablecido."
+    passwords_no_match: "Las contraseñas no coinciden."
+    link_invalid: "El enlace de restablecimiento no es válido o ha caducado."
+    try_again_later: "Inténtalo más tarde."
+
+  dashboard:
+    welcome: "Bienvenido a tu app de presupuesto"
+    budget_periods_title: "Periodos presupuestarios"
+    budget_periods_description: "Ver, crear y gestionar tus presupuestos mensuales o trimestrales."
+    income_events_title: "Ingresos"
+    income_events_description: "Planifica gastos por cada pago que recibes."
+    expense_templates_title: "Plantillas de gastos"
+    expense_templates_description: "Crea plantillas de gastos recurrentes para planificar a largo plazo."
+    expenses_title: "Gastos"
+    expenses_description: "Registra gastos y revisa el historial."
+    categories_title: "Categorías"
+    categories_description: "Define y edita categorías de gastos."
+    shopping_list_title: "Lista de la compra"
+    shopping_list_description: "Anota lo que necesitas comprar y planifica compras."
+    home_inventory_title: "Inventario del hogar"
+    home_inventory_description: "Controla artículos del hogar y niveles de stock."
+    new_budget_period: "Nuevo periodo presupuestario"
+    new_income_event: "Nuevo ingreso"
+    add_expense: "Añadir gasto"
+    add_shopping_item: "Añadir a la lista"
 
   settings:
     title: "Ajustes"
@@ -8,9 +102,451 @@ es:
     updated: "Ajustes actualizados."
     cancel: "Cancelar"
 
-  nav:
-    settings: "Ajustes"
-
   locales:
     en: "Inglés"
     es: "Español"
+
+  accounts:
+    index:
+      title: "Cuentas"
+    new:
+      title: "Nueva cuenta"
+    edit:
+      title: "Editar cuenta"
+    show:
+      back_to_accounts: "Volver a cuentas"
+      members: "Miembros"
+      manage_members: "Gestionar miembros"
+    form:
+      name: "Nombre"
+    create_account: "Crear cuenta"
+    update_account: "Actualizar cuenta"
+    switch: "Cambiar"
+    new_account: "Nueva cuenta"
+    flash:
+      created: "Cuenta creada correctamente."
+      updated: "Cuenta actualizada correctamente."
+      destroyed: "Cuenta eliminada correctamente."
+    alert_no_access: "No tienes acceso a esta cuenta."
+    alert_owners_only: "Solo los propietarios pueden realizar esta acción."
+
+  account_switches:
+    alert_not_found: "Cuenta no encontrada o no tienes acceso."
+
+  account_memberships:
+    title: "Gestionar miembros"
+    back_to_account: "Volver a la cuenta"
+    add_member_title: "Añadir miembro"
+    current_members: "Miembros actuales"
+    email_address: "Correo electrónico"
+    add_member: "Añadir miembro"
+    member: "Miembro"
+    owner: "Propietario"
+    remove: "Eliminar"
+    flash:
+      added: "Miembro añadido correctamente."
+      updated: "Membresía actualizada correctamente."
+      removed: "Miembro eliminado correctamente."
+      user_not_found: "No se encontró usuario con el correo %{email}."
+      already_member: "El usuario ya es miembro de esta cuenta."
+      add_failed: "Error al añadir miembro: %{errors}"
+      update_failed: "Error al actualizar membresía: %{errors}"
+      cannot_remove_last_owner: "No se puede eliminar al último propietario de la cuenta."
+    alert_no_access: "No tienes acceso a esta cuenta."
+    alert_owners_only: "Solo los propietarios pueden gestionar miembros."
+
+  budget_periods:
+    index:
+      title: "Periodos presupuestarios"
+    new:
+      title: "Nuevo periodo presupuestario"
+    edit:
+      title: "Editar periodo presupuestario"
+    show:
+      title: "Periodo presupuestario"
+      back: "Volver a periodos"
+      income_events: "Ingresos"
+      no_income_events: "Aún no hay ingresos."
+      add_one: "Añadir uno"
+    form:
+      name: "Nombre"
+      period_type: "Tipo de periodo"
+      start_date: "Fecha inicio"
+      end_date: "Fecha fin"
+      total_amount: "Importe total (legacy - opcional)"
+      total_amount_note: "Nota: El ingreso total se calcula ahora desde los ingresos."
+      select_period_type: "Selecciona tipo de periodo"
+      weekly: "Semanal"
+      biweekly: "Quincenal"
+      monthly: "Mensual"
+      quarterly: "Trimestral"
+      custom: "Personalizado"
+    new_budget_period: "Nuevo periodo presupuestario"
+    table:
+      name: "Nombre"
+      period_type: "Tipo"
+      start_date: "Inicio"
+      end_date: "Fin"
+      total_income: "Ingresos totales"
+      total_planned: "Planificado"
+      remaining: "Restante"
+    flash:
+      created: "Periodo presupuestario creado correctamente."
+      updated: "Periodo presupuestario actualizado correctamente."
+      destroyed: "Periodo presupuestario eliminado correctamente."
+    errors_prohibited: "error impidió guardar este periodo:"
+    errors_prohibited_other: "errores impidieron guardar este periodo:"
+
+  categories:
+    index:
+      title: "Categorías"
+    new:
+      title: "Nueva categoría"
+    edit:
+      title: "Editar categoría"
+    show:
+      title: "Categoría"
+      back: "Volver a categorías"
+    form:
+      name: "Nombre"
+    new_category: "Nueva categoría"
+    flash:
+      created: "Categoría creada correctamente."
+      updated: "Categoría actualizada correctamente."
+      destroyed: "Categoría eliminada correctamente."
+    errors_prohibited: "error impidió guardar esta categoría:"
+    errors_prohibited_other: "errores impidieron guardar esta categoría:"
+
+  expenses:
+    index:
+      title: "Gastos"
+      filter: "Filtrar"
+      date_from: "Desde"
+      date_to: "Hasta"
+      all_categories: "Todas"
+      description_placeholder: "Descripción"
+      new_expense: "Nuevo gasto"
+      date: "Fecha"
+      category: "Categoría"
+      description: "Descripción"
+      budget_period: "Periodo"
+      income_event: "Ingreso"
+      amount: "Importe"
+      unassigned: "Sin asignar"
+      confirm_destroy: "¿Eliminar este gasto?"
+    new:
+      title: "Nuevo gasto"
+    edit:
+      title: "Editar gasto"
+    show:
+      title: "Gasto"
+      back: "Volver a gastos"
+    form:
+      primary_info: "Información principal"
+      amount: "Importe"
+      amount_hint: "Importe del gasto"
+      date: "Fecha"
+      category: "Categoría"
+      select_category: "Selecciona una categoría"
+    flash:
+      created: "Gasto creado correctamente."
+      updated: "Gasto actualizado correctamente."
+      destroyed: "Gasto eliminado correctamente."
+    errors_prohibited: "error impidió guardar este gasto:"
+    errors_prohibited_other: "errores impidieron guardar este gasto:"
+    resource_name: "gasto"
+
+  expense_templates:
+    index:
+      title: "Plantillas de gastos"
+    new:
+      title: "Nueva plantilla de gasto"
+    edit:
+      title: "Editar plantilla de gasto"
+    show:
+      title: "Plantilla de gasto"
+      back: "Volver a plantillas"
+      frequency: "Frecuencia"
+    form:
+      name: "Nombre"
+      category: "Categoría"
+      description: "Descripción"
+      total_amount: "Importe total"
+      frequency: "Frecuencia"
+      notes: "Notas"
+      select_category: "Selecciona una categoría"
+      select_frequency: "Selecciona frecuencia"
+      weekly: "Semanal"
+      biweekly: "Quincenal"
+      monthly: "Mensual"
+      bimonthly: "Bimensual"
+      quarterly: "Trimestral"
+      custom: "Personalizado"
+    new_template: "Nueva plantilla de gasto"
+    flash:
+      created: "Plantilla creada correctamente."
+      updated: "Plantilla actualizada correctamente."
+      destroyed: "Plantilla eliminada correctamente."
+    errors_prohibited: "error impidió guardar esta plantilla:"
+    errors_prohibited_other: "errores impidieron guardar esta plantilla:"
+    resource_name: "plantilla de gasto"
+
+  income_events:
+    index:
+      title: "Ingresos"
+    new:
+      title: "Nuevo ingreso"
+    edit:
+      title: "Editar ingreso"
+    show:
+      title: "Ingreso"
+      back: "Volver a ingresos"
+      receive: "Marcar como recibido"
+    receive:
+      title: "Recibir ingreso"
+    form:
+      budget_period_optional: "Periodo (opcional)"
+      none: "Ninguno"
+      description: "Descripción"
+      expected_date: "Fecha prevista"
+      expected_amount: "Importe previsto"
+      status: "Estado"
+      pending: "Pendiente"
+      received: "Recibido"
+      applied: "Aplicado"
+    new_income_event: "Nuevo ingreso"
+    flash:
+      created: "Ingreso creado correctamente."
+      updated: "Ingreso actualizado correctamente."
+      destroyed: "Ingreso eliminado correctamente."
+      marked_received: "Ingreso marcado como recibido."
+      applied_all: "Todos los gastos planificados se han aplicado."
+    errors_prohibited: "error impidió guardar este ingreso:"
+    errors_prohibited_other: "errores impidieron guardar este ingreso:"
+    resource_name: "ingreso"
+
+  planned_expenses:
+    index:
+      title: "Gastos planificados"
+    new:
+      title: "Nuevo gasto planificado"
+    edit:
+      title: "Editar gasto planificado"
+    show:
+      title: "Gasto planificado"
+      back: "Volver a gastos planificados"
+    form:
+      template_selection: "Selección de plantilla"
+      create_new: "Crear nuevo gasto planificado"
+      start_from_scratch: "Desde cero"
+      use_template: "Usar plantilla"
+      existing_templates: "Seleccionar de %{count} plantilla"
+      existing_templates_other: "Seleccionar de %{count} plantillas"
+      select_category: "Selecciona una categoría"
+      description: "Descripción"
+      amount: "Importe"
+      notes: "Notas"
+    move_form:
+      title: "Mover gasto planificado"
+      select_target: "Selecciona ingreso destino"
+    flash:
+      created: "Gasto planificado creado correctamente."
+      updated: "Gasto planificado actualizado correctamente."
+      moved: "Gasto planificado movido y actualizado correctamente."
+      destroyed: "Gasto planificado eliminado correctamente."
+      applied: "Gasto planificado aplicado correctamente."
+      moved_to: "Gasto planificado movido a %{description}."
+    alert_select_target: "Por favor selecciona un ingreso destino."
+    alert_already_assigned: "El gasto planificado ya está asignado a este ingreso."
+    errors_prohibited: "error impidió guardar este gasto planificado:"
+    errors_prohibited_other: "errores impidieron guardar este gasto planificado:"
+    resource_name: "gasto planificado"
+
+  shopping_items:
+    index:
+      title: "Lista de la compra"
+      pending: "Pendiente"
+      purchased: "Comprado"
+      all: "Todos"
+      mark_purchased: "Marcar comprado"
+      edit_item: "Editar artículo"
+    new:
+      title: "Nuevo artículo"
+    edit:
+      title: "Editar artículo"
+    show:
+      title: "Artículo"
+      back: "Volver a la lista"
+      mark_purchased: "Marcar como comprado"
+      convert_to_planned_expense: "Convertir en gasto planificado"
+      convert_to_expense: "Convertir en gasto"
+      link_to_planned_expense: "Vincular a gasto planificado"
+    form:
+      name: "Nombre"
+      category: "Categoría"
+      quantity: "Cantidad"
+      quantity_placeholder: "ej., 2, 1 paquete, 500g"
+      estimated_amount: "Importe estimado"
+      type: "Tipo"
+      frequency: "Frecuencia"
+      frequency_placeholder: "ej., semanal, mensual"
+      status: "Estado"
+      notes: "Notas"
+      one_time: "Puntual"
+      recurring: "Recurrente"
+      select_category: "Selecciona categoría (opcional)"
+    convert_to_planned_expense:
+      title: "Convertir en gasto planificado"
+    convert_to_expense:
+      title: "Convertir en gasto"
+    link_to_planned_expense:
+      title: "Vincular a gasto planificado"
+    flash:
+      created: "Artículo creado correctamente."
+      updated: "Artículo actualizado correctamente."
+      destroyed: "Artículo eliminado correctamente."
+      marked_purchased: "Artículo marcado como comprado."
+      converted_to_planned_expense: "Artículo convertido en gasto planificado."
+      converted_to_expense: "Artículo convertido en gasto."
+      linked: "Artículo vinculado a gasto planificado."
+    alert_select_income_event: "Por favor selecciona un ingreso."
+    alert_select_budget_period: "Por favor selecciona un periodo presupuestario."
+    alert_select_planned_expense: "Por favor selecciona un gasto planificado."
+    alert_estimated_required: "No se puede convertir: se requiere importe estimado."
+    errors_prohibited: "error impidió guardar este artículo:"
+    errors_prohibited_other: "errores impidieron guardar este artículo:"
+    resource_name: "artículo"
+
+  inventory_items:
+    index:
+      title: "Inventario"
+      all: "Todos"
+      in_stock: "En stock"
+      low: "Bajo"
+      empty: "Vacío"
+      add_to_shopping_list: "Añadir a la lista"
+    new:
+      title: "Nuevo artículo de inventario"
+    edit:
+      title: "Editar artículo de inventario"
+    show:
+      title: "Artículo de inventario"
+      back: "Volver a inventario"
+      add_to_shopping_list: "Añadir a la lista"
+    form:
+      name: "Nombre"
+      category: "Categoría"
+      stock_state: "Estado de stock"
+      consumable: "Consumible"
+      consumable_help: "Este artículo es consumible (ej., comida, papel higiénico, jabón)"
+      notes: "Notas"
+      in_stock: "En stock"
+      low: "Bajo"
+      empty: "Vacío"
+      select_category: "Selecciona categoría (opcional)"
+    flash:
+      created: "Artículo de inventario creado correctamente."
+      updated: "Artículo de inventario actualizado correctamente."
+      destroyed: "Artículo de inventario eliminado correctamente."
+      added_to_shopping_list: "Artículo añadido a la lista de la compra."
+    errors_prohibited: "error impidió guardar este artículo:"
+    errors_prohibited_other: "errores impidieron guardar este artículo:"
+    resource_name: "artículo de inventario"
+
+  mailer:
+    passwords:
+      reset_subject: "Restablece tu contraseña"
+      reset_body: "Puedes restablecer tu contraseña en los próximos 15 minutos en"
+      reset_link: "esta página de restablecimiento"
+
+  activerecord:
+    models:
+      account: "Cuenta"
+      budget_period: "Periodo presupuestario"
+      category: "Categoría"
+      expense: "Gasto"
+      expense_template: "Plantilla de gasto"
+      income_event: "Ingreso"
+      planned_expense: "Gasto planificado"
+      shopping_item: "Artículo de lista"
+      inventory_item: "Artículo de inventario"
+      user: "Usuario"
+    attributes:
+      user:
+        name: "Nombre"
+        email_address: "Correo electrónico"
+        password: "Contraseña"
+        locale: "Idioma"
+      account:
+        name: "Nombre"
+      budget_period:
+        name: "Nombre"
+        period_type: "Tipo de periodo"
+        start_date: "Fecha inicio"
+        end_date: "Fecha fin"
+        total_amount: "Importe total"
+      category:
+        name: "Nombre"
+      expense:
+        amount: "Importe"
+        date: "Fecha"
+        description: "Descripción"
+        category_id: "Categoría"
+      expense_template:
+        name: "Nombre"
+        category_id: "Categoría"
+        description: "Descripción"
+        total_amount: "Importe total"
+        frequency: "Frecuencia"
+        notes: "Notas"
+        frequency:
+          weekly: "Semanal"
+          biweekly: "Quincenal"
+          monthly: "Mensual"
+          bimonthly: "Bimensual"
+          quarterly: "Trimestral"
+          custom: "Personalizado"
+      income_event:
+        description: "Descripción"
+        expected_date: "Fecha prevista"
+        expected_amount: "Importe previsto"
+        status: "Estado"
+        budget_period_id: "Periodo"
+        status:
+          pending: "Pendiente"
+          received: "Recibido"
+          applied: "Aplicado"
+      planned_expense:
+        description: "Descripción"
+        amount: "Importe"
+        category_id: "Categoría"
+        notes: "Notas"
+        status: "Estado"
+        status:
+          pending: "Pendiente"
+          applied: "Aplicado"
+      shopping_item:
+        name: "Nombre"
+        category_id: "Categoría"
+        quantity: "Cantidad"
+        estimated_amount: "Importe estimado"
+        item_type: "Tipo"
+        frequency: "Frecuencia"
+        status: "Estado"
+        notes: "Notas"
+        item_type:
+          one_time: "Puntual"
+          recurring: "Recurrente"
+        status:
+          pending: "Pendiente"
+          purchased: "Comprado"
+      inventory_item:
+        name: "Nombre"
+        category_id: "Categoría"
+        stock_state: "Estado de stock"
+        consumable: "Consumible"
+        notes: "Notas"
+        stock_state:
+          in_stock: "En stock"
+          low: "Bajo"
+          empty: "Vacío"

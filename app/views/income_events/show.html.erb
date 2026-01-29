@@ -38,7 +38,7 @@
       when 'applied' then 'bg-green-500/20 text-green-100 border-green-300/30'
       end
     %>">
-      <%= @income_event.status.humanize %>
+      <%= t("activerecord.attributes.income_event.status.#{@income_event.status}") %>
     </span>
   </div>
 
@@ -177,7 +177,7 @@
               else 'bg-gray-100 text-gray-800 border border-gray-200'
               end
             %>">
-              <%= planned_expense.status.humanize %>
+              <%= t("activerecord.attributes.planned_expense.status.#{planned_expense.status}") %>
             </span>
           </div>
           

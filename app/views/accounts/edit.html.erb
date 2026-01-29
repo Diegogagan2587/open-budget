@@ -1,11 +1,11 @@
 <%= render 'shared/flash' %>
 
-<h1 class="text-2xl font-bold mb-4">Edit Account</h1>
+<h1 class="text-2xl font-bold mb-4"><%= t("accounts.edit.title") %></h1>
 
 <%= form_with model: @account, local: true do |f| %>
   <% if @account.errors.any? %>
     <div class="mb-4 p-4 bg-red-50 border border-red-200 rounded">
-      <h2 class="font-bold text-red-800"><%= pluralize(@account.errors.count, "error") %> prohibited this account from being updated:</h2>
+      <h2 class="font-bold text-red-800"><%= t("shared.errors_prohibited_save", count: @account.errors.count, resource: t("activerecord.models.account").downcase) %></h2>
       <ul class="list-disc list-inside text-red-700">
         <% @account.errors.full_messages.each do |message| %>
           <li><%= message %></li>
@@ -20,7 +20,7 @@
   </div>
 
   <div class="flex space-x-2">
-    <%= f.submit "Update Account", class: "px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600" %>
+    <%= f.submit t("accounts.update_account"), class: "px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600" %>
     <%= render CancelButtonComponent.new(path: @account) %>
   </div>
 <% end %>

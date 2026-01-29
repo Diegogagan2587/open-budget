@@ -17,7 +17,7 @@ module AccountScoping
     return unless Current.user
 
     if !Current.account && !skip_account_scoping?
-      redirect_to accounts_path, alert: "Please select an account to continue."
+      redirect_to accounts_path, alert: t("account_scoping.select_account")
     end
   end
 

@@ -28,7 +28,7 @@ class BudgetPeriodsController < ApplicationController
 
     respond_to do |format|
       if @budget_period.save
-        format.html { redirect_to @budget_period, notice: "Budget period was successfully created." }
+        format.html { redirect_to @budget_period, notice: t("budget_periods.flash.created") }
         format.json { render :show, status: :created, location: @budget_period }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -56,7 +56,7 @@ class BudgetPeriodsController < ApplicationController
     @budget_period.destroy!
 
     respond_to do |format|
-      format.html { redirect_to budget_periods_path, status: :see_other, notice: "Budget period was successfully destroyed." }
+      format.html { redirect_to budget_periods_path, status: :see_other, notice: t("budget_periods.flash.destroyed") }
       format.json { head :no_content }
     end
   end

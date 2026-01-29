@@ -48,7 +48,7 @@
               <%= inventory_item.stock_state == 'in_stock' ? 'bg-green-100 text-green-800' : 
                   inventory_item.stock_state == 'low' ? 'bg-yellow-100 text-yellow-800' : 
                   'bg-red-100 text-red-800' %>">
-              <%= inventory_item.stock_state.humanize %>
+              <%= t("activerecord.attributes.inventory_item.stock_state.#{inventory_item.stock_state}") %>
             </span>
           </div>
         </div>

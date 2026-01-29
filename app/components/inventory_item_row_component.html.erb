@@ -13,7 +13,7 @@
       </div>
     </div>
     <div class="flex-shrink-0">
-      <%= render StatusBadgeComponent.new(status: @inventory_item.stock_state, type: :stock_state) %>
+      <%= render StatusBadgeComponent.new(status: @inventory_item.stock_state, type: :stock_state, translation_scope: "activerecord.attributes.inventory_item.stock_state") %>
     </div>
   </div>
   <div class="flex items-center gap-2 ml-4">

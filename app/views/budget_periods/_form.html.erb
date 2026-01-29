@@ -1,7 +1,7 @@
 <%= form_with model: @budget_period, local: true do |form| %>
   <% if @budget_period.errors.any? %>
     <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
-      <h2 class="font-bold"><%= pluralize(@budget_period.errors.count, "error") %> prohibited this budget period from being saved:</h2>
+      <h2 class="font-bold"><%= t("shared.errors_prohibited_save", count: @budget_period.errors.count, resource: t("activerecord.models.budget_period").downcase) %></h2>
       <ul class="list-disc list-inside">
         <% @budget_period.errors.full_messages.each do |message| %>
           <li><%= message %></li>
@@ -11,35 +11,35 @@
   <% end %>
 
   <div class="mb-4">
-    <%= form.label :name, class: "block text-sm font-medium text-gray-700 mb-1" %>
+    <%= form.label :name, t("budget_periods.form.name"), class: "block text-sm font-medium text-gray-700 mb-1" %>
     <%= form.text_field :name, class: "border rounded px-3 py-2 w-full" %>
   </div>
 
   <div class="mb-4">
-    <%= form.label :period_type, "Period Type", class: "block text-sm font-medium text-gray-700 mb-1" %>
-    <%= form.select :period_type, [['Weekly', 'weekly'], ['Biweekly', 'biweekly'], ['Monthly', 'monthly'], ['Quarterly', 'quarterly'], ['Custom', 'custom']], { include_blank: "Select period type" }, { class: "border rounded px-3 py-2 w-full" } %>
+    <%= form.label :period_type, t("budget_periods.form.period_type"), class: "block text-sm font-medium text-gray-700 mb-1" %>
+    <%= form.select :period_type, [[t("budget_periods.form.weekly"), 'weekly'], [t("budget_periods.form.biweekly"), 'biweekly'], [t("budget_periods.form.monthly"), 'monthly'], [t("budget_periods.form.quarterly"), 'quarterly'], [t("budget_periods.form.custom"), 'custom']], { include_blank: t("budget_periods.form.select_period_type") }, { class: "border rounded px-3 py-2 w-full" } %>
   </div>
 
   <div class="mb-4 grid grid-cols-2 gap-4">
     <div>
-      <%= form.label :start_date, "Start Date", class: "block text-sm font-medium text-gray-700 mb-1" %>
+      <%= form.label :start_date, t("budget_periods.form.start_date"), class: "block text-sm font-medium text-gray-700 mb-1" %>
       <%= form.date_field :start_date, class: "border rounded px-3 py-2 w-full" %>
     </div>
     <div>
-      <%= form.label :end_date, "End Date", class: "block text-sm font-medium text-gray-700 mb-1" %>
+      <%= form.label :end_date, t("budget_periods.form.end_date"), class: "block text-sm font-medium text-gray-700 mb-1" %>
       <%= form.date_field :end_date, class: "border rounded px-3 py-2 w-full" %>
     </div>
   </div>
 
   <div class="mb-4">
-    <%= form.label :total_amount, "Total Amount (Legacy - optional)", class: "block text-sm font-medium text-gray-700 mb-1" %>
+    <%= form.label :total_amount, t("budget_periods.form.total_amount"), class: "block text-sm font-medium text-gray-700 mb-1" %>
     <%= form.number_field :total_amount, step: 0.01, class: "border rounded px-3 py-2 w-full" %>
-    <p class="text-xs text-gray-500 mt-1">Note: Total income is now calculated from income events</p>
+    <p class="text-xs text-gray-500 mt-1"><%= t("budget_periods.form.total_amount_note") %></p>
   </div>
 
   <div class="mb-4">
     <%= form.submit class: "px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600" %>
-    <%= link_to "Cancel", @budget_period.persisted? ? @budget_period : budget_periods_path, class: "px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 ml-2" %>
+    <%= link_to t("shared.cancel"), @budget_period.persisted? ? @budget_period : budget_periods_path, class: "px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 ml-2" %>
   </div>
 <% end %>
 

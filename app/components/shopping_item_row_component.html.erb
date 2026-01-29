@@ -4,10 +4,10 @@
   <td class="px-4 py-2"><%= @shopping_item.quantity || "-" %></td>
   <td class="px-4 py-2"><%= @shopping_item.estimated_amount ? number_to_currency(@shopping_item.estimated_amount) : "-" %></td>
   <td class="px-4 py-2">
-    <%= render StatusBadgeComponent.new(status: @shopping_item.status, type: :status) %>
+    <%= render StatusBadgeComponent.new(status: @shopping_item.status, type: :status, translation_scope: "activerecord.attributes.shopping_item.status") %>
   </td>
   <td class="px-4 py-2">
-    <%= render StatusBadgeComponent.new(status: @shopping_item.item_type, type: :item_type) %>
+    <%= render StatusBadgeComponent.new(status: @shopping_item.item_type, type: :item_type, translation_scope: "activerecord.attributes.shopping_item.item_type") %>
   </td>
   <td class="px-4 py-2">
     <%= link_to "View", @shopping_item, class: "text-blue-500 hover:underline" %>

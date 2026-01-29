@@ -5,7 +5,7 @@ class AccountSwitchesController < ApplicationController
     account = Current.user.accounts.find_by(id: params[:account_id])
 
     unless account
-      redirect_to accounts_path, alert: "Account not found or you don't have access to it."
+      redirect_to accounts_path, alert: t("account_switches.alert_not_found")
       return
     end
 

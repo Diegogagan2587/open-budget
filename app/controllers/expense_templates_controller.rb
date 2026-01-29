@@ -19,7 +19,7 @@ class ExpenseTemplatesController < ApplicationController
 
     respond_to do |format|
       if @expense_template.save
-        format.html { redirect_to @expense_template, notice: "Expense template was successfully created." }
+        format.html { redirect_to @expense_template, notice: t("expense_templates.flash.created") }
         format.json { render :show, status: :created, location: @expense_template }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -34,7 +34,7 @@ class ExpenseTemplatesController < ApplicationController
   def update
     respond_to do |format|
       if @expense_template.update(expense_template_params)
-        format.html { redirect_to @expense_template, notice: "Expense template was successfully updated." }
+        format.html { redirect_to @expense_template, notice: t("expense_templates.flash.updated") }
         format.json { render :show, status: :ok, location: @expense_template }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -47,7 +47,7 @@ class ExpenseTemplatesController < ApplicationController
     @expense_template.destroy!
 
     respond_to do |format|
-      format.html { redirect_to expense_templates_path, status: :see_other, notice: "Expense template was successfully destroyed." }
+      format.html { redirect_to expense_templates_path, status: :see_other, notice: t("expense_templates.flash.destroyed") }
       format.json { head :no_content }
     end
   end

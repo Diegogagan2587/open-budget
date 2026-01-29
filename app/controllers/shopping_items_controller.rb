@@ -31,7 +31,7 @@ class ShoppingItemsController < ApplicationController
 
     respond_to do |format|
       if @shopping_item.save
-        format.html { redirect_to @shopping_item, notice: "Shopping item was successfully created." }
+        format.html { redirect_to @shopping_item, notice: t("shopping_items.flash.created") }
         format.json { render :show, status: :created, location: @shopping_item }
       else
         @categories = Category.for_account(Current.account).order(:name)
@@ -48,7 +48,7 @@ class ShoppingItemsController < ApplicationController
   def update
     respond_to do |format|
       if @shopping_item.update(shopping_item_params)
-        format.html { redirect_to @shopping_item, notice: "Shopping item was successfully updated." }
+        format.html { redirect_to @shopping_item, notice: t("shopping_items.flash.updated") }
         format.json { render :show, status: :ok, location: @shopping_item }
       else
         @categories = Category.for_account(Current.account).order(:name)
@@ -69,7 +69,7 @@ class ShoppingItemsController < ApplicationController
 
   def mark_as_purchased
     @shopping_item.mark_as_purchased!
-    redirect_to shopping_items_path, notice: "Shopping item marked as purchased."
+    redirect_to shopping_items_path, notice: t("shopping_items.flash.marked_purchased")
   end
 
   def convert_to_planned_expense
@@ -77,7 +77,7 @@ class ShoppingItemsController < ApplicationController
       income_event_id = params[:income_event_id]
       unless income_event_id.present?
         @income_events = IncomeEvent.for_account(Current.account).order(:expected_date)
-        flash.now[:alert] = "Please select an income event."
+        flash.now[:alert] = t("shopping_items.alert_select_income_event")
         render :convert_to_planned_expense, status: :unprocessable_entity
         return
       end
@@ -86,9 +86,9 @@ class ShoppingItemsController < ApplicationController
       planned_expense = @shopping_item.convert_to_planned_expense(income_event)
 
       if planned_expense
-        redirect_to income_event_planned_expenses_path(income_event), notice: "Shopping item converted to planned expense."
+        redirect_to income_event_planned_expenses_path(income_event), notice: t("shopping_items.flash.converted_to_planned_expense")
       else
-        redirect_to @shopping_item, alert: "Cannot convert: estimated amount is required."
+        redirect_to @shopping_item, alert: t("shopping_items.alert_estimated_required")
       end
     else
       @income_events = IncomeEvent.for_account(Current.account).order(:expected_date)
@@ -100,7 +100,7 @@ class ShoppingItemsController < ApplicationController
       budget_period_id = params[:budget_period_id]
       unless budget_period_id.present?
         @budget_periods = BudgetPeriod.for_account(Current.account).order(start_date: :desc)
-        flash.now[:alert] = "Please select a budget period."
+        flash.now[:alert] = t("shopping_items.alert_select_budget_period")
         render :convert_to_expense, status: :unprocessable_entity
         return
       end
@@ -111,7 +111,7 @@ class ShoppingItemsController < ApplicationController
       if expense
         redirect_to expenses_path, notice: "Shopping item converted to expense."
       else
-        redirect_to @shopping_item, alert: "Cannot convert: estimated amount is required."
+        redirect_to @shopping_item, alert: t("shopping_items.alert_estimated_required")
       end
     else
       @budget_periods = BudgetPeriod.for_account(Current.account).order(start_date: :desc)
@@ -123,14 +123,14 @@ class ShoppingItemsController < ApplicationController
       planned_expense_id = params[:planned_expense_id]
       unless planned_expense_id.present?
         @planned_expenses = PlannedExpense.for_account(Current.account).where(shopping_item_id: nil).includes(:income_event, :category).order(created_at: :desc)
-        flash.now[:alert] = "Please select a planned expense."
+        flash.now[:alert] = t("shopping_items.alert_select_planned_expense")
         render :link_to_planned_expense, status: :unprocessable_entity
         return
       end
 
       planned_expense = PlannedExpense.for_account(Current.account).find(planned_expense_id)
       @shopping_item.link_to_planned_expense(planned_expense)
-      redirect_to @shopping_item, notice: "Shopping item linked to planned expense."
+      redirect_to @shopping_item, notice: t("shopping_items.flash.linked")
     else
       @planned_expenses = PlannedExpense.for_account(Current.account).where(shopping_item_id: nil).includes(:income_event, :category).order(created_at: :desc)
     end

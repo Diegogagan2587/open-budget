@@ -1,7 +1,7 @@
 <p style="color: green"><%= notice %></p>
 
 <div class="mb-4">
-  <%= link_to "← Back to Categories", categories_path, class: "text-blue-500 hover:underline" %>
+  <%= link_to "← " + t("categories.show.back"), categories_path, class: "text-blue-500 hover:underline" %>
 </div>
 
 <h1 class="text-2xl font-bold mb-4"><%= @category.name %></h1>

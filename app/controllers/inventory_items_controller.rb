@@ -26,7 +26,7 @@ class InventoryItemsController < ApplicationController
 
     respond_to do |format|
       if @inventory_item.save
-        format.html { redirect_to @inventory_item, notice: "Inventory item was successfully created." }
+        format.html { redirect_to @inventory_item, notice: t("inventory_items.flash.created") }
         format.json { render :show, status: :created, location: @inventory_item }
       else
         @categories = Category.for_account(Current.account).order(:name)
@@ -43,7 +43,7 @@ class InventoryItemsController < ApplicationController
   def update
     respond_to do |format|
       if @inventory_item.update(inventory_item_params)
-        format.html { redirect_to @inventory_item, notice: "Inventory item was successfully updated." }
+        format.html { redirect_to @inventory_item, notice: t("inventory_items.flash.updated") }
         format.json { render :show, status: :ok, location: @inventory_item }
       else
         @categories = Category.for_account(Current.account).order(:name)
@@ -57,14 +57,14 @@ class InventoryItemsController < ApplicationController
     @inventory_item.destroy!
 
     respond_to do |format|
-      format.html { redirect_to inventory_items_path, status: :see_other, notice: "Inventory item was successfully destroyed." }
+      format.html { redirect_to inventory_items_path, status: :see_other, notice: t("inventory_items.flash.destroyed") }
       format.json { head :no_content }
     end
   end
 
   def add_to_shopping_list
     shopping_item = @inventory_item.add_to_shopping_list!
-    redirect_to shopping_items_path, notice: "Inventory item added to shopping list."
+    redirect_to shopping_items_path, notice: t("inventory_items.flash.added_to_shopping_list")
   end
 
   private

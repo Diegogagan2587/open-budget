@@ -1,34 +1,99 @@
-# Files in the config/locales directory are used for internationalization and
-# are automatically loaded by Rails. If you want to use locales other than
-# English, add the necessary files in this directory.
-#
-# To use the locales, use `I18n.t`:
-#
-#     I18n.t "hello"
-#
-# In views, this is aliased to just `t`:
-#
-#     <%= t("hello") %>
-#
-# To use a different locale, set it with `I18n.locale`:
-#
-#     I18n.locale = :es
-#
-# This would use the information in config/locales/es.yml.
-#
-# To learn more about the API, please read the Rails Internationalization guide
-# at https://guides.rubyonrails.org/i18n.html.
-#
-# Be aware that YAML interprets the following case-insensitive strings as
-# booleans: `true`, `false`, `on`, `off`, `yes`, `no`. Therefore, these strings
-# must be quoted to be interpreted as strings. For example:
-#
-#     en:
-#       "yes": yup
-#       enabled: "ON"
-
+# English locale - user-facing strings
 en:
   hello: "Hello world"
+
+  nav:
+    dashboard: "Dashboard"
+    budgets: "Budgets"
+    expenses: "Expenses"
+    categories: "Categories"
+    accounts: "Accounts"
+    settings: "Settings"
+    log_out: "Log out"
+
+  shared:
+    view: "View"
+    edit: "Edit"
+    delete: "Delete"
+    cancel: "Cancel"
+    back: "Back"
+    actions: "Actions"
+    name: "Name"
+    email: "Email"
+    role: "Role"
+    current: "Current"
+    confirm_destroy: "Are you sure?"
+    confirm_destroy_category: "Are you sure? This will delete all associated expenses, templates, and planned expenses."
+    confirm_remove_member: "Are you sure you want to remove %{name} from this account?"
+    errors_prohibited_save:
+      one: "1 error prohibited this %{resource} from being saved:"
+      other: "%{count} errors prohibited this %{resource} from being saved:"
+    errors_prohibited_create:
+      one: "1 error prohibited this account from being created:"
+      other: "%{count} errors prohibited this account from being created:"
+    error: "error"
+    errors: "errors"
+
+  account_scoping:
+    select_account: "Please select an account to continue."
+
+  sessions:
+    title: "Sign in"
+    email_placeholder: "Enter your email address"
+    password_placeholder: "Enter your password"
+    submit: "Sign in"
+    forgot_password: "Forgot password?"
+    sign_up_link: "Don't have an account? Sign up"
+    signed_in: "Signed in successfully!"
+    signed_out: "Signed out successfully"
+    invalid_credentials: "Try another email address or password."
+    try_again_later: "Try again later."
+
+  registrations:
+    title: "Sign up"
+    name_placeholder: "Enter your name"
+    email_placeholder: "Enter your email address"
+    password_placeholder: "Enter your password (minimum 8 characters)"
+    password_confirmation_placeholder: "Confirm your password"
+    submit: "Sign up"
+    sign_in_link: "Already have an account? Sign in"
+    account_created: "Account created successfully! Welcome!"
+    try_again_later: "Try again later."
+
+  passwords:
+    forgot_title: "Forgot your password?"
+    email_placeholder: "Enter your email address"
+    submit: "Email reset instructions"
+    edit_title: "Update your password"
+    password_placeholder: "Enter new password"
+    password_confirmation_placeholder: "Repeat new password"
+    save: "Save"
+    instructions_sent: "Password reset instructions sent (if user with that email address exists)."
+    reset_success: "Password has been reset."
+    passwords_no_match: "Passwords did not match."
+    link_invalid: "Password reset link is invalid or has expired."
+    try_again_later: "Try again later."
+
+  dashboard:
+    welcome: "Welcome to Your Budget App"
+    budget_periods_title: "Budget Periods"
+    budget_periods_description: "View, create, and manage your monthly or quarterly budgets."
+    income_events_title: "Income Events"
+    income_events_description: "Plan expenses for each payment you receive."
+    expense_templates_title: "Expense Templates"
+    expense_templates_description: "Create recurring expense templates for long-term planning."
+    expenses_title: "Expenses"
+    expenses_description: "Log new expenses and review past spending."
+    categories_title: "Categories"
+    categories_description: "Define and edit expense categories."
+    shopping_list_title: "Shopping List"
+    shopping_list_description: "Track items you need to buy and plan purchases."
+    home_inventory_title: "Home Inventory"
+    home_inventory_description: "Track household items and stock levels."
+    new_budget_period: "New Budget Period"
+    new_income_event: "New Income Event"
+    add_expense: "Add Expense"
+    add_shopping_item: "Add Shopping Item"
 
   settings:
     title: "Settings"
@@ -37,9 +102,451 @@ en:
     updated: "Settings updated."
     cancel: "Cancel"
 
-  nav:
-    settings: "Settings"
-
   locales:
     en: "English"
     es: "Español"
+
+  accounts:
+    index:
+      title: "Accounts"
+    new:
+      title: "New Account"
+    edit:
+      title: "Edit Account"
+    show:
+      back_to_accounts: "Back to Accounts"
+      members: "Members"
+      manage_members: "Manage Members"
+    form:
+      name: "Name"
+    create_account: "Create Account"
+    update_account: "Update Account"
+    switch: "Switch"
+    new_account: "New Account"
+    flash:
+      created: "Account was successfully created."
+      updated: "Account was successfully updated."
+      destroyed: "Account was successfully destroyed."
+    alert_no_access: "You don't have access to this account."
+    alert_owners_only: "Only account owners can perform this action."
+
+  account_switches:
+    alert_not_found: "Account not found or you don't have access to it."
+
+  account_memberships:
+    title: "Manage Members"
+    back_to_account: "Back to Account"
+    add_member_title: "Add Member"
+    current_members: "Current Members"
+    email_address: "Email Address"
+    add_member: "Add Member"
+    member: "Member"
+    owner: "Owner"
+    remove: "Remove"
+    flash:
+      added: "Member was successfully added."
+      updated: "Membership was successfully updated."
+      removed: "Member was successfully removed."
+      user_not_found: "User with email %{email} not found."
+      already_member: "User is already a member of this account."
+      add_failed: "Failed to add member: %{errors}"
+      update_failed: "Failed to update membership: %{errors}"
+      cannot_remove_last_owner: "Cannot remove the last owner of an account."
+    alert_no_access: "You don't have access to this account."
+    alert_owners_only: "Only account owners can manage members."
+
+  budget_periods:
+    index:
+      title: "Budget Periods"
+    new:
+      title: "New Budget Period"
+    edit:
+      title: "Edit Budget Period"
+    show:
+      title: "Budget Period"
+      back: "Back to Budget Periods"
+      income_events: "Income Events"
+      no_income_events: "No income events yet."
+      add_one: "Add one"
+    form:
+      name: "Name"
+      period_type: "Period Type"
+      start_date: "Start Date"
+      end_date: "End Date"
+      total_amount: "Total Amount (Legacy - optional)"
+      total_amount_note: "Note: Total income is now calculated from income events"
+      select_period_type: "Select period type"
+      weekly: "Weekly"
+      biweekly: "Biweekly"
+      monthly: "Monthly"
+      quarterly: "Quarterly"
+      custom: "Custom"
+    new_budget_period: "New Budget Period"
+    table:
+      name: "Name"
+      period_type: "Period Type"
+      start_date: "Start Date"
+      end_date: "End Date"
+      total_income: "Total Income"
+      total_planned: "Total Planned"
+      remaining: "Remaining"
+    flash:
+      created: "Budget period was successfully created."
+      updated: "Budget period was successfully updated."
+      destroyed: "Budget period was successfully destroyed."
+    errors_prohibited: "error prohibited this budget period from being saved:"
+    errors_prohibited_other: "errors prohibited this budget period from being saved:"
+
+  categories:
+    index:
+      title: "Categories"
+    new:
+      title: "New Category"
+    edit:
+      title: "Edit Category"
+    show:
+      title: "Category"
+      back: "Back to Categories"
+    form:
+      name: "Name"
+    new_category: "New Category"
+    flash:
+      created: "Category was successfully created."
+      updated: "Category was successfully updated."
+      destroyed: "Category was successfully destroyed."
+    errors_prohibited: "error prohibited this category from being saved:"
+    errors_prohibited_other: "errors prohibited this category from being saved:"
+
+  expenses:
+    index:
+      title: "Expenses"
+      filter: "Filter"
+      date_from: "Date from"
+      date_to: "Date to"
+      all_categories: "All"
+      description_placeholder: "Description"
+      new_expense: "New Expense"
+      date: "Date"
+      category: "Category"
+      description: "Description"
+      budget_period: "Budget period"
+      income_event: "Income event"
+      amount: "Amount"
+      unassigned: "Unassigned"
+      confirm_destroy: "Delete this expense?"
+    new:
+      title: "New Expense"
+    edit:
+      title: "Edit Expense"
+    show:
+      title: "Expense"
+      back: "Back to Expenses"
+    form:
+      primary_info: "Primary Information"
+      amount: "Amount"
+      amount_hint: "Expense amount"
+      date: "Date"
+      category: "Category"
+      select_category: "Select a category"
+    flash:
+      created: "Expense was successfully created."
+      updated: "Expense was successfully updated."
+      destroyed: "Expense was successfully destroyed."
+    errors_prohibited: "error prohibited this expense from being saved:"
+    errors_prohibited_other: "errors prohibited this expense from being saved:"
+    resource_name: "expense"
+
+  expense_templates:
+    index:
+      title: "Expense Templates"
+    new:
+      title: "New Expense Template"
+    edit:
+      title: "Edit Expense Template"
+    show:
+      title: "Expense Template"
+      back: "Back to Expense Templates"
+      frequency: "Frequency"
+    form:
+      name: "Name"
+      category: "Category"
+      description: "Description"
+      total_amount: "Total Amount"
+      frequency: "Frequency"
+      notes: "Notes"
+      select_category: "Select a category"
+      select_frequency: "Select frequency"
+      weekly: "Weekly"
+      biweekly: "Biweekly"
+      monthly: "Monthly"
+      bimonthly: "Bimonthly"
+      quarterly: "Quarterly"
+      custom: "Custom"
+    new_template: "New Expense Template"
+    flash:
+      created: "Expense template was successfully created."
+      updated: "Expense template was successfully updated."
+      destroyed: "Expense template was successfully destroyed."
+    errors_prohibited: "error prohibited this expense template from being saved:"
+    errors_prohibited_other: "errors prohibited this expense template from being saved:"
+    resource_name: "expense template"
+
+  income_events:
+    index:
+      title: "Income Events"
+    new:
+      title: "New Income Event"
+    edit:
+      title: "Edit Income Event"
+    show:
+      title: "Income Event"
+      back: "Back to Income Events"
+      receive: "Mark as Received"
+    receive:
+      title: "Receive Income"
+    form:
+      budget_period_optional: "Budget Period (optional)"
+      none: "None"
+      description: "Description"
+      expected_date: "Expected date"
+      expected_amount: "Expected amount"
+      status: "Status"
+      pending: "Pending"
+      received: "Received"
+      applied: "Applied"
+    new_income_event: "New Income Event"
+    flash:
+      created: "Income event was successfully created."
+      updated: "Income event was successfully updated."
+      destroyed: "Income event was successfully destroyed."
+      marked_received: "Income event marked as received."
+      applied_all: "All planned expenses have been applied."
+    errors_prohibited: "error prohibited this income event from being saved:"
+    errors_prohibited_other: "errors prohibited this income event from being saved:"
+    resource_name: "income event"
+
+  planned_expenses:
+    index:
+      title: "Planned Expenses"
+    new:
+      title: "New Planned Expense"
+    edit:
+      title: "Edit Planned Expense"
+    show:
+      title: "Planned Expense"
+      back: "Back to Planned Expenses"
+    form:
+      template_selection: "Template Selection"
+      create_new: "Create new planned expense"
+      start_from_scratch: "Start from scratch"
+      use_template: "Use template"
+      existing_templates: "Select from %{count} existing template"
+      existing_templates_other: "Select from %{count} existing templates"
+      select_category: "Select a category"
+      description: "Description"
+      amount: "Amount"
+      notes: "Notes"
+    move_form:
+      title: "Move Planned Expense"
+      select_target: "Select target income event"
+    flash:
+      created: "Planned expense was successfully created."
+      updated: "Planned expense was successfully updated."
+      moved: "Planned expense was successfully moved and updated."
+      destroyed: "Planned expense was successfully destroyed."
+      applied: "Planned expense was successfully applied."
+      moved_to: "Planned expense was successfully moved to %{description}."
+    alert_select_target: "Please select a target income event."
+    alert_already_assigned: "The planned expense is already assigned to this income event."
+    errors_prohibited: "error prohibited this planned expense from being saved:"
+    errors_prohibited_other: "errors prohibited this planned expense from being saved:"
+    resource_name: "planned expense"
+
+  shopping_items:
+    index:
+      title: "Shopping List"
+      pending: "Pending"
+      purchased: "Purchased"
+      all: "All"
+      mark_purchased: "Mark Purchased"
+      edit_item: "Edit Shopping Item"
+    new:
+      title: "New Shopping Item"
+    edit:
+      title: "Edit Shopping Item"
+    show:
+      title: "Shopping Item"
+      back: "Back to Shopping List"
+      mark_purchased: "Mark as Purchased"
+      convert_to_planned_expense: "Convert to Planned Expense"
+      convert_to_expense: "Convert to Expense"
+      link_to_planned_expense: "Link to Planned Expense"
+    form:
+      name: "Name"
+      category: "Category"
+      quantity: "Quantity"
+      quantity_placeholder: "e.g., 2, 1 pack, 500g"
+      estimated_amount: "Estimated Amount"
+      type: "Type"
+      frequency: "Frequency"
+      frequency_placeholder: "e.g., weekly, monthly"
+      status: "Status"
+      notes: "Notes"
+      one_time: "One Time"
+      recurring: "Recurring"
+      select_category: "Select a category (optional)"
+    convert_to_planned_expense:
+      title: "Convert to Planned Expense"
+    convert_to_expense:
+      title: "Convert to Expense"
+    link_to_planned_expense:
+      title: "Link to Planned Expense"
+    flash:
+      created: "Shopping item was successfully created."
+      updated: "Shopping item was successfully updated."
+      destroyed: "Shopping item was successfully destroyed."
+      marked_purchased: "Shopping item marked as purchased."
+      converted_to_planned_expense: "Shopping item converted to planned expense."
+      converted_to_expense: "Shopping item converted to expense."
+      linked: "Shopping item linked to planned expense."
+    alert_select_income_event: "Please select an income event."
+    alert_select_budget_period: "Please select a budget period."
+    alert_select_planned_expense: "Please select a planned expense."
+    alert_estimated_required: "Cannot convert: estimated amount is required."
+    errors_prohibited: "error prohibited this shopping item from being saved:"
+    errors_prohibited_other: "errors prohibited this shopping item from being saved:"
+    resource_name: "shopping item"
+
+  inventory_items:
+    index:
+      title: "Inventory"
+      all: "All"
+      in_stock: "In Stock"
+      low: "Low"
+      empty: "Empty"
+      add_to_shopping_list: "Add to Shopping List"
+    new:
+      title: "New Inventory Item"
+    edit:
+      title: "Edit Inventory Item"
+    show:
+      title: "Inventory Item"
+      back: "Back to Inventory"
+      add_to_shopping_list: "Add to Shopping List"
+    form:
+      name: "Name"
+      category: "Category"
+      stock_state: "Stock State"
+      consumable: "Consumable"
+      consumable_help: "This item is consumable (e.g., food, toilet paper, soap)"
+      notes: "Notes"
+      in_stock: "In Stock"
+      low: "Low"
+      empty: "Empty"
+      select_category: "Select a category (optional)"
+    flash:
+      created: "Inventory item was successfully created."
+      updated: "Inventory item was successfully updated."
+      destroyed: "Inventory item was successfully destroyed."
+      added_to_shopping_list: "Inventory item added to shopping list."
+    errors_prohibited: "error prohibited this inventory item from being saved:"
+    errors_prohibited_other: "errors prohibited this inventory item from being saved:"
+    resource_name: "inventory item"
+
+  mailer:
+    passwords:
+      reset_subject: "Reset your password"
+      reset_body: "You can reset your password within the next 15 minutes on"
+      reset_link: "this password reset page"
+
+  activerecord:
+    models:
+      account: "Account"
+      budget_period: "Budget period"
+      category: "Category"
+      expense: "Expense"
+      expense_template: "Expense template"
+      income_event: "Income event"
+      planned_expense: "Planned expense"
+      shopping_item: "Shopping item"
+      inventory_item: "Inventory item"
+      user: "User"
+    attributes:
+      user:
+        name: "Name"
+        email_address: "Email address"
+        password: "Password"
+        locale: "Language"
+      account:
+        name: "Name"
+      budget_period:
+        name: "Name"
+        period_type: "Period type"
+        start_date: "Start date"
+        end_date: "End date"
+        total_amount: "Total amount"
+      category:
+        name: "Name"
+      expense:
+        amount: "Amount"
+        date: "Date"
+        description: "Description"
+        category_id: "Category"
+      expense_template:
+        name: "Name"
+        category_id: "Category"
+        description: "Description"
+        total_amount: "Total amount"
+        frequency: "Frequency"
+        notes: "Notes"
+        frequency:
+          weekly: "Weekly"
+          biweekly: "Biweekly"
+          monthly: "Monthly"
+          bimonthly: "Bimonthly"
+          quarterly: "Quarterly"
+          custom: "Custom"
+      income_event:
+        description: "Description"
+        expected_date: "Expected date"
+        expected_amount: "Expected amount"
+        status: "Status"
+        budget_period_id: "Budget period"
+        status:
+          pending: "Pending"
+          received: "Received"
+          applied: "Applied"
+      planned_expense:
+        description: "Description"
+        amount: "Amount"
+        category_id: "Category"
+        notes: "Notes"
+        status: "Status"
+        status:
+          pending: "Pending"
+          applied: "Applied"
+      shopping_item:
+        name: "Name"
+        category_id: "Category"
+        quantity: "Quantity"
+        estimated_amount: "Estimated amount"
+        item_type: "Type"
+        frequency: "Frequency"
+        status: "Status"
+        notes: "Notes"
+        item_type:
+          one_time: "One Time"
+          recurring: "Recurring"
+        status:
+          pending: "Pending"
+          purchased: "Purchased"
+      inventory_item:
+        name: "Name"
+        category_id: "Category"
+        stock_state: "Stock state"
+        consumable: "Consumable"
+        notes: "Notes"
+        stock_state:
+          in_stock: "In Stock"
+          low: "Low"
+          empty: "Empty"

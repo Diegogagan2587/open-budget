@@ -1,56 +1,56 @@
 <%= render 'shared/flash' %>
 
-<h1 class="text-2xl font-bold mb-4">Welcome to Your Budget App</h1>
+<h1 class="text-2xl font-bold mb-4"><%= t("dashboard.welcome") %></h1>
 
 <nav class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
   <%= link_to budget_periods_path, class: "block p-4 border rounded hover:shadow" do %>
-    <h2 class="text-xl">📅 Budget Periods</h2>
-    <p>View, create, and manage your monthly or quarterly budgets.</p>
+    <h2 class="text-xl">📅 <%= t("dashboard.budget_periods_title") %></h2>
+    <p><%= t("dashboard.budget_periods_description") %></p>
   <% end %>
 
   <%= link_to income_events_path, class: "block p-4 border rounded hover:shadow" do %>
-    <h2 class="text-xl">💰 Income Events</h2>
-    <p>Plan expenses for each payment you receive.</p>
+    <h2 class="text-xl">💰 <%= t("dashboard.income_events_title") %></h2>
+    <p><%= t("dashboard.income_events_description") %></p>
   <% end %>
 
   <%= link_to expense_templates_path, class: "block p-4 border rounded hover:shadow" do %>
-    <h2 class="text-xl">📋 Expense Templates</h2>
-    <p>Create recurring expense templates for long-term planning.</p>
+    <h2 class="text-xl">📋 <%= t("dashboard.expense_templates_title") %></h2>
+    <p><%= t("dashboard.expense_templates_description") %></p>
   <% end %>
 
   <%= link_to expenses_path, class: "block p-4 border rounded hover:shadow" do %>
-    <h2 class="text-xl">💸 Expenses</h2>
-    <p>Log new expenses and review past spending.</p>
+    <h2 class="text-xl">💸 <%= t("dashboard.expenses_title") %></h2>
+    <p><%= t("dashboard.expenses_description") %></p>
   <% end %>
 
   <%= link_to categories_path, class: "block p-4 border rounded hover:shadow" do %>
-    <h2 class="text-xl">🏷️ Categories</h2>
-    <p>Define and edit expense categories.</p>
+    <h2 class="text-xl">🏷️ <%= t("dashboard.categories_title") %></h2>
+    <p><%= t("dashboard.categories_description") %></p>
   <% end %>
 
   <%= link_to shopping_items_path, class: "block p-4 border rounded hover:shadow" do %>
-    <h2 class="text-xl">🛒 Shopping List</h2>
-    <p>Track items you need to buy and plan purchases.</p>
+    <h2 class="text-xl">🛒 <%= t("dashboard.shopping_list_title") %></h2>
+    <p><%= t("dashboard.shopping_list_description") %></p>
   <% end %>
 
   <%= link_to inventory_items_path, class: "block p-4 border rounded hover:shadow" do %>
-    <h2 class="text-xl">📦 Home Inventory</h2>
-    <p>Track household items and stock levels.</p>
+    <h2 class="text-xl">📦 <%= t("dashboard.home_inventory_title") %></h2>
+    <p><%= t("dashboard.home_inventory_description") %></p>
   <% end %>
 
   <%= link_to new_budget_period_path, class: "block p-4 border rounded hover:shadow col-span-full" do %>
-    <h2 class="text-xl">➕ New Budget Period</h2>
+    <h2 class="text-xl">➕ <%= t("dashboard.new_budget_period") %></h2>
   <% end %>
 
   <%= link_to new_income_event_path, class: "block p-4 border rounded hover:shadow col-span-full" do %>
-    <h2 class="text-xl">➕ New Income Event</h2>
+    <h2 class="text-xl">➕ <%= t("dashboard.new_income_event") %></h2>
   <% end %>
   
   <%= link_to new_expense_path, class: "block p-4 border rounded hover:shadow col-span-full" do %>
-    <h2 class="text-xl">➕ Add Expense</h2>
+    <h2 class="text-xl">➕ <%= t("dashboard.add_expense") %></h2>
   <% end %>
 
   <%= link_to new_shopping_item_path, class: "block p-4 border rounded hover:shadow col-span-full" do %>
-    <h2 class="text-xl">➕ Add Shopping Item</h2>
+    <h2 class="text-xl">➕ <%= t("dashboard.add_shopping_item") %></h2>
   <% end %>
 </nav>

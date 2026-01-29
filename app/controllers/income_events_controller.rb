@@ -46,7 +46,7 @@ class IncomeEventsController < ApplicationController
 
     respond_to do |format|
       if @income_event.save
-        format.html { redirect_to @income_event, notice: "Income event was successfully created." }
+        format.html { redirect_to @income_event, notice: t("income_events.flash.created") }
         format.json { render :show, status: :created, location: @income_event }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -61,7 +61,7 @@ class IncomeEventsController < ApplicationController
   def update
     respond_to do |format|
       if @income_event.update(income_event_params)
-        format.html { redirect_to @income_event, notice: "Income event was successfully updated." }
+        format.html { redirect_to @income_event, notice: t("income_events.flash.updated") }
         format.json { render :show, status: :ok, location: @income_event }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -74,7 +74,7 @@ class IncomeEventsController < ApplicationController
     @income_event.destroy!
 
     respond_to do |format|
-      format.html { redirect_to income_events_path, status: :see_other, notice: "Income event was successfully destroyed." }
+      format.html { redirect_to income_events_path, status: :see_other, notice: t("income_events.flash.destroyed") }
       format.json { head :no_content }
     end
   end
@@ -82,7 +82,7 @@ class IncomeEventsController < ApplicationController
   def receive
     if request.patch? || request.put?
       if @income_event.update(receive_params.merge(status: "received"))
-        redirect_to @income_event, notice: "Income event marked as received."
+        redirect_to @income_event, notice: t("income_events.flash.marked_received")
       else
         render :receive, status: :unprocessable_entity
       end
@@ -91,7 +91,7 @@ class IncomeEventsController < ApplicationController
 
   def apply_all
     @income_event.apply_all!
-    redirect_to @income_event, notice: "All planned expenses have been applied."
+    redirect_to @income_event, notice: t("income_events.flash.applied_all")
   end
 
   private

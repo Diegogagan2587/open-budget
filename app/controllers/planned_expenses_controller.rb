@@ -28,7 +28,7 @@ class PlannedExpensesController < ApplicationController
 
     respond_to do |format|
       if @planned_expense.save
-        format.html { redirect_to income_event_planned_expenses_path(@income_event), notice: "Planned expense was successfully created." }
+        format.html { redirect_to income_event_planned_expenses_path(@income_event), notice: t("planned_expenses.flash.created") }
         format.json { render :show, status: :created, location: [ @income_event, @planned_expense ] }
       else
         @expense_templates = ExpenseTemplate.includes(:category).all
@@ -59,7 +59,7 @@ class PlannedExpensesController < ApplicationController
           end
           format.html { redirect_to income_event_planned_expenses_path(new_income_event), notice: "Planned expense was successfully moved and updated." }
         else
-          format.html { redirect_to income_event_planned_expenses_path(@income_event), notice: "Planned expense was successfully updated." }
+          format.html { redirect_to income_event_planned_expenses_path(@income_event), notice: t("planned_expenses.flash.updated") }
         end
         format.json { render :show, status: :ok, location: [ @income_event, @planned_expense ] }
       else
@@ -82,14 +82,14 @@ class PlannedExpensesController < ApplicationController
 
   def apply
     @planned_expense.apply!
-    redirect_to income_event_planned_expenses_path(@income_event), notice: "Planned expense was successfully applied."
+    redirect_to income_event_planned_expenses_path(@income_event), notice: t("planned_expenses.flash.applied")
   end
 
   def move
     target_income_event_id = params[:target_income_event_id]
 
     unless target_income_event_id.present?
-      redirect_to income_event_planned_expenses_path(@income_event), alert: "Please select a target income event."
+      redirect_to income_event_planned_expenses_path(@income_event), alert: t("planned_expenses.alert_select_target")
       return
     end
 
@@ -108,7 +108,7 @@ class PlannedExpensesController < ApplicationController
       @planned_expense.update(position: (target_income_event.planned_expenses.maximum(:position) || 0) + 1)
     end
 
-    redirect_to income_event_planned_expenses_path(target_income_event), notice: "Planned expense was successfully moved to #{target_income_event.description}."
+    redirect_to income_event_planned_expenses_path(target_income_event), notice: t("planned_expenses.flash.moved_to", description: target_income_event.description)
   end
 
   private

@@ -12,7 +12,7 @@ class AccountMembershipsController < ApplicationController
     user = User.find_by(email_address: email)
 
     if user.nil?
-      redirect_to account_account_memberships_path(@account), alert: "User with email #{email} not found."
+      redirect_to account_account_memberships_path(@account), alert: t("account_memberships.flash.user_not_found", email: email)
       return
     end
 
@@ -25,10 +25,10 @@ class AccountMembershipsController < ApplicationController
 
     respond_to do |format|
       if @membership.save
-        format.html { redirect_to account_account_memberships_path(@account), notice: "Member was successfully added." }
+        format.html { redirect_to account_account_memberships_path(@account), notice: t("account_memberships.flash.added") }
         format.json { render :show, status: :created }
       else
-        format.html { redirect_to account_account_memberships_path(@account), alert: "Failed to add member: #{@membership.errors.full_messages.join(', ')}" }
+        format.html { redirect_to account_account_memberships_path(@account), alert: t("account_memberships.flash.add_failed", errors: @membership.errors.full_messages.join(", ")) }
         format.json { render json: @membership.errors, status: :unprocessable_entity }
       end
     end
@@ -37,10 +37,10 @@ class AccountMembershipsController < ApplicationController
   def update
     respond_to do |format|
       if @membership.update(membership_params)
-        format.html { redirect_to account_account_memberships_path(@account), notice: "Membership was successfully updated." }
+        format.html { redirect_to account_account_memberships_path(@account), notice: t("account_memberships.flash.updated") }
         format.json { render :show, status: :ok }
       else
-        format.html { redirect_to account_account_memberships_path(@account), alert: "Failed to update membership: #{@membership.errors.full_messages.join(', ')}" }
+        format.html { redirect_to account_account_memberships_path(@account), alert: t("account_memberships.flash.update_failed", errors: @membership.errors.full_messages.join(", ")) }
         format.json { render json: @membership.errors, status: :unprocessable_entity }
       end
     end
@@ -49,14 +49,14 @@ class AccountMembershipsController < ApplicationController
   def destroy
     # Prevent removing the last owner
     if @membership.owner? && @account.account_memberships.owners.count == 1
-      redirect_to account_account_memberships_path(@account), alert: "Cannot remove the last owner of an account."
+      redirect_to account_account_memberships_path(@account), alert: t("account_memberships.flash.cannot_remove_last_owner")
       return
     end
 
     @membership.destroy!
 
     respond_to do |format|
-      format.html { redirect_to account_account_memberships_path(@account), status: :see_other, notice: "Member was successfully removed." }
+      format.html { redirect_to account_account_memberships_path(@account), status: :see_other, notice: t("account_memberships.flash.removed") }
       format.json { head :no_content }
     end
   end
@@ -72,7 +72,7 @@ class AccountMembershipsController < ApplicationController
 
   def ensure_owner
     unless @account.account_memberships.find_by(user: Current.user)&.owner?
-      redirect_to @account, alert: "Only account owners can manage members."
+      redirect_to @account, alert: t("account_memberships.alert_owners_only")
     end
   end
 

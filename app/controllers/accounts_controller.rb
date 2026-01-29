@@ -23,7 +23,7 @@ class AccountsController < ApplicationController
       if @account.save
         # Create membership for current user as owner
         @account.account_memberships.create!(user: Current.user, role: "owner")
-        format.html { redirect_to @account, notice: "Account was successfully created." }
+        format.html { redirect_to @account, notice: t("accounts.flash.created") }
         format.json { render :show, status: :created, location: @account }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -38,7 +38,7 @@ class AccountsController < ApplicationController
   def update
     respond_to do |format|
       if @account.update(account_params)
-        format.html { redirect_to @account, notice: "Account was successfully updated." }
+        format.html { redirect_to @account, notice: t("accounts.flash.updated") }
         format.json { render :show, status: :ok, location: @account }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -51,7 +51,7 @@ class AccountsController < ApplicationController
     @account.destroy!
 
     respond_to do |format|
-      format.html { redirect_to accounts_path, status: :see_other, notice: "Account was successfully destroyed." }
+      format.html { redirect_to accounts_path, status: :see_other, notice: t("accounts.flash.destroyed") }
       format.json { head :no_content }
     end
   end
@@ -70,7 +70,7 @@ class AccountsController < ApplicationController
 
   def ensure_owner
     unless @account.account_memberships.find_by(user: Current.user)&.owner?
-      redirect_to @account, alert: "Only account owners can perform this action."
+      redirect_to @account, alert: t("accounts.alert_owners_only")
     end
   end
 
