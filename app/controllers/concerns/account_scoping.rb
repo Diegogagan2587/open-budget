@@ -23,6 +23,6 @@ module AccountScoping
 
   def skip_account_scoping?
     # Allow account switching and account management without account set
-    controller_name.in?(%w[account_switches accounts]) || action_name == "create" && controller_name == "account_switches"
+    controller_name.in?(%w[account_switches accounts settings]) || action_name == "create" && controller_name == "account_switches"
   end
 end
