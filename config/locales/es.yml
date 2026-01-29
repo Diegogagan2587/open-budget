@@ -1,0 +1,16 @@
+es:
+  hello: "Hola mundo"
+
+  settings:
+    title: "Ajustes"
+    language: "Idioma"
+    update: "Guardar cambios"
+    updated: "Ajustes actualizados."
+    cancel: "Cancelar"
+
+  nav:
+    settings: "Ajustes"
+
+  locales:
+    en: "Inglés"
+    es: "Español"
