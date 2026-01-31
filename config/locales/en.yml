@@ -511,9 +511,14 @@ en:
         category_id: "Category"
         notes: "Notes"
         status: "Status"
-        status:
-          pending: "Pending"
-          applied: "Applied"
+        status_options:
+          pending_to_pay: "Pending to Pay"
+          saved: "Saved"
+          transfer_to_savings: "Transfer to Savings"
+          transferring: "Transferring"
+          paid: "Paid"
+          transferred: "Transferred"
+          spent: "Spent"
       shopping_item:
         name: "Name"
         category_id: "Category"

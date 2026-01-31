@@ -511,9 +511,14 @@ es:
         category_id: "Categoría"
         notes: "Notas"
         status: "Estado"
-        status:
-          pending: "Pendiente"
-          applied: "Aplicado"
+        status_options:
+          pending_to_pay: "Pendiente de pago"
+          saved: "Ahorrado"
+          transfer_to_savings: "Transferir a ahorros"
+          transferring: "Transfiriendo"
+          paid: "Pagado"
+          transferred: "Transferido"
+          spent: "Gastado"
       shopping_item:
         name: "Nombre"
         category_id: "Categoría"
