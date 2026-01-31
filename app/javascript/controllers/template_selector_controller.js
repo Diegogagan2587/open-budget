@@ -3,7 +3,8 @@ import { Controller } from "@hotwired/stimulus"
 export default class extends Controller {
   static targets = ["selection", "select", "info", "categorySelect", "descriptionField", "amountField", "amountHint", "notesField"]
   static values = {
-    templates: Array
+    templates: Array,
+    editMode: Boolean
   }
 
   connect() {
@@ -81,7 +82,7 @@ export default class extends Controller {
       if (this.hasDescriptionFieldTarget) {
         this.descriptionFieldTarget.value = template.description || ""
       }
-      if (this.hasAmountFieldTarget) {
+      if (this.hasAmountFieldTarget && !this.editModeValue) {
         this.amountFieldTarget.value = ""
         const remaining = template.total_amount - template.saved
         const suggested = remaining > 0 ? remaining : template.total_amount / 2

@@ -1,5 +1,5 @@
 <% templates_json = (@expense_templates || []).map { |t| { id: t.id, category_id: t.category_id, description: t.description, total_amount: t.total_amount.to_f, notes: t.notes, saved: t.total_saved.to_f } }.to_json.html_safe %>
-<%= form_with model: [@income_event, @planned_expense], local: true, class: "space-y-6", data: { controller: "template-selector", template_selector_templates_value: templates_json } do |form| %>
+<%= form_with model: [@income_event, @planned_expense], local: true, class: "space-y-6", data: { controller: "template-selector", template_selector_templates_value: templates_json, template_selector_edit_mode_value: @planned_expense.persisted? } do |form| %>
   <% if @planned_expense.errors.any? %>
     <div class="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 rounded mb-6">
       <div class="flex">
