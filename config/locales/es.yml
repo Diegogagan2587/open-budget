@@ -505,10 +505,6 @@ es:
         expected_amount: "Importe previsto"
         status: "Estado"
         budget_period_id: "Periodo"
-        status:
-          pending: "Pendiente"
-          received: "Recibido"
-          applied: "Aplicado"
       planned_expense:
         description: "Descripción"
         amount: "Importe"

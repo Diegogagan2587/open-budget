@@ -505,10 +505,6 @@ en:
         expected_amount: "Expected amount"
         status: "Status"
         budget_period_id: "Budget period"
-        status:
-          pending: "Pending"
-          received: "Received"
-          applied: "Applied"
       planned_expense:
         description: "Description"
         amount: "Amount"
