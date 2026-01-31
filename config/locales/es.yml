@@ -499,13 +499,6 @@ es:
         total_amount: "Importe total"
         frequency: "Frecuencia"
         notes: "Notas"
-        frequency:
-          weekly: "Semanal"
-          biweekly: "Quincenal"
-          monthly: "Mensual"
-          bimonthly: "Bimensual"
-          quarterly: "Trimestral"
-          custom: "Personalizado"
       income_event:
         description: "Descripción"
         expected_date: "Fecha prevista"

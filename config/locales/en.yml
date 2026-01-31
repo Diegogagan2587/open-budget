@@ -499,13 +499,6 @@ en:
         total_amount: "Total amount"
         frequency: "Frequency"
         notes: "Notes"
-        frequency:
-          weekly: "Weekly"
-          biweekly: "Biweekly"
-          monthly: "Monthly"
-          bimonthly: "Bimonthly"
-          quarterly: "Quarterly"
-          custom: "Custom"
       income_event:
         description: "Description"
         expected_date: "Expected date"
