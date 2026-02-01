@@ -510,6 +510,7 @@ es:
       add_item: "Añadir artículo"
       empty: "No hay artículos en el inventario."
       uncategorized: "Sin categoría"
+      all_categories: "Todas las categorías"
       all: "Todos"
       in_stock: "En stock"
       low: "Bajo"
