@@ -27,12 +27,12 @@
       <p class="font-semibold"><%= @budget_period.period_type || "-" %></p>
     </div>
     <div>
-      <p class="text-sm text-gray-600">Dates</p>
-      <p class="font-semibold"><%= @budget_period.start_date %> to <%= @budget_period.end_date %></p>
-    </div>
-    <div>
       <p class="text-sm text-gray-600">Total Amount (Legacy)</p>
       <p class="font-semibold"><%= @budget_period.total_amount ? number_to_currency(@budget_period.total_amount) : "-" %></p>
+    </div>
+    <div class="col-span-2">
+      <p class="text-sm text-gray-600">Dates</p>
+      <p class="font-semibold whitespace-nowrap"><%= @budget_period.start_date %> to <%= @budget_period.end_date %></p>
     </div>
   </div>
 
@@ -104,20 +104,20 @@
 <% if @planned_expenses.any? %>
   <% @planned_expenses.group_by(&:income_event).each do |income_event, planned_expenses| %>
     <div class="mb-6 border rounded bg-white">
-      <div class="px-4 py-3 bg-gray-50 border-b flex flex-wrap items-center gap-4">
-        <div class="min-w-[200px]">
+      <div class="px-4 py-3 bg-gray-50 border-b grid grid-cols-[1fr_7rem_8rem_auto] gap-x-6 gap-y-1 items-baseline">
+        <div class="min-w-0">
           <p class="text-sm text-gray-600">Income Event</p>
           <p class="font-semibold">
             <%= link_to income_event.description, income_event, class: "text-blue-500 hover:underline" %>
           </p>
         </div>
-        <div>
+        <div class="min-w-0">
           <p class="text-sm text-gray-600">Expected Date</p>
-          <p class="font-semibold"><%= income_event.expected_date %></p>
+          <p class="font-semibold whitespace-nowrap"><%= income_event.expected_date %></p>
         </div>
-        <div>
+        <div class="min-w-0">
           <p class="text-sm text-gray-600">Expected Amount</p>
-          <p class="font-semibold"><%= number_to_currency(income_event.expected_amount) %></p>
+          <p class="font-semibold whitespace-nowrap"><%= number_to_currency(income_event.expected_amount) %></p>
         </div>
         <div>
           <p class="text-sm text-gray-600">Status</p>
