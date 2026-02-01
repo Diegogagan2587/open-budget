@@ -150,6 +150,7 @@ en:
   reports:
     index:
       title: "Reports"
+    report_types_heading: "Report types"
     expenses_over_time: "Expenses over time"
     by_category: "Expenses by category"
     income_vs_expenses: "Income vs expenses"
@@ -163,6 +164,29 @@ en:
     last_3_months: "Last 3 months"
     last_6_months: "Last 6 months"
     last_12_months: "Last 12 months"
+    this_year: "This year"
+    by_date_title: "By date"
+    by_date_description: "See spending grouped by day, week, month, etc."
+    spending_by_category_title: "By category"
+    spending_by_category_description: "Totals per category and drill-down to expenses."
+    category_trends_title: "Category trends"
+    category_trends_description: "How each category changes over time."
+    view_expenses: "View expenses"
+    grouped_by: "Grouped by"
+    summary_from_to: "From %{from} to %{to}"
+    period_day: "Daily"
+    period_week: "Weekly"
+    period_biweekly: "Biweekly"
+    period_quincenal: "Half-month"
+    period_month: "Monthly"
+    period_quarter: "Quarterly"
+    period_year: "Yearly"
+    period_total: "Total"
+    category: "Category"
+    total: "Total"
+    empty_by_date: "No expenses in this date range."
+    empty_by_category: "No expenses in this date range."
+    empty_trends: "No expenses in this date range."
 
   accounts:
     index:

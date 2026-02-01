@@ -17,23 +17,26 @@ export default class extends Controller {
       return
     }
 
-    const { type, data } = config
+    const { type, data, options: configOptions } = config
     if (!type || !data) return
+
+    const defaultOptions = {
+      responsive: true,
+      maintainAspectRatio: true,
+      plugins: {
+        legend: { display: true },
+        tooltip: { enabled: true }
+      },
+      scales: type === "pie" || type === "doughnut" ? {} : {
+        y: { beginAtZero: true }
+      }
+    }
+    const options = configOptions ? { ...defaultOptions, ...configOptions } : defaultOptions
 
     this.chart = new Chart(this.element, {
       type,
       data,
-      options: {
-        responsive: true,
-        maintainAspectRatio: true,
-        plugins: {
-          legend: { display: true },
-          tooltip: { enabled: true }
-        },
-        scales: type === "pie" || type === "doughnut" ? {} : {
-          y: { beginAtZero: true }
-        }
-      }
+      options
     })
   }
 
