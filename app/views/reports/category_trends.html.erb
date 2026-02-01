@@ -1,0 +1,84 @@
+<% content_for :head do %>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<% end %>
+
+<div class="container mx-auto px-4 py-4">
+  <h1 class="text-2xl font-bold mb-4"><%= t("reports.category_trends_title") %></h1>
+  <%= render "reports/report_nav", current: :category_trends, date_from: @date_from, date_to: @date_to, period: @period %>
+
+  <%= form_with url: reports_category_trends_path, method: :get, local: true, class: "flex flex-col sm:flex-row sm:items-end gap-4 flex-wrap mb-6" do |f| %>
+    <div class="flex flex-wrap items-center gap-2">
+      <label for="from" class="text-sm font-medium text-gray-700"><%= t("reports.period_from") %></label>
+      <%= f.date_field :from, value: @date_from, id: "from", class: "rounded border border-gray-300 px-3 py-2 text-sm" %>
+    </div>
+    <div class="flex flex-wrap items-center gap-2">
+      <label for="to" class="text-sm font-medium text-gray-700"><%= t("reports.period_to") %></label>
+      <%= f.date_field :to, value: @date_to, id: "to", class: "rounded border border-gray-300 px-3 py-2 text-sm" %>
+    </div>
+    <div class="flex flex-wrap items-center gap-2">
+      <label for="period" class="text-sm font-medium text-gray-700"><%= t("reports.grouped_by") %></label>
+      <%= f.select :period, report_trend_period_options, { selected: @period }, id: "period", class: "rounded border border-gray-300 px-3 py-2 text-sm" %>
+    </div>
+    <%= f.submit t("reports.apply"), class: "px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm font-medium cursor-pointer w-full sm:w-auto" %>
+  <% end %>
+
+  <% if @categories_summary.blank? %>
+    <p class="text-gray-500 py-8"><%= t("reports.empty_trends") %></p>
+  <% else %>
+    <section class="bg-white rounded-xl shadow-md border border-gray-200 p-4 sm:p-6 mb-6">
+      <div class="min-h-[280px] max-w-full" style="min-height: 280px;">
+        <canvas data-controller="charts" data-charts-config-value="<%= h(@chart_config.to_json) %>" style="height: 280px;"></canvas>
+      </div>
+    </section>
+
+    <section class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
+      <div class="hidden md:block overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th scope="col" class="sticky left-0 bg-gray-50 z-10 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase"><%= t("reports.category") %></th>
+              <% @period_labels.each do |label| %>
+                <th scope="col" class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase whitespace-nowrap"><%= label %></th>
+              <% end %>
+              <th scope="col" class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase"><%= t("reports.total") %></th>
+              <th scope="col" class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase"><%= t("reports.view_expenses") %></th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <% @categories_summary.each do |cat| %>
+              <tr>
+                <td class="sticky left-0 bg-white z-10 px-4 py-3 text-sm font-medium text-gray-900 border-r border-gray-200"><%= cat[:category_name] %></td>
+                <% cat[:amounts].each do |amt| %>
+                  <td class="px-4 py-3 text-sm text-right whitespace-nowrap"><%= number_to_currency(amt) %></td>
+                <% end %>
+                <td class="px-4 py-3 text-sm text-right font-medium"><%= number_to_currency(cat[:total]) %></td>
+                <td class="px-4 py-3 text-sm text-right">
+                  <%= link_to t("reports.view_expenses"), expenses_path(category_id: cat[:category_id], date_from: @date_from, date_to: @date_to), class: "text-blue-600 hover:underline" %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+      <div class="md:hidden divide-y divide-gray-200">
+        <% @categories_summary.each do |cat| %>
+          <div class="p-4">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-sm font-medium text-gray-900"><%= cat[:category_name] %></span>
+              <span class="text-sm font-medium"><%= number_to_currency(cat[:total]) %></span>
+            </div>
+            <div class="text-sm text-gray-600 space-y-1 mb-2">
+              <% @period_labels.each_with_index do |label, idx| %>
+                <div class="flex justify-between">
+                  <span><%= label %></span>
+                  <span><%= number_to_currency(cat[:amounts][idx] || 0) %></span>
+                </div>
+              <% end %>
+            </div>
+            <%= link_to t("reports.view_expenses"), expenses_path(category_id: cat[:category_id], date_from: @date_from, date_to: @date_to), class: "inline-block py-2 px-4 text-sm text-blue-600 hover:underline" %>
+          </div>
+        <% end %>
+      </div>
+    </section>
+  <% end %>
+</div>

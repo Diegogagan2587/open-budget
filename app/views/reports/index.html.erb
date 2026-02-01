@@ -22,15 +22,17 @@
     <div class="flex flex-wrap gap-2 sm:ml-4">
       <%= link_to t("reports.last_3_months"), reports_path(from: 3.months.ago.to_date, to: Date.current), class: "px-3 py-2 text-sm rounded bg-gray-200 text-gray-700 hover:bg-gray-300" %>
       <%= link_to t("reports.last_6_months"), reports_path(from: 6.months.ago.to_date, to: Date.current), class: "px-3 py-2 text-sm rounded bg-gray-200 text-gray-700 hover:bg-gray-300" %>
-      <%= link_to t("reports.last_12_months"), reports_path(from: 12.months.ago.to_date, to: Date.current), class: "px-3 py-2 text-sm rounded bg-gray-200 text-gray-700 hover:bg-gray-300" %>
+      <%= link_to t("reports.this_year"), reports_path(from: Date.current.beginning_of_year, to: Date.current), class: "px-3 py-2 text-sm rounded bg-gray-200 text-gray-700 hover:bg-gray-300" %>
     </div>
   </div>
 
-  <p class="mb-6 text-sm text-gray-600">
+  <p class="mb-4 text-sm text-gray-600">
     <%= t("reports.period_from") %> <strong><%= l(@date_from) %></strong> — <%= t("reports.period_to") %> <strong><%= l(@date_to) %></strong>
   </p>
 
-  <div class="space-y-10">
+  <%= render "reports/report_nav", current: :index, date_from: @date_from, date_to: @date_to %>
+
+  <div class="space-y-10 mt-8">
     <section class="bg-white rounded-xl shadow-md border border-gray-200 p-6">
       <h2 class="text-lg font-semibold text-gray-800 mb-4"><%= t("reports.expenses_over_time") %></h2>
       <div class="min-h-[300px]">
