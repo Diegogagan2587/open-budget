@@ -1,34 +1,103 @@
-<header class="bg-gray-100 p-4 mb-6">
-  <nav class="container mx-auto flex flex-col sm:flex-row justify-between items-center">
-    <div class="flex space-x-4">
+<header class="bg-gray-100 p-4 mb-6" data-controller="sidebar" data-action="turbo:before-visit@window->sidebar#close">
+  <div class="container mx-auto">
+    <%# Mobile header bar: brand + hamburger (visible only on mobile) %>
+    <div class="flex justify-between items-center sm:hidden">
       <%= link_to t("nav.dashboard"), root_path, class: "font-semibold" %>
-      <%= link_to t("nav.budgets"), budget_periods_path %>
-      <%= link_to t("nav.expenses"), expenses_path %>
-      <%= link_to t("nav.categories"), categories_path %>
-      <%= link_to t("nav.tasks"), task_recurring_tasks_path %>
-      <%= link_to t("nav.reports"), reports_path %>
+      <button
+        type="button"
+        class="p-2 rounded-md text-gray-700 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400"
+        data-sidebar-target="button"
+        data-action="click->sidebar#toggle"
+        data-menu-open="<%= t("nav.menu_open") %>"
+        data-menu-close="<%= t("nav.menu_close") %>"
+        aria-expanded="false"
+        aria-label="<%= t("nav.menu_open") %>"
+      >
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
     </div>
-    <div class="flex space-x-4 items-center">
+
+    <%# Desktop nav (hidden on mobile, horizontal on sm+) %>
+    <nav class="hidden sm:flex sm:flex-row justify-between items-center" aria-label="<%= t("nav.dashboard") %>">
+      <div class="flex space-x-4">
+        <%= link_to t("nav.dashboard"), root_path, class: "font-semibold" %>
+        <%= link_to t("nav.budgets"), budget_periods_path %>
+        <%= link_to t("nav.expenses"), expenses_path %>
+        <%= link_to t("nav.categories"), categories_path %>
+        <%= link_to t("nav.tasks"), task_recurring_tasks_path %>
+        <%= link_to t("nav.reports"), reports_path %>
+      </div>
+      <div class="flex space-x-4 items-center">
+        <% if authenticated? %>
+          <% if current_account %>
+            <div class="relative">
+              <%= form_with url: account_switch_path, method: :post, local: true, class: "inline" do |f| %>
+                <%= f.select :account_id,
+                    options_from_collection_for_select(Current.user.accounts, :id, :name, current_account.id),
+                    {},
+                    {
+                      onchange: "this.form.submit()",
+                      class: "px-3 py-1 border rounded text-sm"
+                    } %>
+              <% end %>
+            </div>
+            <%= link_to t("nav.accounts"), accounts_path, class: "text-sm text-gray-700 hover:text-gray-900" %>
+          <% end %>
+          <%= link_to t("nav.settings"), edit_settings_path, class: "text-sm text-gray-700 hover:text-gray-900" %>
+          <%= link_to session_path, data: { turbo_method: :delete }, class: "px-4 py-2 bg-gray-500 text-white text-sm rounded-lg hover:bg-gray-600 transition-colors" do %>
+            <%= t("nav.log_out") %>
+          <% end %>
+        <% end %>
+      </div>
+    </nav>
+  </div>
+
+  <%# Mobile sliding drawer: backdrop + panel (visible only on mobile) %>
+  <div
+    data-sidebar-target="backdrop"
+    data-action="click->sidebar#close"
+    class="sm:hidden fixed inset-0 bg-black/50 z-40 hidden transition-opacity"
+    aria-hidden="true"
+  ></div>
+  <aside
+    data-sidebar-target="panel"
+    class="sm:hidden fixed left-0 top-0 bottom-0 w-64 bg-white shadow-xl z-50 -translate-x-full transition-transform duration-200 ease-out overflow-y-auto"
+    aria-label="<%= t("nav.menu_open") %>"
+  >
+    <div class="p-4 flex flex-col gap-4 pt-8">
+      <div class="flex flex-col gap-2">
+        <%= link_to t("nav.dashboard"), root_path, class: "font-semibold py-2 text-gray-900 hover:text-gray-700" %>
+        <%= link_to t("nav.budgets"), budget_periods_path, class: "py-2 text-gray-700 hover:text-gray-900" %>
+        <%= link_to t("nav.expenses"), expenses_path, class: "py-2 text-gray-700 hover:text-gray-900" %>
+        <%= link_to t("nav.categories"), categories_path, class: "py-2 text-gray-700 hover:text-gray-900" %>
+        <%= link_to t("nav.tasks"), task_recurring_tasks_path, class: "py-2 text-gray-700 hover:text-gray-900" %>
+        <%= link_to t("nav.reports"), reports_path, class: "py-2 text-gray-700 hover:text-gray-900" %>
+      </div>
       <% if authenticated? %>
-        <% if current_account %>
-          <div class="relative">
-            <%= form_with url: account_switch_path, method: :post, local: true, class: "inline" do |f| %>
-              <%= f.select :account_id, 
-                  options_from_collection_for_select(Current.user.accounts, :id, :name, current_account.id),
-                  {},
-                  { 
-                    onchange: "this.form.submit()",
-                    class: "px-3 py-1 border rounded text-sm"
-                  } %>
-            <% end %>
-          </div>
-          <%= link_to t("nav.accounts"), accounts_path, class: "text-sm text-gray-700 hover:text-gray-900" %>
-        <% end %>
-        <%= link_to t("nav.settings"), edit_settings_path, class: "text-sm text-gray-700 hover:text-gray-900" %>
-        <%= link_to session_path, data: { turbo_method: :delete }, class: "px-4 py-2 bg-gray-500 text-white text-sm rounded-lg hover:bg-gray-600 transition-colors" do %>
-          <%= t("nav.log_out") %>
-        <% end %>
+        <hr class="border-gray-200" />
+        <div class="flex flex-col gap-2">
+          <% if current_account %>
+            <div>
+              <%= form_with url: account_switch_path, method: :post, local: true, class: "block" do |f| %>
+                <%= f.select :account_id,
+                    options_from_collection_for_select(Current.user.accounts, :id, :name, current_account.id),
+                    {},
+                    {
+                      onchange: "this.form.submit()",
+                      class: "w-full px-3 py-2 border rounded text-sm"
+                    } %>
+              <% end %>
+            </div>
+            <%= link_to t("nav.accounts"), accounts_path, class: "py-2 text-sm text-gray-700 hover:text-gray-900" %>
+          <% end %>
+          <%= link_to t("nav.settings"), edit_settings_path, class: "py-2 text-sm text-gray-700 hover:text-gray-900" %>
+          <%= link_to session_path, data: { turbo_method: :delete }, class: "px-4 py-2 bg-gray-500 text-white text-sm rounded-lg hover:bg-gray-600 transition-colors inline-block w-fit" do %>
+            <%= t("nav.log_out") %>
+          <% end %>
+        </div>
       <% end %>
     </div>
-  </nav>
+  </aside>
 </header>
