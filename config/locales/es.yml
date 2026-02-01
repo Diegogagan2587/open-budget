@@ -45,6 +45,8 @@ es:
     accounts: "Cuentas"
     settings: "Ajustes"
     log_out: "Cerrar sesión"
+    menu_open: "Abrir menú"
+    menu_close: "Cerrar menú"
 
   shared:
     view: "Ver"
