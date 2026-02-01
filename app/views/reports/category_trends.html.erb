@@ -3,8 +3,8 @@
 <% end %>
 
 <div class="container mx-auto px-4 py-4">
-  <%= link_to t("shared.back"), reports_path(from: @date_from, to: @date_to), class: "text-sm text-blue-600 hover:underline mb-4 inline-block" %>
   <h1 class="text-2xl font-bold mb-4"><%= t("reports.category_trends_title") %></h1>
+  <%= render "reports/report_nav", current: :category_trends, date_from: @date_from, date_to: @date_to, period: @period %>
 
   <%= form_with url: reports_category_trends_path, method: :get, local: true, class: "flex flex-col sm:flex-row sm:items-end gap-4 flex-wrap mb-6" do |f| %>
     <div class="flex flex-wrap items-center gap-2">

@@ -26,29 +26,13 @@
     </div>
   </div>
 
-  <p class="mb-6 text-sm text-gray-600">
+  <p class="mb-4 text-sm text-gray-600">
     <%= t("reports.period_from") %> <strong><%= l(@date_from) %></strong> — <%= t("reports.period_to") %> <strong><%= l(@date_to) %></strong>
   </p>
 
-  <section class="mb-10">
-    <h2 class="text-lg font-semibold text-gray-800 mb-4"><%= t("reports.report_types_heading") %></h2>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-      <%= link_to reports_by_date_path(from: @date_from, to: @date_to), class: "block p-4 rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md hover:border-blue-300 transition" do %>
-        <h3 class="text-base font-semibold text-gray-900 mb-2"><%= t("reports.by_date_title") %></h3>
-        <p class="text-sm text-gray-600"><%= t("reports.by_date_description") %></p>
-      <% end %>
-      <%= link_to reports_spending_by_category_path(from: @date_from, to: @date_to), class: "block p-4 rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md hover:border-blue-300 transition" do %>
-        <h3 class="text-base font-semibold text-gray-900 mb-2"><%= t("reports.spending_by_category_title") %></h3>
-        <p class="text-sm text-gray-600"><%= t("reports.spending_by_category_description") %></p>
-      <% end %>
-      <%= link_to reports_category_trends_path(from: @date_from, to: @date_to), class: "block p-4 rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md hover:border-blue-300 transition" do %>
-        <h3 class="text-base font-semibold text-gray-900 mb-2"><%= t("reports.category_trends_title") %></h3>
-        <p class="text-sm text-gray-600"><%= t("reports.category_trends_description") %></p>
-      <% end %>
-    </div>
-  </section>
+  <%= render "reports/report_nav", current: :index, date_from: @date_from, date_to: @date_to %>
 
-  <div class="space-y-10">
+  <div class="space-y-10 mt-8">
     <section class="bg-white rounded-xl shadow-md border border-gray-200 p-6">
       <h2 class="text-lg font-semibold text-gray-800 mb-4"><%= t("reports.expenses_over_time") %></h2>
       <div class="min-h-[300px]">

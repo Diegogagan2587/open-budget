@@ -151,6 +151,8 @@ en:
     index:
       title: "Reports"
     report_types_heading: "Report types"
+    nav_overview: "Overview"
+    nav_report_types: "Report types"
     expenses_over_time: "Expenses over time"
     by_category: "Expenses by category"
     income_vs_expenses: "Income vs expenses"
