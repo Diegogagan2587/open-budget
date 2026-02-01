@@ -18,7 +18,7 @@ class ReportsController < ApplicationController
     [ 168, 85, 247 ],  # purple
     [ 14, 165, 233 ],  # sky
     [ 132, 204, 22 ],  # lime
-    [ 244, 63, 94 ],   # rose
+    [ 244, 63, 94 ]   # rose
   ].freeze
 
   def index
