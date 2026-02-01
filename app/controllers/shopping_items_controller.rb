@@ -3,7 +3,7 @@ class ShoppingItemsController < ApplicationController
 
   def index
     @status_filter = params[:status] || "pending"
-    @shopping_items = ShoppingItem.for_account(Current.account)
+    @shopping_items = ShoppingItem.for_account(Current.account).includes(:category)
 
     if @status_filter == "pending"
       @shopping_items = @shopping_items.pending
@@ -11,7 +11,7 @@ class ShoppingItemsController < ApplicationController
       @shopping_items = @shopping_items.purchased
     end
 
-    @shopping_items = @shopping_items.order(created_at: :desc)
+    @grouped_shopping_items = build_grouped_shopping_items(@shopping_items)
   end
 
   def show
@@ -144,5 +144,14 @@ class ShoppingItemsController < ApplicationController
 
   def shopping_item_params
     params.expect(shopping_item: [ :name, :status, :item_type, :quantity, :estimated_amount, :category_id, :frequency, :notes ])
+  end
+
+  def build_grouped_shopping_items(items)
+    grouped = items.group_by(&:category_id)
+    category_ids = grouped.keys.compact
+    categories_ordered = Category.where(id: category_ids).order(:name)
+    result = categories_ordered.map { |cat| [ cat, grouped[cat.id].sort_by(&:name) ] }
+    result << [ nil, grouped[nil].sort_by(&:name) ] if grouped.key?(nil)
+    result
   end
 end

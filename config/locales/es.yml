@@ -372,6 +372,7 @@ es:
       title: "Lista de la compra"
       add_item: "Añadir artículo"
       empty: "No hay artículos en la lista."
+      uncategorized: "Sin categoría"
       pending: "Pendiente"
       purchased: "Comprado"
       all: "Todos"

@@ -372,6 +372,7 @@ en:
       title: "Shopping List"
       add_item: "Add Item"
       empty: "No shopping items found."
+      uncategorized: "Uncategorized"
       pending: "Pending"
       purchased: "Purchased"
       all: "All"
