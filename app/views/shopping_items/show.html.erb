@@ -26,7 +26,7 @@
       <p class="text-sm text-gray-600">Status</p>
       <p class="font-semibold">
         <span class="px-2 py-1 rounded text-xs <%= @shopping_item.status == 'pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800' %>">
-          <%= t("activerecord.attributes.shopping_item.status.#{@shopping_item.status}") %>
+          <%= t("activerecord.attributes.shopping_item.status_options.#{@shopping_item.status}") %>
         </span>
       </p>
     </div>
