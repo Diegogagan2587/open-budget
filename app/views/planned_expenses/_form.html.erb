@@ -10,7 +10,7 @@
         </div>
         <div class="ml-3">
           <h3 class="text-sm font-medium text-red-800">
-            <%= pluralize(@planned_expense.errors.count, "error") %> prohibited this planned expense from being saved:
+            <%= @planned_expense.errors.count == 1 ? I18n.t("errors_prohibited", scope: "planned_expenses") : I18n.t("errors_prohibited_other", scope: "planned_expenses", count: @planned_expense.errors.count) %>
           </h3>
           <ul class="mt-2 text-sm text-red-700 list-disc list-inside">
             <% @planned_expense.errors.full_messages.each do |message| %>
@@ -43,7 +43,8 @@
           <%= radio_button_tag :use_template, "yes", @planned_expense.expense_template_id.present?, id: "use_template_yes", class: "text-indigo-600 focus:ring-indigo-500", data: { action: "change->template-selector#toggle" } %>
           <div class="ml-3">
             <p class="font-medium text-gray-900">Use template</p>
-            <p class="text-sm text-gray-500">Select from <%= pluralize((@expense_templates || []).count, 'existing template') %></p>
+            <% template_count = (@expense_templates || []).count %>
+            <p class="text-sm text-gray-500"><%= template_count == 1 ? I18n.t("existing_templates", scope: "planned_expenses.form", count: template_count) : I18n.t("existing_templates_other", scope: "planned_expenses.form", count: template_count) %></p>
           </div>
         </label>
       </div>

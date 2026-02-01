@@ -2,11 +2,45 @@
 es:
   hello: "Hola mundo"
 
+  date:
+    formats:
+      default: "%d/%m/%Y"
+      short: "%d %b"
+    abbr_month_names:
+      - ~
+      - Ene
+      - Feb
+      - Mar
+      - Abr
+      - May
+      - Jun
+      - Jul
+      - Ago
+      - Sep
+      - Oct
+      - Nov
+      - Dic
+    month_names:
+      - ~
+      - Enero
+      - Febrero
+      - Marzo
+      - Abril
+      - Mayo
+      - Junio
+      - Julio
+      - Agosto
+      - Septiembre
+      - Octubre
+      - Noviembre
+      - Diciembre
+
   nav:
     dashboard: "Panel"
     budgets: "Presupuestos"
     expenses: "Gastos"
     categories: "Categorías"
+    reports: "Reportes"
     accounts: "Cuentas"
     settings: "Ajustes"
     log_out: "Cerrar sesión"
@@ -90,6 +124,8 @@ es:
     shopping_list_description: "Anota lo que necesitas comprar y planifica compras."
     home_inventory_title: "Inventario del hogar"
     home_inventory_description: "Controla artículos del hogar y niveles de stock."
+    reports_title: "Reportes"
+    reports_description: "Gráficos y resúmenes de gastos e ingresos."
     new_budget_period: "Nuevo periodo presupuestario"
     new_income_event: "Nuevo ingreso"
     add_expense: "Añadir gasto"
@@ -105,6 +141,28 @@ es:
   locales:
     en: "Inglés"
     es: "Español"
+
+  helpers:
+    submit:
+      create: "Crear %{model}"
+      update: "Actualizar %{model}"
+
+  reports:
+    index:
+      title: "Reportes"
+    expenses_over_time: "Gastos en el tiempo"
+    by_category: "Gastos por categoría"
+    income_vs_expenses: "Ingresos vs gastos"
+    income: "Ingresos"
+    expenses: "Gastos"
+    amount: "Importe"
+    period_from: "Desde"
+    period_to: "Hasta"
+    filter: "Filtrar periodo"
+    apply: "Aplicar"
+    last_3_months: "Últimos 3 meses"
+    last_6_months: "Últimos 6 meses"
+    last_12_months: "Últimos 12 meses"
 
   accounts:
     index:
@@ -365,6 +423,9 @@ es:
   shopping_items:
     index:
       title: "Lista de la compra"
+      add_item: "Añadir artículo"
+      empty: "No hay artículos en la lista."
+      uncategorized: "Sin categoría"
       pending: "Pendiente"
       purchased: "Comprado"
       all: "Todos"
@@ -420,10 +481,13 @@ es:
   inventory_items:
     index:
       title: "Inventario"
+      add_item: "Añadir artículo"
+      empty: "No hay artículos en el inventario."
+      uncategorized: "Sin categoría"
       all: "Todos"
       in_stock: "En stock"
       low: "Bajo"
-      empty: "Vacío"
+      empty_filter: "Vacío"
       add_to_shopping_list: "Añadir a la lista"
     new:
       title: "Nuevo artículo de inventario"
@@ -449,6 +513,7 @@ es:
       updated: "Artículo de inventario actualizado correctamente."
       destroyed: "Artículo de inventario eliminado correctamente."
       added_to_shopping_list: "Artículo añadido a la lista de la compra."
+      invalid_stock_state: "Estado de stock no válido."
     errors_prohibited: "error impidió guardar este artículo:"
     errors_prohibited_other: "errores impidieron guardar este artículo:"
     resource_name: "artículo de inventario"
@@ -511,9 +576,14 @@ es:
         category_id: "Categoría"
         notes: "Notas"
         status: "Estado"
-        status:
-          pending: "Pendiente"
-          applied: "Aplicado"
+        status_options:
+          pending_to_pay: "Pendiente de pago"
+          saved: "Ahorrado"
+          transfer_to_savings: "Transferir a ahorros"
+          transferring: "Transfiriendo"
+          paid: "Pagado"
+          transferred: "Transferido"
+          spent: "Gastado"
       shopping_item:
         name: "Nombre"
         category_id: "Categoría"
@@ -526,7 +596,7 @@ es:
         item_type:
           one_time: "Puntual"
           recurring: "Recurrente"
-        status:
+        status_options:
           pending: "Pendiente"
           purchased: "Comprado"
       inventory_item:

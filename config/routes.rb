@@ -62,6 +62,7 @@ Rails.application.routes.draw do
   resources :inventory_items do
     member do
       post :add_to_shopping_list
+      patch :update_stock_state
     end
   end
 
@@ -69,6 +70,8 @@ Rails.application.routes.draw do
     resources :account_memberships, except: [ :show ]
   end
   post "account_switches", to: "account_switches#create", as: :account_switch
+
+  get "reports", to: "reports#index", as: :reports
 
   root "dashboard#index"
 end

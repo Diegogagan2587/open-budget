@@ -97,4 +97,33 @@ class PlannedExpensesControllerTest < ActionDispatch::IntegrationTest
     # Verify form is re-rendered with income_events available
     assert_select "select[name='planned_expense[income_event_id]']"
   end
+
+  test "edit form shows current amount and edit mode for template selector" do
+    sign_in
+    planned_expense = PlannedExpense.create!(
+      income_event: @income_event,
+      category: @category,
+      account: @account,
+      description: "Rent",
+      amount: 250.50,
+      status: "pending_to_pay"
+    )
+
+    get edit_income_event_planned_expense_path(@income_event, planned_expense)
+    assert_response :success
+    assert_select "h1", "Edit Planned Expense"
+
+    # Amount field must show the current value (not a placeholder) so the template-selector
+    # controller preserves it when editing
+    assert_select "input[name='planned_expense[amount]']" do |inputs|
+      assert_equal 1, inputs.size, "Expected one amount input"
+      value = inputs.first["value"]
+      assert value.present?, "Amount input should have a value when editing"
+      assert_in_delta 250.50, value.to_f, 0.01, "Amount input should show the current planned expense amount"
+    end
+
+    # Form must signal edit mode so the template-selector JS does not clear the amount
+    assert_select "form[data-template-selector-edit-mode-value='true']", 1,
+      "Edit form should have edit mode so amount is preserved"
+  end
 end
