@@ -41,6 +41,7 @@ es:
     expenses: "Gastos"
     categories: "Categorías"
     reports: "Reportes"
+    tasks: "Tareas"
     accounts: "Cuentas"
     settings: "Ajustes"
     log_out: "Cerrar sesión"
@@ -70,6 +71,64 @@ es:
 
   account_scoping:
     select_account: "Por favor selecciona una cuenta para continuar."
+
+  task:
+    areas:
+      model_name: "Área de tarea"
+      index:
+        title: "Áreas de tareas"
+      new:
+        title: "Nueva área de tarea"
+      new_area: "Nueva área"
+      edit:
+        title: "Editar área de tarea"
+      form:
+        name: "Nombre"
+      flash:
+        created: "El área de tarea se creó correctamente."
+        updated: "El área de tarea se actualizó correctamente."
+        destroyed: "El área de tarea se eliminó correctamente."
+    recurring_tasks:
+      model_name: "Tarea recurrente"
+      index:
+        title: "Tareas pendientes"
+        name: "Tarea"
+        area: "Área"
+        next_due: "Próxima fecha"
+        recurrence: "Recurrencia"
+        notes: "Notas"
+        filter: "Filtrar"
+        filter_by_area: "Área"
+        all_areas: "Todas las áreas"
+        empty: "No hay tareas pendientes. Añade una o marca tareas como hechas para verlas aquí."
+        view_details: "Ver detalle"
+      new:
+        title: "Nueva tarea"
+      new_task: "Nueva tarea"
+      edit:
+        title: "Editar tarea"
+      form:
+        name: "Nombre de la tarea"
+        area: "Área"
+        no_area: "— Ninguna —"
+        recurrence: "Recurrencia"
+        next_due_date: "Próxima fecha"
+        notes: "Notas"
+      mark_done: "Marcar hecha"
+      show:
+        close_panel: "Cerrar"
+      recurrence:
+        none: "Ninguna"
+        once: "Una vez"
+        daily: "Diaria"
+        weekly: "Semanal"
+        biweekly: "Cada dos semanas"
+        monthly: "Mensual"
+      flash:
+        created: "La tarea se creó correctamente."
+        updated: "La tarea se actualizó correctamente."
+        destroyed: "La tarea se eliminó correctamente."
+        mark_done: "Tarea marcada como hecha."
 
   sessions:
     title: "Iniciar sesión"

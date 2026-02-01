@@ -41,6 +41,7 @@ en:
     expenses: "Expenses"
     categories: "Categories"
     reports: "Reports"
+    tasks: "Tasks"
     accounts: "Accounts"
     settings: "Settings"
     log_out: "Log out"
@@ -70,6 +71,64 @@ en:
 
   account_scoping:
     select_account: "Please select an account to continue."
+
+  task:
+    areas:
+      model_name: "Task area"
+      index:
+        title: "Task areas"
+      new:
+        title: "New task area"
+      new_area: "New area"
+      edit:
+        title: "Edit task area"
+      form:
+        name: "Name"
+      flash:
+        created: "Task area was successfully created."
+        updated: "Task area was successfully updated."
+        destroyed: "Task area was successfully deleted."
+    recurring_tasks:
+      model_name: "Recurring task"
+      index:
+        title: "Pending tasks"
+        name: "Task"
+        area: "Area"
+        next_due: "Next due"
+        recurrence: "Recurrence"
+        notes: "Notes"
+        filter: "Filter"
+        filter_by_area: "Area"
+        all_areas: "All areas"
+        empty: "No pending tasks. Add one or mark existing tasks as done to see them here."
+        view_details: "View details"
+      new:
+        title: "New task"
+      new_task: "New task"
+      edit:
+        title: "Edit task"
+      form:
+        name: "Task name"
+        area: "Area"
+        no_area: "— None —"
+        recurrence: "Recurrence"
+        next_due_date: "Next due date"
+        notes: "Notes"
+      mark_done: "Mark done"
+      show:
+        close_panel: "Close"
+      recurrence:
+        none: "None"
+        once: "Once"
+        daily: "Daily"
+        weekly: "Weekly"
+        biweekly: "Every two weeks"
+        monthly: "Monthly"
+      flash:
+        created: "Task was successfully created."
+        updated: "Task was successfully updated."
+        destroyed: "Task was successfully deleted."
+        mark_done: "Task marked as done."
 
   sessions:
     title: "Sign in"

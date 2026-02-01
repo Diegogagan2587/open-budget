@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_29_203647) do
+ActiveRecord::Schema[8.0].define(version: 2026_02_01_120001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -147,6 +147,21 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_29_203647) do
     t.index ["shopping_item_id"], name: "index_planned_expenses_on_shopping_item_id"
   end
 
+  create_table "recurring_tasks", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.bigint "task_area_id"
+    t.string "name", null: false
+    t.string "recurrence", default: "none", null: false
+    t.date "next_due_date"
+    t.datetime "last_done_at"
+    t.text "notes"
+    t.integer "position"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_recurring_tasks_on_account_id"
+    t.index ["task_area_id"], name: "index_recurring_tasks_on_task_area_id"
+  end
+
   create_table "sessions", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.string "ip_address"
@@ -177,6 +192,15 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_29_203647) do
     t.index ["item_type"], name: "index_shopping_items_on_item_type"
     t.index ["planned_expense_id"], name: "index_shopping_items_on_planned_expense_id"
     t.index ["status"], name: "index_shopping_items_on_status"
+  end
+
+  create_table "task_areas", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id", "name"], name: "index_task_areas_on_account_id_and_name", unique: true
+    t.index ["account_id"], name: "index_task_areas_on_account_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -212,9 +236,12 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_29_203647) do
   add_foreign_key "planned_expenses", "expense_templates"
   add_foreign_key "planned_expenses", "income_events"
   add_foreign_key "planned_expenses", "shopping_items"
+  add_foreign_key "recurring_tasks", "accounts"
+  add_foreign_key "recurring_tasks", "task_areas"
   add_foreign_key "sessions", "users"
   add_foreign_key "shopping_items", "accounts"
   add_foreign_key "shopping_items", "categories"
   add_foreign_key "shopping_items", "expenses"
   add_foreign_key "shopping_items", "planned_expenses"
+  add_foreign_key "task_areas", "accounts"
 end
