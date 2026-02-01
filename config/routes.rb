@@ -62,6 +62,7 @@ Rails.application.routes.draw do
   resources :inventory_items do
     member do
       post :add_to_shopping_list
+      patch :update_stock_state
     end
   end
 

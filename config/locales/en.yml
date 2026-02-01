@@ -428,10 +428,13 @@ en:
   inventory_items:
     index:
       title: "Inventory"
+      add_item: "Add Item"
+      empty: "No inventory items found."
+      uncategorized: "Uncategorized"
       all: "All"
       in_stock: "In Stock"
       low: "Low"
-      empty: "Empty"
+      empty_filter: "Empty"
       add_to_shopping_list: "Add to Shopping List"
     new:
       title: "New Inventory Item"
@@ -457,6 +460,7 @@ en:
       updated: "Inventory item was successfully updated."
       destroyed: "Inventory item was successfully destroyed."
       added_to_shopping_list: "Inventory item added to shopping list."
+      invalid_stock_state: "Invalid stock state."
     errors_prohibited: "error prohibited this inventory item from being saved:"
     errors_prohibited_other: "errors prohibited this inventory item from being saved:"
     resource_name: "inventory item"
