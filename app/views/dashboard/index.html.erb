@@ -2,6 +2,23 @@
 
 <h1 class="text-2xl font-bold mb-4"><%= t("dashboard.welcome") %></h1>
 
+<% if Current.account && @due_soon_tasks&.any? %>
+  <section class="mb-6 p-4 border rounded bg-gray-50">
+    <h2 class="text-lg font-semibold mb-2"><%= t("task.recurring_tasks.index.title") %></h2>
+    <ul class="list-disc list-inside space-y-1 mb-2">
+      <% @due_soon_tasks.each do |task| %>
+        <li class="<%= 'text-red-600 font-medium' if task.overdue? %>">
+          <%= task.name %>
+          <% if task.next_due_date %>
+            <span class="text-gray-600 text-sm">(<%= l(task.next_due_date, format: :short) %>)</span>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+    <%= link_to t("task.recurring_tasks.index.title"), task_recurring_tasks_path, class: "text-blue-600 hover:underline text-sm" %>
+  </section>
+<% end %>
+
 <nav class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
   <%= link_to budget_periods_path, class: "block p-4 border rounded hover:shadow" do %>
     <h2 class="text-xl">📅 <%= t("dashboard.budget_periods_title") %></h2>
@@ -26,6 +43,11 @@
   <%= link_to categories_path, class: "block p-4 border rounded hover:shadow" do %>
     <h2 class="text-xl">🏷️ <%= t("dashboard.categories_title") %></h2>
     <p><%= t("dashboard.categories_description") %></p>
+  <% end %>
+
+  <%= link_to task_recurring_tasks_path, class: "block p-4 border rounded hover:shadow" do %>
+    <h2 class="text-xl">✓ <%= t("nav.tasks") %></h2>
+    <p><%= t("task.recurring_tasks.index.title") %></p>
   <% end %>
 
   <%= link_to shopping_items_path, class: "block p-4 border rounded hover:shadow" do %>

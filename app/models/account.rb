@@ -11,6 +11,8 @@ class Account < ApplicationRecord
   has_many :budget_line_items, dependent: :destroy
   has_many :shopping_items, dependent: :destroy
   has_many :inventory_items, dependent: :destroy
+  has_many :task_areas, dependent: :destroy
+  has_many :recurring_tasks, dependent: :destroy
 
   validates :name, presence: true
 

@@ -76,5 +76,14 @@ Rails.application.routes.draw do
   get "reports/spending_by_category", to: "reports#spending_by_category", as: :reports_spending_by_category
   get "reports/category_trends", to: "reports#category_trends", as: :reports_category_trends
 
+  namespace :task do
+    resources :areas, controller: "areas", path: "areas"
+    resources :recurring_tasks do
+      member do
+        patch :mark_done
+      end
+    end
+  end
+
   root "dashboard#index"
 end

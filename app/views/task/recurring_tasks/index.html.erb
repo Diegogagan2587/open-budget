@@ -1,0 +1,59 @@
+<%= render "shared/flash" %>
+
+<% content_for :title, t("task.recurring_tasks.index.title") %>
+
+<h1 class="text-2xl font-bold mb-4"><%= t("task.recurring_tasks.index.title") %></h1>
+
+<%= form_with url: task_recurring_tasks_path, method: :get, local: true, class: "mb-4 flex flex-wrap gap-2 items-center" do |f| %>
+  <%= f.label :task_area_id, t("task.recurring_tasks.index.filter_by_area"), class: "text-sm font-medium text-gray-700" %>
+  <%= f.select :task_area_id, options_from_collection_for_select(@task_areas, :id, :name, params[:task_area_id]), { include_blank: t("task.recurring_tasks.index.all_areas") }, class: "border rounded px-3 py-2" %>
+  <%= f.submit t("task.recurring_tasks.index.filter"), class: "px-4 py-2 bg-gray-200 rounded hover:bg-gray-300" %>
+<% end %>
+
+<div class="mb-4 flex justify-between items-center">
+  <%= link_to t("task.recurring_tasks.new_task"), new_task_recurring_task_path, class: "px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600" %>
+  <%= link_to t("task.areas.index.title"), task_areas_path, class: "text-blue-600 hover:underline" %>
+</div>
+
+<% if @recurring_tasks.any? %>
+  <table class="min-w-full bg-white border">
+    <thead>
+      <tr class="bg-gray-100">
+        <th class="px-4 py-2 text-left"><%= t("task.recurring_tasks.index.name") %></th>
+        <th class="px-4 py-2 text-left"><%= t("task.recurring_tasks.index.area") %></th>
+        <th class="px-4 py-2 text-left"><%= t("task.recurring_tasks.index.next_due") %></th>
+        <th class="px-4 py-2 text-left"><%= t("task.recurring_tasks.index.recurrence") %></th>
+        <th class="px-4 py-2 text-left max-w-xs"><%= t("task.recurring_tasks.index.notes") %></th>
+        <th class="px-4 py-2 text-center"><%= t("shared.actions") %></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @recurring_tasks.each do |task| %>
+        <tr class="border-t <%= 'bg-red-50' if task.overdue? %>">
+          <td class="px-4 py-2">
+            <%= link_to task.name, task_recurring_task_path(task), data: { turbo_frame: "task_detail_panel" }, class: "text-blue-600 hover:underline font-medium" %>
+          </td>
+          <td class="px-4 py-2"><%= task.task_area&.name || "—" %></td>
+          <td class="px-4 py-2"><%= task.next_due_date ? l(task.next_due_date, format: :short) : "—" %></td>
+          <td class="px-4 py-2"><%= t("task.recurring_tasks.recurrence.#{task.recurrence}") %></td>
+          <td class="px-4 py-2 max-w-xs text-gray-600 text-sm">
+            <% if task.notes.present? %>
+              <span title="<%= task.notes %>"><%= truncate(task.notes, length: 50) %></span>
+            <% else %>
+              —
+            <% end %>
+          </td>
+          <td class="px-4 py-2 text-center space-x-2">
+            <%= button_to t("task.recurring_tasks.mark_done"), mark_done_task_recurring_task_path(task), method: :patch, class: "px-2 py-1 bg-green-500 text-white text-sm rounded hover:bg-green-600" %>
+            <%= link_to t("shared.edit"), edit_task_recurring_task_path(task), class: "text-blue-600 hover:underline" %>
+            <%= link_to t("shared.delete"), task_recurring_task_path(task), data: { turbo_method: :delete, turbo_confirm: t("shared.confirm_destroy") }, class: "text-red-600 hover:underline" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p class="text-gray-600 py-4"><%= t("task.recurring_tasks.index.empty") %></p>
+<% end %>
+
+<%= turbo_frame_tag "task_detail_panel" %>
