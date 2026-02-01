@@ -2,11 +2,45 @@
 en:
   hello: "Hello world"
 
+  date:
+    formats:
+      default: "%Y-%m-%d"
+      short: "%b %d"
+    abbr_month_names:
+      - ~
+      - Jan
+      - Feb
+      - Mar
+      - Apr
+      - May
+      - Jun
+      - Jul
+      - Aug
+      - Sep
+      - Oct
+      - Nov
+      - Dec
+    month_names:
+      - ~
+      - January
+      - February
+      - March
+      - April
+      - May
+      - June
+      - July
+      - August
+      - September
+      - October
+      - November
+      - December
+
   nav:
     dashboard: "Dashboard"
     budgets: "Budgets"
     expenses: "Expenses"
     categories: "Categories"
+    reports: "Reports"
     accounts: "Accounts"
     settings: "Settings"
     log_out: "Log out"
@@ -90,6 +124,8 @@ en:
     shopping_list_description: "Track items you need to buy and plan purchases."
     home_inventory_title: "Home Inventory"
     home_inventory_description: "Track household items and stock levels."
+    reports_title: "Reports"
+    reports_description: "Charts and insights for expenses and income."
     new_budget_period: "New Budget Period"
     new_income_event: "New Income Event"
     add_expense: "Add Expense"
@@ -110,6 +146,23 @@ en:
     submit:
       create: "Create %{model}"
       update: "Update %{model}"
+
+  reports:
+    index:
+      title: "Reports"
+    expenses_over_time: "Expenses over time"
+    by_category: "Expenses by category"
+    income_vs_expenses: "Income vs expenses"
+    income: "Income"
+    expenses: "Expenses"
+    amount: "Amount"
+    period_from: "From"
+    period_to: "To"
+    filter: "Filter period"
+    apply: "Apply"
+    last_3_months: "Last 3 months"
+    last_6_months: "Last 6 months"
+    last_12_months: "Last 12 months"
 
   accounts:
     index:

@@ -38,6 +38,11 @@
     <p><%= t("dashboard.home_inventory_description") %></p>
   <% end %>
 
+  <%= link_to reports_path, class: "block p-4 border rounded hover:shadow" do %>
+    <h2 class="text-xl">📊 <%= t("dashboard.reports_title") %></h2>
+    <p><%= t("dashboard.reports_description") %></p>
+  <% end %>
+
   <%= link_to new_budget_period_path, class: "block p-4 border rounded hover:shadow col-span-full" do %>
     <h2 class="text-xl">➕ <%= t("dashboard.new_budget_period") %></h2>
   <% end %>

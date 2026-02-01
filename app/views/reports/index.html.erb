@@ -1,0 +1,55 @@
+<% content_for :head do %>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<% end %>
+
+<p style="color: green"><%= notice %></p>
+
+<div class="container mx-auto px-4">
+  <h1 class="text-2xl font-bold mb-4"><%= t("reports.index.title") %></h1>
+
+  <div class="mb-6 flex flex-col sm:flex-row sm:items-end gap-4 flex-wrap">
+    <%= form_with url: reports_path, method: :get, local: true, class: "flex flex-wrap items-end gap-3" do |f| %>
+      <div class="flex flex-wrap items-center gap-2">
+        <label for="from" class="text-sm font-medium text-gray-700"><%= t("reports.period_from") %></label>
+        <%= f.date_field :from, value: @date_from, id: "from", class: "rounded border border-gray-300 px-3 py-2 text-sm" %>
+      </div>
+      <div class="flex flex-wrap items-center gap-2">
+        <label for="to" class="text-sm font-medium text-gray-700"><%= t("reports.period_to") %></label>
+        <%= f.date_field :to, value: @date_to, id: "to", class: "rounded border border-gray-300 px-3 py-2 text-sm" %>
+      </div>
+      <%= f.submit t("reports.apply"), class: "px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm font-medium cursor-pointer" %>
+    <% end %>
+    <div class="flex flex-wrap gap-2 sm:ml-4">
+      <%= link_to t("reports.last_3_months"), reports_path(from: 3.months.ago.to_date, to: Date.current), class: "px-3 py-2 text-sm rounded bg-gray-200 text-gray-700 hover:bg-gray-300" %>
+      <%= link_to t("reports.last_6_months"), reports_path(from: 6.months.ago.to_date, to: Date.current), class: "px-3 py-2 text-sm rounded bg-gray-200 text-gray-700 hover:bg-gray-300" %>
+      <%= link_to t("reports.last_12_months"), reports_path(from: 12.months.ago.to_date, to: Date.current), class: "px-3 py-2 text-sm rounded bg-gray-200 text-gray-700 hover:bg-gray-300" %>
+    </div>
+  </div>
+
+  <p class="mb-6 text-sm text-gray-600">
+    <%= t("reports.period_from") %> <strong><%= l(@date_from) %></strong> — <%= t("reports.period_to") %> <strong><%= l(@date_to) %></strong>
+  </p>
+
+  <div class="space-y-10">
+    <section class="bg-white rounded-xl shadow-md border border-gray-200 p-6">
+      <h2 class="text-lg font-semibold text-gray-800 mb-4"><%= t("reports.expenses_over_time") %></h2>
+      <div class="min-h-[300px]">
+        <canvas data-controller="charts" data-charts-config-value="<%= h(@chart_expenses_over_time.to_json) %>" style="height: 300px;"></canvas>
+      </div>
+    </section>
+
+    <section class="bg-white rounded-xl shadow-md border border-gray-200 p-6">
+      <h2 class="text-lg font-semibold text-gray-800 mb-4"><%= t("reports.by_category") %></h2>
+      <div class="min-h-[300px]">
+        <canvas data-controller="charts" data-charts-config-value="<%= h(@chart_by_category.to_json) %>" style="height: 300px;"></canvas>
+      </div>
+    </section>
+
+    <section class="bg-white rounded-xl shadow-md border border-gray-200 p-6">
+      <h2 class="text-lg font-semibold text-gray-800 mb-4"><%= t("reports.income_vs_expenses") %></h2>
+      <div class="min-h-[300px]">
+        <canvas data-controller="charts" data-charts-config-value="<%= h(@chart_income_vs_expenses.to_json) %>" style="height: 300px;"></canvas>
+      </div>
+    </section>
+  </div>
+</div>

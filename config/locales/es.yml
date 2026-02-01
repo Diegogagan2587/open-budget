@@ -2,11 +2,45 @@
 es:
   hello: "Hola mundo"
 
+  date:
+    formats:
+      default: "%d/%m/%Y"
+      short: "%d %b"
+    abbr_month_names:
+      - ~
+      - Ene
+      - Feb
+      - Mar
+      - Abr
+      - May
+      - Jun
+      - Jul
+      - Ago
+      - Sep
+      - Oct
+      - Nov
+      - Dic
+    month_names:
+      - ~
+      - Enero
+      - Febrero
+      - Marzo
+      - Abril
+      - Mayo
+      - Junio
+      - Julio
+      - Agosto
+      - Septiembre
+      - Octubre
+      - Noviembre
+      - Diciembre
+
   nav:
     dashboard: "Panel"
     budgets: "Presupuestos"
     expenses: "Gastos"
     categories: "Categorías"
+    reports: "Reportes"
     accounts: "Cuentas"
     settings: "Ajustes"
     log_out: "Cerrar sesión"
@@ -90,6 +124,8 @@ es:
     shopping_list_description: "Anota lo que necesitas comprar y planifica compras."
     home_inventory_title: "Inventario del hogar"
     home_inventory_description: "Controla artículos del hogar y niveles de stock."
+    reports_title: "Reportes"
+    reports_description: "Gráficos y resúmenes de gastos e ingresos."
     new_budget_period: "Nuevo periodo presupuestario"
     new_income_event: "Nuevo ingreso"
     add_expense: "Añadir gasto"
@@ -110,6 +146,23 @@ es:
     submit:
       create: "Crear %{model}"
       update: "Actualizar %{model}"
+
+  reports:
+    index:
+      title: "Reportes"
+    expenses_over_time: "Gastos en el tiempo"
+    by_category: "Gastos por categoría"
+    income_vs_expenses: "Ingresos vs gastos"
+    income: "Ingresos"
+    expenses: "Gastos"
+    amount: "Importe"
+    period_from: "Desde"
+    period_to: "Hasta"
+    filter: "Filtrar periodo"
+    apply: "Aplicar"
+    last_3_months: "Últimos 3 meses"
+    last_6_months: "Últimos 6 meses"
+    last_12_months: "Últimos 12 meses"
 
   accounts:
     index:
