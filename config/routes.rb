@@ -72,6 +72,9 @@ Rails.application.routes.draw do
   post "account_switches", to: "account_switches#create", as: :account_switch
 
   get "reports", to: "reports#index", as: :reports
+  get "reports/by_date", to: "reports#by_date", as: :reports_by_date
+  get "reports/spending_by_category", to: "reports#spending_by_category", as: :reports_spending_by_category
+  get "reports/category_trends", to: "reports#category_trends", as: :reports_category_trends
 
   root "dashboard#index"
 end
