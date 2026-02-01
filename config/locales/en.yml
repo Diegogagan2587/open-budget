@@ -510,6 +510,7 @@ en:
       add_item: "Add Item"
       empty: "No inventory items found."
       uncategorized: "Uncategorized"
+      all_categories: "All categories"
       all: "All"
       in_stock: "In Stock"
       low: "Low"

@@ -10,15 +10,26 @@
       ) %>
 
     <div class="flex flex-wrap gap-2">
-      <%= link_to t("inventory_items.index.all"), inventory_items_path(stock_state: "all"),
+      <%= link_to t("inventory_items.index.all"), inventory_items_path(stock_state: "all", category_id: @category_filter),
           class: "px-3 py-1.5 rounded #{@stock_filter == 'all' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}" %>
-      <%= link_to t("inventory_items.index.in_stock"), inventory_items_path(stock_state: "in_stock"),
+      <%= link_to t("inventory_items.index.in_stock"), inventory_items_path(stock_state: "in_stock", category_id: @category_filter),
           class: "px-3 py-1.5 rounded #{@stock_filter == 'in_stock' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}" %>
-      <%= link_to t("inventory_items.index.low"), inventory_items_path(stock_state: "low"),
+      <%= link_to t("inventory_items.index.low"), inventory_items_path(stock_state: "low", category_id: @category_filter),
           class: "px-3 py-1.5 rounded #{@stock_filter == 'low' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}" %>
-      <%= link_to t("inventory_items.index.empty_filter"), inventory_items_path(stock_state: "empty"),
+      <%= link_to t("inventory_items.index.empty_filter"), inventory_items_path(stock_state: "empty", category_id: @category_filter),
           class: "px-3 py-1.5 rounded #{@stock_filter == 'empty' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}" %>
     </div>
+  </div>
+
+  <div class="mb-4 flex flex-wrap gap-2 items-center">
+    <%= link_to t("inventory_items.index.all_categories"), inventory_items_path(stock_state: @stock_filter, category_id: nil),
+        class: "px-3 py-1.5 rounded #{@category_filter.blank? ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}" %>
+    <% @categories_for_filter.each do |category| %>
+      <%= link_to category.name, inventory_items_path(stock_state: @stock_filter, category_id: category.id),
+          class: "px-3 py-1.5 rounded #{@category_filter == category.id.to_s ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}" %>
+    <% end %>
+    <%= link_to t("inventory_items.index.uncategorized"), inventory_items_path(stock_state: @stock_filter, category_id: "uncategorized"),
+        class: "px-3 py-1.5 rounded #{@category_filter == 'uncategorized' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}" %>
   </div>
 
   <% if @grouped_inventory_items.any? %>
@@ -30,7 +41,7 @@
           </h2>
           <div class="space-y-4">
             <% items.each do |inventory_item| %>
-              <%= render "inventory_items/card", inventory_item: inventory_item, stock_filter: @stock_filter %>
+              <%= render "inventory_items/card", inventory_item: inventory_item, stock_filter: @stock_filter, category_filter: @category_filter %>
             <% end %>
           </div>
         </section>
