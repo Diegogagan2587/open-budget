@@ -398,6 +398,7 @@ en:
       income_event: "Income event"
       amount: "Amount"
       unassigned: "Unassigned"
+      total: "Total"
       confirm_destroy: "Delete this expense?"
     new:
       title: "New Expense"
@@ -406,6 +407,8 @@ en:
     show:
       title: "Expense"
       back: "Back to Expenses"
+      planned_expense: "Related planned expense"
+      planned_expense_note: "This expense was created from a planned expense. If you change the income event, the planned expense will update too."
     form:
       primary_info: "Primary Information"
       amount: "Amount"
