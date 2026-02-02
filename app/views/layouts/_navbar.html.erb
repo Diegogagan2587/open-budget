@@ -24,6 +24,7 @@
       <div class="flex space-x-4">
         <%= link_to t("nav.dashboard"), root_path, class: "font-semibold" %>
         <%= link_to t("nav.budgets"), budget_periods_path %>
+        <%= link_to t("nav.incomes"), income_events_path %>
         <%= link_to t("nav.expenses"), expenses_path %>
         <%= link_to t("nav.categories"), categories_path %>
         <%= link_to t("nav.tasks"), task_recurring_tasks_path %>
@@ -70,6 +71,7 @@
       <div class="flex flex-col gap-2">
         <%= link_to t("nav.dashboard"), root_path, class: "font-semibold py-2 text-gray-900 hover:text-gray-700" %>
         <%= link_to t("nav.budgets"), budget_periods_path, class: "py-2 text-gray-700 hover:text-gray-900" %>
+        <%= link_to t("nav.incomes"), income_events_path, class: "py-2 text-gray-700 hover:text-gray-900" %>
         <%= link_to t("nav.expenses"), expenses_path, class: "py-2 text-gray-700 hover:text-gray-900" %>
         <%= link_to t("nav.categories"), categories_path, class: "py-2 text-gray-700 hover:text-gray-900" %>
         <%= link_to t("nav.tasks"), task_recurring_tasks_path, class: "py-2 text-gray-700 hover:text-gray-900" %>
