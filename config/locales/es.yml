@@ -117,6 +117,7 @@ es:
         next_due_date: "Próxima fecha"
         notes: "Notas"
       mark_done: "Marcar hecha"
+      overdue: "Vencida"
       show:
         close_panel: "Cerrar"
       recurrence:
