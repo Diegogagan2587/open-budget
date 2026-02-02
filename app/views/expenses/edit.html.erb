@@ -1,6 +1,7 @@
-<h1 class="text-2xl font-bold mb-4">Editar gasto</h1>
+<div class="container mx-auto px-4 py-4">
+  <h1 class="text-2xl font-bold mb-4"><%= t("expenses.edit.title") %></h1>
 
-<% if @expense.budget_period %>
+  <% if @expense.budget_period %>
   <div class="mb-4 p-3 bg-blue-50 border border-blue-200 rounded">
     <p class="text-sm text-gray-700">
       <strong>Periodo presupuestario actual:</strong> <%= @expense.budget_period.name %>
@@ -28,4 +29,5 @@
 <% end %>
 
 <%= render "form", expense: @expense, budget_period: @budget_period %>
+</div>
 
