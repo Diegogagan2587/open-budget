@@ -1,9 +1,13 @@
+<%
+  index_path_options = params[:task_area_id].present? ? { task_area_id: params[:task_area_id] } : {}
+  tasks_index_path = task_recurring_tasks_path(index_path_options)
+%>
 <%= turbo_frame_tag "task_detail_panel" do %>
-  <div class="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-xl z-50 overflow-y-auto border-l border-gray-200 animate-slide-in-right">
-    <div class="p-6">
-      <div class="flex justify-between items-start mb-4">
-        <h2 class="text-xl font-bold text-gray-900"><%= @recurring_task.name %></h2>
-        <%= link_to t("task.recurring_tasks.show.close_panel"), task_recurring_tasks_path, data: { turbo_frame: "task_detail_panel" }, class: "text-gray-500 hover:text-gray-700 text-sm p-1 rounded hover:bg-gray-100" %>
+  <div class="fixed inset-0 sm:inset-y-0 sm:right-0 sm:left-auto w-full sm:max-w-md bg-white shadow-xl z-50 overflow-y-auto overflow-x-hidden border-l border-gray-200 animate-slide-in-right">
+    <div class="p-6 min-w-0">
+      <div class="flex justify-between items-start gap-2 mb-4">
+        <h2 class="text-xl font-bold text-gray-900 break-words flex-1 min-w-0"><%= @recurring_task.name %></h2>
+        <%= link_to t("task.recurring_tasks.show.close_panel"), tasks_index_path, data: { turbo_frame: "task_detail_panel" }, class: "flex-shrink-0 text-gray-500 hover:text-gray-700 text-sm p-2 rounded hover:bg-gray-100" %>
       </div>
 
       <dl class="space-y-3 text-sm">
@@ -20,17 +24,17 @@
           <dd class="text-gray-900"><%= t("task.recurring_tasks.recurrence.#{@recurring_task.recurrence}") %></dd>
         </div>
         <% if @recurring_task.notes.present? %>
-          <div>
+          <div class="min-w-0">
             <dt class="font-medium text-gray-500"><%= t("task.recurring_tasks.form.notes") %></dt>
-            <dd class="text-gray-900 whitespace-pre-wrap"><%= @recurring_task.notes %></dd>
+            <dd class="text-gray-900 whitespace-pre-wrap break-words"><%= @recurring_task.notes %></dd>
           </div>
         <% end %>
       </dl>
 
       <div class="mt-6 pt-4 border-t border-gray-200 flex flex-wrap gap-2">
-        <%= button_to t("task.recurring_tasks.mark_done"), mark_done_task_recurring_task_path(@recurring_task), method: :patch, form: { data: { turbo_frame: "_top" } }, class: "px-4 py-2 bg-green-500 text-white text-sm rounded hover:bg-green-600" %>
-        <%= link_to t("shared.edit"), edit_task_recurring_task_path(@recurring_task), data: { turbo_frame: "_top" }, class: "px-4 py-2 bg-gray-200 text-gray-800 text-sm rounded hover:bg-gray-300" %>
-        <%= link_to t("task.recurring_tasks.show.close_panel"), task_recurring_tasks_path, data: { turbo_frame: "task_detail_panel" }, class: "px-4 py-2 text-gray-600 hover:text-gray-800 text-sm" %>
+        <%= button_to t("task.recurring_tasks.mark_done"), mark_done_task_recurring_task_path(@recurring_task, index_path_options), method: :patch, form: { data: { turbo_frame: "_top" } }, class: "inline-flex items-center justify-center px-4 py-2 bg-green-500 text-white text-sm rounded-lg hover:bg-green-600" %>
+        <%= link_to t("shared.edit"), edit_task_recurring_task_path(@recurring_task, index_path_options), data: { turbo_frame: "_top" }, class: "inline-flex items-center justify-center px-4 py-2 bg-gray-200 text-gray-800 text-sm rounded-lg hover:bg-gray-300" %>
+        <%= link_to t("task.recurring_tasks.show.close_panel"), tasks_index_path, data: { turbo_frame: "task_detail_panel" }, class: "inline-flex items-center justify-center px-4 py-2 text-gray-600 hover:text-gray-800 text-sm" %>
       </div>
     </div>
   </div>

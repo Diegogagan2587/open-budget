@@ -1,4 +1,9 @@
-<%= form_with model: recurring_task, url: recurring_task.persisted? ? task_recurring_task_path(recurring_task) : task_recurring_tasks_path, method: recurring_task.persisted? ? :patch : :post, local: true do |form| %>
+<%
+  task_area_id_filter = local_assigns[:task_area_id_filter]
+  index_path_options = task_area_id_filter.present? ? { task_area_id: task_area_id_filter } : {}
+  cancel_path = task_recurring_tasks_path(index_path_options)
+%>
+<%= form_with model: recurring_task, url: recurring_task.persisted? ? task_recurring_task_path(recurring_task, index_path_options) : task_recurring_tasks_path(index_path_options), method: recurring_task.persisted? ? :patch : :post, local: true do |form| %>
   <% if recurring_task.errors.any? %>
     <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
       <h2 class="font-bold"><%= t("shared.errors_prohibited_save", count: recurring_task.errors.count, resource: t("task.recurring_tasks.model_name").downcase) %></h2>
@@ -37,6 +42,6 @@
 
   <div class="mb-4">
     <%= form.submit class: "px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600" %>
-    <%= link_to t("shared.cancel"), task_recurring_tasks_path, class: "px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 ml-2" %>
+    <%= link_to t("shared.cancel"), cancel_path, class: "px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 ml-2" %>
   </div>
 <% end %>
