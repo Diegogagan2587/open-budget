@@ -305,6 +305,7 @@ es:
   budget_periods:
     index:
       title: "Periodos presupuestarios"
+      empty_message: "Aún no hay periodos presupuestarios."
     new:
       title: "Nuevo periodo presupuestario"
     edit:

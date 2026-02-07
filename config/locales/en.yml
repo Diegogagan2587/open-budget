@@ -305,6 +305,7 @@ en:
   budget_periods:
     index:
       title: "Budget Periods"
+      empty_message: "No budget periods yet."
     new:
       title: "New Budget Period"
     edit:
