@@ -1,8 +1,8 @@
 module Projects
   class ProjectsController < ApplicationController
-    before_action :set_project, only: [:show, :edit, :update, :destroy]
-    before_action :ensure_project_access, only: [:show, :edit, :update, :destroy]
-    before_action :ensure_project_owner, only: [:edit, :update, :destroy]
+    before_action :set_project, only: [ :show, :edit, :update, :destroy ]
+    before_action :ensure_project_access, only: [ :show, :edit, :update, :destroy ]
+    before_action :ensure_project_owner, only: [ :edit, :update, :destroy ]
 
     def index
       @projects = Project.for_account(Current.account).order(created_at: :desc)
