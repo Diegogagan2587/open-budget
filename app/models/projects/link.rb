@@ -5,6 +5,8 @@ module Projects
     belongs_to :account
     has_many :project_links, dependent: :destroy
     has_many :projects, through: :project_links
+    has_many :doc_links, dependent: :destroy
+    has_many :docs, through: :doc_links
 
     before_create :set_account
 
