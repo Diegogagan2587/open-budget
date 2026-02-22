@@ -22,6 +22,10 @@ module Projects
     end
 
     def create
+      # Extract return_to parameters before creating the link
+      return_to_doc_id = params[:link]&.delete(:return_to_doc_id)
+      return_to_project_id = params[:link]&.delete(:return_to_project_id)
+      
       @link = Link.new(link_params)
       @link.account = Current.account
 
@@ -32,10 +36,10 @@ module Projects
         end
         
         # Associate with doc if return params provided
-        if params[:return_to_doc_id].present?
-          doc = Doc.for_account(Current.account).find(params[:return_to_doc_id])
+        if return_to_doc_id.present?
+          doc = Doc.for_account(Current.account).find(return_to_doc_id)
           doc.links << @link unless doc.links.include?(@link)
-          redirect_to projects_project_doc_path(params[:return_to_project_id], doc), notice: t("links.flash.created")
+          redirect_to projects_project_doc_path(return_to_project_id, doc), notice: t("links.flash.created")
         elsif @project
           redirect_to projects_project_link_path(@project, @link), notice: t("links.flash.created")
         else
@@ -109,7 +113,7 @@ module Projects
     end
 
     def link_params
-      params.require(:link).permit(:title, :url, :description, :link_type, :return_to_doc_id, :return_to_project_id)
+      params.require(:link).permit(:title, :url, :description, :link_type)
     end
   end
 end
