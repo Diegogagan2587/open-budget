@@ -721,3 +721,72 @@ es:
           in_stock: "En stock"
           low: "Bajo"
           empty: "Vacío"
+
+  projects:
+    flash:
+      created: "Proyecto creado exitosamente."
+      updated: "Proyecto actualizado exitosamente."
+      destroyed: "Proyecto eliminado exitosamente."
+      link_added: "Enlace agregado exitosamente al documento."
+      link_add_failed: "Falló al agregar el enlace al documento."
+      link_already_added: "Este enlace ya está agregado al documento."
+      link_removed: "Enlace eliminado exitosamente del documento."
+    status:
+      pending: "Pendiente"
+      active: "Activo"
+      completed: "Completado"
+      archived: "Archivado"
+    priority:
+      low: "Bajo"
+      medium: "Medio"
+      high: "Alto"
+    links:
+      title: "Enlaces"
+      add_existing: "Agregar Enlace Existente"
+      search_link: "Buscar un enlace"
+      search_placeholder: "Escribe para buscar enlaces..."
+      select_link: "Seleccionar un enlace"
+      select_prompt: "Elegir un enlace..."
+      add: "Agregar Enlace"
+      create_new: "Crear Nuevo Enlace"
+      no_links: "No hay enlaces agregados aún."
+      no_available_links: "No hay enlaces disponibles. Crea uno primero."
+    link_types:
+      reference: "Referencia"
+      resource: "Recurso"
+      documentation: "Documentación"
+
+  tasks:
+    flash:
+      created: "Tarea creada exitosamente."
+      updated: "Tarea actualizada exitosamente."
+      destroyed: "Tarea eliminada exitosamente."
+    status:
+      blocked: "Bloqueado"
+      backlog: "Backlog"
+      in_progress: "En Progreso"
+      in_review: "En Revisión"
+      done: "Hecha"
+      cancelled: "Cancelada"
+    priority:
+      low: "Bajo"
+      medium: "Medio"
+      high: "Alto"
+
+  docs:
+    flash:
+      created: "Documento creado exitosamente."
+      updated: "Documento actualizado exitosamente."
+      destroyed: "Documento eliminado exitosamente."
+
+  links:
+    flash:
+      created: "Enlace creado exitosamente."
+      updated: "Enlace actualizado exitosamente."
+      destroyed: "Enlace eliminado exitosamente."
+
+  meetings:
+    flash:
+      created: "Reunión creada exitosamente."
+      updated: "Reunión actualizada exitosamente."
+      destroyed: "Reunión eliminada exitosamente."

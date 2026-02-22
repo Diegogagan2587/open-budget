@@ -1,0 +1,23 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-slate-900">Projects</h1>
+    <p class="text-slate-600 mt-2">Manage and track your projects</p>
+  </div>
+
+  <div class="mb-6">
+    <%= render AddButtonComponent.new(label: "New Project", path: new_projects_project_path) %>
+  </div>
+
+  <% if @projects.any? %>
+    <div class="bg-white rounded-lg shadow">
+      <% @projects.each do |project| %>
+        <%= render Projects::ProjectRowComponent.new(project: project) %>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="bg-slate-50 rounded-lg border border-slate-200 p-8 text-center">
+      <p class="text-slate-600">No projects yet.</p>
+      <%= link_to "Create your first project", new_projects_project_path, class: "text-blue-600 hover:text-blue-800 font-medium mt-2 inline-block" %>
+    </div>
+  <% end %>
+</div>

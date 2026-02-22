@@ -1,0 +1,43 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="mb-8">
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="text-3xl font-bold text-slate-900"><%= link_to @project.name, projects_project_path(@project), class: "hover:text-blue-600" %></h1>
+        <p class="text-slate-600 mt-2">Documents</p>
+      </div>
+      <%= render AddButtonComponent.new(label: "New Document", path: new_projects_project_doc_path(@project)) %>
+    </div>
+  </div>
+
+  <% if @docs.any? %>
+    <div class="bg-white rounded-lg shadow overflow-hidden">
+      <div class="divide-y divide-slate-200">
+        <% @docs.each do |doc| %>
+          <div class="flex items-center justify-between p-4 hover:bg-slate-50 transition">
+            <div class="flex-1">
+              <div class="flex items-center gap-3">
+                <%= link_to doc.title, projects_project_doc_path(@project, doc), class: "font-semibold text-blue-600 hover:text-blue-800" %>
+                <%= render StatusBadgeComponent.new(status: doc.doc_type, type: :status) %>
+              </div>
+              <p class="text-sm text-slate-600 mt-1"><%= truncate(doc.content, length: 100) %></p>
+            </div>
+            <div class="flex gap-2">
+              <%= render ViewButtonComponent.new(path: projects_project_doc_path(@project, doc), label: "View") %>
+              <%= render EditButtonComponent.new(path: edit_projects_project_doc_path(@project, doc)) %>
+              <%= render DeleteButtonComponent.new(path: projects_project_doc_path(@project, doc)) %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% else %>
+    <div class="bg-slate-50 rounded-lg border border-slate-200 p-8 text-center">
+      <p class="text-slate-600">No documents yet.</p>
+      <%= link_to "Create your first document", new_projects_project_doc_path(@project), class: "text-blue-600 hover:text-blue-800 font-medium mt-2 inline-block" %>
+    </div>
+  <% end %>
+
+  <div class="mt-8">
+    <%= link_to "Back to Project", projects_project_path(@project), class: "text-blue-600 hover:text-blue-800 font-medium" %>
+  </div>
+</div>

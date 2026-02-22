@@ -1,0 +1,44 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="mb-8">
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="text-3xl font-bold text-slate-900"><%= link_to @project.name, projects_project_path(@project), class: "hover:text-blue-600" %></h1>
+        <p class="text-slate-600 mt-2">Links</p>
+      </div>
+      <%= render AddButtonComponent.new(label: "New Link", path: new_projects_project_link_path(@project)) %>
+    </div>
+  </div>
+
+  <% if @links.any? %>
+    <div class="bg-white rounded-lg shadow overflow-hidden">
+      <div class="divide-y divide-slate-200">
+        <% @links.each do |link| %>
+          <div class="flex items-center justify-between p-4 hover:bg-slate-50 transition">
+            <div class="flex-1">
+              <div class="flex items-center gap-3">
+                <%= link_to link.title, projects_project_link_path(@project, link), class: "font-semibold text-blue-600 hover:text-blue-800" %>
+                <%= render StatusBadgeComponent.new(status: link.link_type, type: :status) %>
+              </div>
+              <p class="text-sm text-slate-600 mt-1"><%= link_to link.url, link.url, target: "_blank", rel: "noopener noreferrer", class: "text-blue-600 hover:text-blue-800" %></p>
+              <p class="text-xs text-slate-500 mt-1"><%= truncate(link.description, length: 100) %></p>
+            </div>
+            <div class="flex gap-2">
+              <%= render ViewButtonComponent.new(path: projects_project_link_path(@project, link), label: "View") %>
+              <%= render EditButtonComponent.new(path: edit_projects_project_link_path(@project, link)) %>
+              <%= render DeleteButtonComponent.new(path: projects_project_link_path(@project, link)) %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% else %>
+    <div class="bg-slate-50 rounded-lg border border-slate-200 p-8 text-center">
+      <p class="text-slate-600">No links yet.</p>
+      <%= link_to "Create your first link", new_projects_project_link_path(@project), class: "text-blue-600 hover:text-blue-800 font-medium mt-2 inline-block" %>
+    </div>
+  <% end %>
+
+  <div class="mt-8">
+    <%= link_to "Back to Project", projects_project_path(@project), class: "text-blue-600 hover:text-blue-800 font-medium" %>
+  </div>
+</div>

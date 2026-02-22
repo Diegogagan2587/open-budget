@@ -85,5 +85,17 @@ Rails.application.routes.draw do
     end
   end
 
+  namespace :projects do
+    resources :projects do
+      resources :tasks
+      resources :docs
+      resources :links
+    end
+    resources :docs, only: [] do
+      resources :doc_links, only: [ :create, :destroy ]
+    end
+    resources :links, only: [ :index, :show, :new, :create, :edit, :update, :destroy ]
+  end
+
   root "dashboard#index"
 end

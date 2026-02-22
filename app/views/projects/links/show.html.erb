@@ -1,0 +1,35 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="mb-8">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-sm font-medium text-slate-600"><%= link_to @project.name, projects_project_path(@project), class: "text-blue-600 hover:text-blue-800" %></p>
+        <h1 class="text-3xl font-bold text-slate-900 mt-1"><%= @link.title %></h1>
+        <div class="flex items-center gap-3 mt-3">
+          <%= render StatusBadgeComponent.new(status: @link.link_type, type: :status) %>
+        </div>
+      </div>
+      <div class="flex gap-2">
+        <%= render EditButtonComponent.new(path: edit_projects_project_link_path(@project, @link)) %>
+        <%= render DeleteButtonComponent.new(path: projects_project_link_path(@project, @link)) %>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-lg shadow p-6 mb-8">
+    <div class="mb-6">
+      <h3 class="text-sm font-semibold text-slate-600 mb-2">URL</h3>
+      <%= link_to @link.url, @link.url, target: "_blank", rel: "noopener noreferrer", class: "text-blue-600 hover:text-blue-800 break-all" %>
+    </div>
+    
+    <% if @link.description.present? %>
+      <div>
+        <h3 class="text-sm font-semibold text-slate-600 mb-2">Description</h3>
+        <p class="text-slate-700"><%= simple_format(@link.description) %></p>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="mt-8">
+    <%= link_to "Back to Project", projects_project_path(@project), class: "text-blue-600 hover:text-blue-800 font-medium" %>
+  </div>
+</div>

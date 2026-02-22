@@ -721,3 +721,72 @@ en:
           in_stock: "In Stock"
           low: "Low"
           empty: "Empty"
+
+  projects:
+    flash:
+      created: "Project was successfully created."
+      updated: "Project was successfully updated."
+      destroyed: "Project was successfully deleted."
+      link_added: "Link was successfully added to document."
+      link_add_failed: "Failed to add link to document."
+      link_already_added: "This link is already added to the document."
+      link_removed: "Link was successfully removed from document."
+    status:
+      pending: "Pending"
+      active: "Active"
+      completed: "Completed"
+      archived: "Archived"
+    priority:
+      low: "Low"
+      medium: "Medium"
+      high: "High"
+    links:
+      title: "Links"
+      add_existing: "Add Existing Link"
+      search_link: "Search for a link"
+      search_placeholder: "Type to search links..."
+      select_link: "Select a link"
+      select_prompt: "Choose a link..."
+      add: "Add Link"
+      create_new: "Create New Link"
+      no_links: "No links added yet."
+      no_available_links: "No links available. Create one first."
+    link_types:
+      reference: "Reference"
+      resource: "Resource"
+      documentation: "Documentation"
+
+  tasks:
+    flash:
+      created: "Task was successfully created."
+      updated: "Task was successfully updated."
+      destroyed: "Task was successfully deleted."
+    status:
+      blocked: "Blocked"
+      backlog: "Backlog"
+      in_progress: "In Progress"
+      in_review: "In Review"
+      done: "Done"
+      cancelled: "Cancelled"
+    priority:
+      low: "Low"
+      medium: "Medium"
+      high: "High"
+
+  docs:
+    flash:
+      created: "Document was successfully created."
+      updated: "Document was successfully updated."
+      destroyed: "Document was successfully deleted."
+
+  links:
+    flash:
+      created: "Link was successfully created."
+      updated: "Link was successfully updated."
+      destroyed: "Link was successfully deleted."
+
+  meetings:
+    flash:
+      created: "Meeting was successfully created."
+      updated: "Meeting was successfully updated."
+      destroyed: "Meeting was successfully deleted."

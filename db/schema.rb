@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_02_01_120001) do
+ActiveRecord::Schema[8.0].define(version: 2026_02_22_224445) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -65,6 +65,27 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_01_120001) do
     t.index ["account_id"], name: "index_categories_on_account_id"
   end
 
+  create_table "doc_links", force: :cascade do |t|
+    t.bigint "doc_id", null: false
+    t.bigint "link_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["doc_id"], name: "index_doc_links_on_doc_id"
+    t.index ["link_id"], name: "index_doc_links_on_link_id"
+  end
+
+  create_table "docs", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.string "title", null: false
+    t.text "content"
+    t.string "url"
+    t.string "doc_type", default: "note", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id", "title"], name: "index_docs_on_account_id_and_title", unique: true
+    t.index ["account_id"], name: "index_docs_on_account_id"
+  end
+
   create_table "expense_templates", force: :cascade do |t|
     t.string "name", null: false
     t.bigint "category_id", null: false
@@ -87,9 +108,9 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_01_120001) do
     t.bigint "budget_period_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "account_id", null: false
     t.bigint "income_event_id"
     t.bigint "planned_expense_id"
-    t.bigint "account_id", null: false
     t.index ["account_id"], name: "index_expenses_on_account_id"
     t.index ["budget_period_id"], name: "index_expenses_on_budget_period_id"
     t.index ["category_id"], name: "index_expenses_on_category_id"
@@ -127,6 +148,33 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_01_120001) do
     t.index ["stock_state"], name: "index_inventory_items_on_stock_state"
   end
 
+  create_table "links", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.string "title", null: false
+    t.string "url", null: false
+    t.text "description"
+    t.string "link_type", default: "reference", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id", "url"], name: "index_links_on_account_id_and_url", unique: true
+    t.index ["account_id"], name: "index_links_on_account_id"
+  end
+
+  create_table "meetings", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.string "title", null: false
+    t.text "description"
+    t.datetime "start_time", null: false
+    t.datetime "end_time"
+    t.string "meeting_url"
+    t.string "location"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id", "title"], name: "index_meetings_on_account_id_and_title"
+    t.index ["account_id"], name: "index_meetings_on_account_id"
+    t.index ["start_time"], name: "index_meetings_on_start_time"
+  end
+
   create_table "planned_expenses", force: :cascade do |t|
     t.bigint "income_event_id", null: false
     t.bigint "category_id", null: false
@@ -145,6 +193,51 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_01_120001) do
     t.index ["expense_template_id"], name: "index_planned_expenses_on_expense_template_id"
     t.index ["income_event_id"], name: "index_planned_expenses_on_income_event_id"
     t.index ["shopping_item_id"], name: "index_planned_expenses_on_shopping_item_id"
+  end
+
+  create_table "project_docs", force: :cascade do |t|
+    t.bigint "project_id", null: false
+    t.bigint "doc_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["doc_id"], name: "index_project_docs_on_doc_id"
+    t.index ["project_id", "doc_id"], name: "index_project_docs_on_project_id_and_doc_id", unique: true
+    t.index ["project_id"], name: "index_project_docs_on_project_id"
+  end
+
+  create_table "project_links", force: :cascade do |t|
+    t.bigint "project_id", null: false
+    t.bigint "link_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["link_id"], name: "index_project_links_on_link_id"
+    t.index ["project_id", "link_id"], name: "index_project_links_on_project_id_and_link_id", unique: true
+    t.index ["project_id"], name: "index_project_links_on_project_id"
+  end
+
+  create_table "project_meetings", force: :cascade do |t|
+    t.bigint "project_id", null: false
+    t.bigint "meeting_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["meeting_id"], name: "index_project_meetings_on_meeting_id"
+    t.index ["project_id", "meeting_id"], name: "index_project_meetings_on_project_id_and_meeting_id", unique: true
+    t.index ["project_id"], name: "index_project_meetings_on_project_id"
+  end
+
+  create_table "projects", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.bigint "owner_id", null: false
+    t.string "name", null: false
+    t.text "summary"
+    t.string "status", default: "pending", null: false
+    t.string "priority", default: "medium", null: false
+    t.date "start_date"
+    t.date "end_date"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id", "name"], name: "index_projects_on_account_id_and_name", unique: true
+    t.index ["account_id"], name: "index_projects_on_account_id"
   end
 
   create_table "recurring_tasks", force: :cascade do |t|
@@ -203,6 +296,27 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_01_120001) do
     t.index ["account_id"], name: "index_task_areas_on_account_id"
   end
 
+  create_table "tasks", force: :cascade do |t|
+    t.bigint "project_id", null: false
+    t.bigint "account_id", null: false
+    t.bigint "owner_id", null: false
+    t.string "title", null: false
+    t.text "description"
+    t.string "task_number", null: false
+    t.string "status", default: "backlog", null: false
+    t.string "priority", default: "medium", null: false
+    t.date "due_date"
+    t.datetime "completed_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id", "task_number"], name: "index_tasks_on_account_id_and_task_number", unique: true
+    t.index ["account_id"], name: "index_tasks_on_account_id"
+    t.index ["priority"], name: "index_tasks_on_priority"
+    t.index ["project_id", "task_number"], name: "index_tasks_on_project_id_and_task_number", unique: true
+    t.index ["project_id"], name: "index_tasks_on_project_id"
+    t.index ["status"], name: "index_tasks_on_status"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email_address", null: false
     t.string "password_digest", null: false
@@ -220,6 +334,9 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_01_120001) do
   add_foreign_key "budget_line_items", "categories"
   add_foreign_key "budget_periods", "accounts"
   add_foreign_key "categories", "accounts"
+  add_foreign_key "doc_links", "docs"
+  add_foreign_key "doc_links", "links"
+  add_foreign_key "docs", "accounts"
   add_foreign_key "expense_templates", "accounts"
   add_foreign_key "expense_templates", "categories"
   add_foreign_key "expenses", "accounts"
@@ -231,11 +348,21 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_01_120001) do
   add_foreign_key "income_events", "budget_periods"
   add_foreign_key "inventory_items", "accounts"
   add_foreign_key "inventory_items", "categories"
+  add_foreign_key "links", "accounts"
+  add_foreign_key "meetings", "accounts"
   add_foreign_key "planned_expenses", "accounts"
   add_foreign_key "planned_expenses", "categories"
   add_foreign_key "planned_expenses", "expense_templates"
   add_foreign_key "planned_expenses", "income_events"
   add_foreign_key "planned_expenses", "shopping_items"
+  add_foreign_key "project_docs", "docs"
+  add_foreign_key "project_docs", "projects"
+  add_foreign_key "project_links", "links"
+  add_foreign_key "project_links", "projects"
+  add_foreign_key "project_meetings", "meetings"
+  add_foreign_key "project_meetings", "projects"
+  add_foreign_key "projects", "accounts"
+  add_foreign_key "projects", "users", column: "owner_id"
   add_foreign_key "recurring_tasks", "accounts"
   add_foreign_key "recurring_tasks", "task_areas"
   add_foreign_key "sessions", "users"
@@ -244,4 +371,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_01_120001) do
   add_foreign_key "shopping_items", "expenses"
   add_foreign_key "shopping_items", "planned_expenses"
   add_foreign_key "task_areas", "accounts"
+  add_foreign_key "tasks", "accounts"
+  add_foreign_key "tasks", "projects"
+  add_foreign_key "tasks", "users", column: "owner_id"
 end

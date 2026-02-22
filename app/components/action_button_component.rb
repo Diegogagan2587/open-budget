@@ -37,7 +37,7 @@ class ActionButtonComponent < ViewComponent::Base
     else
       "px-4 py-2 #{base_classes}"
     end
-    [size_classes, @extra_class].compact.join(" ")
+    [ size_classes, @extra_class ].compact.join(" ")
   end
 
   def link_options

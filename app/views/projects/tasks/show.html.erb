@@ -1,0 +1,56 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="mb-8">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-sm font-medium text-slate-600"><%= link_to @project.name, projects_project_path(@project), class: "text-blue-600 hover:text-blue-800" %></p>
+        <h1 class="text-3xl font-bold text-slate-900 mt-1"><%= @task.task_number %> - <%= @task.title %></h1>
+        <div class="flex items-center gap-3 mt-3">
+          <%= render StatusBadgeComponent.new(status: @task.status, type: :status) %>
+          <%= render StatusBadgeComponent.new(status: @task.priority, type: :priority) %>
+        </div>
+      </div>
+      <div class="flex gap-2">
+        <%= render EditButtonComponent.new(path: edit_projects_project_task_path(@project, @task)) %>
+        <%= render DeleteButtonComponent.new(path: projects_project_task_path(@project, @task)) %>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="bg-white rounded-lg shadow p-6">
+      <h3 class="text-sm font-semibold text-slate-600">Owner</h3>
+      <p class="text-lg font-bold text-slate-900 mt-2"><%= @task.user.name %></p>
+    </div>
+
+    <div class="bg-white rounded-lg shadow p-6">
+      <h3 class="text-sm font-semibold text-slate-600">Status</h3>
+      <p class="text-lg font-bold text-slate-900 mt-2"><%= @task.status.humanize %></p>
+    </div>
+
+    <div class="bg-white rounded-lg shadow p-6">
+      <h3 class="text-sm font-semibold text-slate-600">Priority</h3>
+      <p class="text-lg font-bold text-slate-900 mt-2"><%= @task.priority.humanize %></p>
+    </div>
+  </div>
+
+  <% if @task.due_date %>
+    <div class="bg-white rounded-lg shadow p-6 mb-8">
+      <h3 class="text-sm font-semibold text-slate-600">Due Date</h3>
+      <p class="text-lg text-slate-900 mt-2"><%= @task.due_date.strftime("%B %d, %Y") %></p>
+      <% if @task.due_date < Date.current && @task.status != "done" %>
+        <p class="text-sm text-red-600 font-semibold mt-2">Overdue</p>
+      <% end %>
+    </div>
+  <% end %>
+
+  <% if @task.description.present? %>
+    <div class="bg-white rounded-lg shadow p-6 mb-8">
+      <h3 class="text-lg font-semibold text-slate-900 mb-3">Description</h3>
+      <div class="prose prose-sm max-w-none text-slate-700">
+        <%= simple_format(@task.description) %>
+      </div>
+    </div>
+  <% end %>
+
+  <%= link_to "← Back to tasks", projects_project_tasks_path(@project), class: "text-blue-600 hover:text-blue-800 font-medium" %>
+</div>
