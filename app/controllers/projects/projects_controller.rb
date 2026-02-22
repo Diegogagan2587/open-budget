@@ -62,7 +62,7 @@ module Projects
     end
 
     def ensure_project_owner
-      unless @project.user_id == Current.user.id
+      unless @project.owner_id == Current.user.id
         redirect_to @project
       end
     end
