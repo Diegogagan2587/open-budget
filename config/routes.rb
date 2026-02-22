@@ -85,5 +85,11 @@ Rails.application.routes.draw do
     end
   end
 
+  namespace :projects do
+    resources :projects do
+      resources :tasks
+    end
+  end
+
   root "dashboard#index"
 end
