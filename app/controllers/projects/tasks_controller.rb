@@ -1,8 +1,8 @@
 module Projects
   class TasksController < ApplicationController
     before_action :set_project
-    before_action :set_task, only: [:show, :edit, :update, :destroy]
-    before_action :ensure_task_access, only: [:show, :edit, :update, :destroy]
+    before_action :set_task, only: [ :show, :edit, :update, :destroy ]
+    before_action :ensure_task_access, only: [ :show, :edit, :update, :destroy ]
 
     def index
       @tasks = @project.tasks.order(created_at: :desc)
@@ -33,9 +33,15 @@ module Projects
 
     def update
       if @task.update(task_params)
-        redirect_to projects_project_task_path(@project, @task), notice: t("tasks.flash.updated")
+        respond_to do |format|
+          format.html { redirect_to projects_project_task_path(@project, @task), notice: t("tasks.flash.updated") }
+          format.json { render json: { id: @task.id, status: @task.status }, status: :ok }
+        end
       else
-        render :edit
+        respond_to do |format|
+          format.html { render :edit }
+          format.json { render json: { errors: @task.errors.full_messages }, status: :unprocessable_entity }
+        end
       end
     end
 
