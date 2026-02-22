@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_02_22_054511) do
+ActiveRecord::Schema[8.0].define(version: 2026_02_22_224445) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -63,6 +63,15 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_22_054511) do
     t.datetime "updated_at", null: false
     t.bigint "account_id", null: false
     t.index ["account_id"], name: "index_categories_on_account_id"
+  end
+
+  create_table "doc_links", force: :cascade do |t|
+    t.bigint "doc_id", null: false
+    t.bigint "link_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["doc_id"], name: "index_doc_links_on_doc_id"
+    t.index ["link_id"], name: "index_doc_links_on_link_id"
   end
 
   create_table "docs", force: :cascade do |t|
@@ -325,6 +334,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_22_054511) do
   add_foreign_key "budget_line_items", "categories"
   add_foreign_key "budget_periods", "accounts"
   add_foreign_key "categories", "accounts"
+  add_foreign_key "doc_links", "docs"
+  add_foreign_key "doc_links", "links"
   add_foreign_key "docs", "accounts"
   add_foreign_key "expense_templates", "accounts"
   add_foreign_key "expense_templates", "categories"
