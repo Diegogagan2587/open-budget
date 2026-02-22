@@ -1,8 +1,8 @@
 module Projects
   class DocsController < ApplicationController
     before_action :set_project
-    before_action :set_doc, only: [:show, :edit, :update, :destroy]
-    before_action :ensure_doc_access, only: [:show, :edit, :update, :destroy]
+    before_action :set_doc, only: [ :show, :edit, :update, :destroy ]
+    before_action :ensure_doc_access, only: [ :show, :edit, :update, :destroy ]
 
     def index
       @docs = @project.docs.order(created_at: :desc)

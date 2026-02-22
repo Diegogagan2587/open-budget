@@ -92,9 +92,9 @@ Rails.application.routes.draw do
       resources :links
     end
     resources :docs, only: [] do
-      resources :doc_links, only: [:create, :destroy]
+      resources :doc_links, only: [ :create, :destroy ]
     end
-    resources :links, only: [:index, :show, :new, :create, :edit, :update, :destroy]
+    resources :links, only: [ :index, :show, :new, :create, :edit, :update, :destroy ]
   end
 
   root "dashboard#index"

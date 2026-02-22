@@ -1,8 +1,8 @@
 module Projects
   class LinksController < ApplicationController
     before_action :set_project, if: -> { params[:project_id].present? }
-    before_action :set_link, only: [:show, :edit, :update, :destroy]
-    before_action :ensure_link_access, only: [:show, :edit, :update, :destroy]
+    before_action :set_link, only: [ :show, :edit, :update, :destroy ]
+    before_action :ensure_link_access, only: [ :show, :edit, :update, :destroy ]
 
     def index
       @links = if @project
@@ -25,7 +25,7 @@ module Projects
       # Extract return_to parameters before creating the link
       return_to_doc_id = params[:link]&.delete(:return_to_doc_id)
       return_to_project_id = params[:link]&.delete(:return_to_project_id)
-      
+
       @link = Link.new(link_params)
       @link.account = Current.account
 
@@ -34,7 +34,7 @@ module Projects
         if @project
           @project.links << @link unless @project.links.include?(@link)
         end
-        
+
         # Associate with doc if return params provided
         if return_to_doc_id.present?
           doc = Doc.for_account(Current.account).find(return_to_doc_id)
