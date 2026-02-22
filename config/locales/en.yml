@@ -722,6 +722,10 @@ en:
       created: "Project was successfully created."
       updated: "Project was successfully updated."
       destroyed: "Project was successfully deleted."
+      link_added: "Link was successfully added to document."
+      link_add_failed: "Failed to add link to document."
+      link_already_added: "This link is already added to the document."
+      link_removed: "Link was successfully removed from document."
     status:
       pending: "Pending"
       active: "Active"
@@ -731,6 +735,18 @@ en:
       low: "Low"
       medium: "Medium"
       high: "High"
+    links:
+      title: "Links"
+      add_existing: "Add Existing Link"
+      select_link: "Select a link"
+      select_prompt: "Choose a link..."
+      add: "Add Link"
+      create_new: "Create New Link"
+      no_links: "No links added yet."
+    link_types:
+      reference: "Reference"
+      resource: "Resource"
+      documentation: "Documentation"
 
   tasks:
     flash:

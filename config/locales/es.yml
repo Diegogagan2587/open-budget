@@ -722,6 +722,10 @@ es:
       created: "Proyecto creado exitosamente."
       updated: "Proyecto actualizado exitosamente."
       destroyed: "Proyecto eliminado exitosamente."
+      link_added: "Enlace agregado exitosamente al documento."
+      link_add_failed: "Falló al agregar el enlace al documento."
+      link_already_added: "Este enlace ya está agregado al documento."
+      link_removed: "Enlace eliminado exitosamente del documento."
     status:
       pending: "Pendiente"
       active: "Activo"
@@ -731,6 +735,18 @@ es:
       low: "Bajo"
       medium: "Medio"
       high: "Alto"
+    links:
+      title: "Enlaces"
+      add_existing: "Agregar Enlace Existente"
+      select_link: "Seleccionar un enlace"
+      select_prompt: "Elegir un enlace..."
+      add: "Agregar Enlace"
+      create_new: "Crear Nuevo Enlace"
+      no_links: "No hay enlaces agregados aún."
+    link_types:
+      reference: "Referencia"
+      resource: "Recurso"
+      documentation: "Documentación"
 
   tasks:
     flash:
