@@ -4,7 +4,7 @@
       <div>
         <h1 class="text-3xl font-bold text-slate-900"><%= @project.name %></h1>
         <div class="flex items-center gap-3 mt-3">
-          <%= render StatusBadgeComponent.new(status: @project.status, type: :status) %>
+          <%= render StatusBadgeComponent.new(status: @project.status, type: :status, translation_scope: "projects.status") %>
           <%= render StatusBadgeComponent.new(status: @project.priority, type: :priority) %>
         </div>
       </div>
@@ -70,7 +70,7 @@
             <div class="bg-slate-50 rounded-lg border border-slate-200" data-kanban-target="column" data-status="<%= status %>" data-action="dragover->kanban#dragOver drop->kanban#drop">
               <div class="px-3 py-2 border-b border-slate-200 flex items-center justify-between">
                 <div class="flex items-center gap-2">
-                  <span class="text-xs font-semibold text-slate-700"><%= status.humanize %></span>
+                  <span class="text-xs font-semibold text-slate-700"><%= t("tasks.status.#{status}") %></span>
                   <span class="text-[10px] px-2 py-0.5 rounded-full bg-slate-200 text-slate-600" data-kanban-target="count" data-status="<%= status %>"><%= status_tasks.size %></span>
                 </div>
               </div>
