@@ -113,21 +113,26 @@
     <% end %>
   </div>
 
-  <% if @docs.any? %>
-    <div class="bg-white rounded-lg shadow mb-8">
-      <div class="px-6 py-4 border-b border-slate-200">
-        <h2 class="text-lg font-semibold text-slate-900">Documents</h2>
-      </div>
+  <div class="bg-white rounded-lg shadow mb-8">
+    <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+      <h2 class="text-lg font-semibold text-slate-900">Documents</h2>
+      <%= render AddButtonComponent.new(label: "New Document", path: new_projects_project_doc_path(@project)) %>
+    </div>
+    <% if @docs.any? %>
       <div class="p-4">
         <% @docs.each do |doc| %>
-          <div class="py-2 text-sm">
-            <p class="font-medium text-blue-600"><%= doc.title %></p>
+          <div class="py-2 text-sm border-b border-slate-100 last:border-0 pb-3">
+            <p class="font-medium text-blue-600"><%= link_to doc.title, projects_project_doc_path(@project, doc) %></p>
             <p class="text-slate-600"><%= truncate(doc.content, length: 100) %></p>
           </div>
         <% end %>
       </div>
-    </div>
-  <% end %>
+    <% else %>
+      <div class="p-6 text-center text-slate-600">
+        <%= link_to "Create the first document", new_projects_project_doc_path(@project), class: "text-blue-600 hover:text-blue-800 font-medium" %>
+      </div>
+    <% end %>
+  </div>
 
   <% if @links.any? %>
     <div class="bg-white rounded-lg shadow mb-8">
