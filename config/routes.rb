@@ -91,6 +91,10 @@ Rails.application.routes.draw do
       resources :docs
       resources :links
     end
+    resources :docs, only: [] do
+      resources :doc_links, only: [:create, :destroy]
+    end
+    resources :links, only: [:index, :show, :new, :create, :edit, :update, :destroy]
   end
 
   root "dashboard#index"
