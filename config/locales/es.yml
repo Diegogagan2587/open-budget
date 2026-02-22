@@ -47,6 +47,7 @@ es:
     log_out: "Cerrar sesión"
     menu_open: "Abrir menú"
     menu_close: "Cerrar menú"
+    incomes: "Ingresos"
 
   shared:
     view: "Ver"
@@ -304,6 +305,7 @@ es:
   budget_periods:
     index:
       title: "Periodos presupuestarios"
+      empty_message: "Aún no hay periodos presupuestarios."
     new:
       title: "Nuevo periodo presupuestario"
     edit:
@@ -397,6 +399,7 @@ es:
       income_event: "Ingreso"
       amount: "Importe"
       unassigned: "Sin asignar"
+      total: "Total"
       confirm_destroy: "¿Eliminar este gasto?"
     new:
       title: "Nuevo gasto"
@@ -405,6 +408,8 @@ es:
     show:
       title: "Gasto"
       back: "Volver a gastos"
+      planned_expense: "Gasto planificado relacionado"
+      planned_expense_note: "Este gasto fue creado desde un gasto planificado. Si cambias el evento de ingreso, el gasto planificado también se actualizará."
     form:
       primary_info: "Información principal"
       amount: "Importe"

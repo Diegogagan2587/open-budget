@@ -2,7 +2,7 @@
 
 <div class="max-w-5xl mx-auto px-4">
   <div class="mb-6">
-    <%= link_to budget_periods_path, class: "inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors mb-4" do %>
+    <%= link_to budget_periods_path, class: "inline-flex items-center min-h-[44px] py-2 text-blue-600 hover:text-blue-800 transition-colors mb-4" do %>
       <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
       </svg>
@@ -10,21 +10,22 @@
     <% end %>
   </div>
 
-  <h1 class="text-2xl font-bold mb-4"><%= @budget_period.name %></h1>
+  <h1 class="text-xl sm:text-2xl font-bold mb-4"><%= @budget_period.name %></h1>
 
-<div class="mb-4 flex space-x-2">
-  <%= render EditButtonComponent.new(path: edit_budget_period_path(@budget_period)) %>
-  <%= render ActionButtonComponent.new(
-    path: budget_period_income_events_path(@budget_period),
-    label: t("budget_periods.show.income_events"),
-    color: :green
-  ) %>
-
-  <%= render AddButtonComponent.new(
-    label: t("income_events.new_income_event"),
-    path: new_budget_period_income_event_path(@budget_period)
-  ) %>
-</div>
+  <div class="mb-6 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:gap-x-2">
+    <%= render EditButtonComponent.new(path: edit_budget_period_path(@budget_period), extra_class: "w-full sm:w-auto justify-center min-h-[44px]") %>
+    <%= render ActionButtonComponent.new(
+      path: budget_period_income_events_path(@budget_period),
+      label: t("budget_periods.show.income_events"),
+      color: :green,
+      extra_class: "w-full sm:w-auto justify-center min-h-[44px]",
+    ) %>
+    <%= render AddButtonComponent.new(
+      label: t("income_events.new_income_event"),
+      path: new_budget_period_income_event_path(@budget_period),
+      extra_class: "w-full sm:w-auto justify-center min-h-[44px]",
+    ) %>
+  </div>
 
 <div class="bg-gray-50 p-4 rounded mb-4">
   <div class="grid grid-cols-2 gap-4 mb-4">
@@ -66,45 +67,55 @@
 <h2 class="text-xl font-bold mb-4"><%= t("budget_periods.show.income_events") %></h2>
 
 <% if @income_events.any? %>
-  <table class="min-w-full bg-white border mb-6">
-    <thead>
-      <tr class="bg-gray-100">
-        <th class="px-4 py-2 text-left"><%= t("budget_periods.show.expected_date") %></th>
-        <th class="px-4 py-2 text-left"><%= t("budget_periods.show.description") %></th>
-        <th class="px-4 py-2 text-right whitespace-nowrap"><%= t("budget_periods.show.expected_amount") %></th>
-        <th class="px-4 py-2 text-left"><%= t("budget_periods.show.status") %></th>
-        <th class="px-4 py-2 text-left"><%= t("budget_periods.show.actions") %></th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @income_events.each do |income_event| %>
-        <tr class="border-t hover:bg-gray-50 transition-colors">
-          <td class="px-4 py-2 whitespace-nowrap"><%= income_event.expected_date.strftime("%b %d, %Y") %></td>
-          <td class="px-4 py-2"><%= income_event.description %></td>
-          <td class="px-4 py-2 text-right whitespace-nowrap"><%= number_to_currency(income_event.expected_amount) %></td>
-          <td class="px-4 py-2">
-            <span class="px-2 py-1 rounded text-xs <%= 
-              case income_event.status
-              when 'pending' then 'bg-yellow-100 text-yellow-800'
-              when 'received' then 'bg-blue-100 text-blue-800'
-              when 'applied' then 'bg-green-100 text-green-800'
-              else 'bg-gray-100 text-gray-800'
-              end
-            %>">
-              <%= t("income_events.form.#{income_event.status}", default: income_event.status) %>
-            </span>
-          </td>
-          <td class="px-4 py-2">
-            <%= link_to t("shared.view"), income_event, class: "text-blue-500 hover:underline" %>
-          </td>
+  <%# Mobile: card list %>
+  <div class="space-y-4 mb-6 md:hidden">
+    <% @income_events.each do |income_event| %>
+      <%= render partial: "income_event_card", locals: { income_event: income_event } %>
+    <% end %>
+  </div>
+
+  <%# Desktop: table %>
+  <div class="hidden md:block overflow-x-auto mb-6">
+    <table class="min-w-full bg-white border">
+      <thead>
+        <tr class="bg-gray-100">
+          <th class="px-4 py-2 text-left"><%= t("budget_periods.show.expected_date") %></th>
+          <th class="px-4 py-2 text-left"><%= t("budget_periods.show.description") %></th>
+          <th class="px-4 py-2 text-right whitespace-nowrap"><%= t("budget_periods.show.expected_amount") %></th>
+          <th class="px-4 py-2 text-left"><%= t("budget_periods.show.status") %></th>
+          <th class="px-4 py-2 text-left"><%= t("budget_periods.show.actions") %></th>
         </tr>
-      <% end %>
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        <% @income_events.each do |income_event| %>
+          <tr class="border-t hover:bg-gray-50 transition-colors">
+            <td class="px-4 py-2 whitespace-nowrap"><%= income_event.expected_date.strftime("%b %d, %Y") %></td>
+            <td class="px-4 py-2"><%= income_event.description %></td>
+            <td class="px-4 py-2 text-right whitespace-nowrap"><%= number_to_currency(income_event.expected_amount) %></td>
+            <td class="px-4 py-2">
+              <span class="px-2 py-1 rounded text-xs <%= 
+                case income_event.status
+                when 'pending' then 'bg-yellow-100 text-yellow-800'
+                when 'received' then 'bg-blue-100 text-blue-800'
+                when 'applied' then 'bg-green-100 text-green-800'
+                else 'bg-gray-100 text-gray-800'
+                end
+              %>">
+                <%= t("income_events.form.#{income_event.status}", default: income_event.status) %>
+              </span>
+            </td>
+            <td class="px-4 py-2">
+              <%= link_to t("shared.view"), income_event, class: "text-blue-500 hover:underline" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
 <% else %>
   <div class="text-center py-10 px-4 bg-gray-50 rounded-lg border border-gray-200 mb-6">
     <p class="text-gray-600 mb-3"><%= t("budget_periods.show.no_income_events") %></p>
-    <%= link_to t("budget_periods.show.add_one"), new_budget_period_income_event_path(@budget_period), class: "inline-flex items-center justify-center px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded-lg hover:bg-blue-600 transition-colors" %>
+    <%= link_to t("budget_periods.show.add_one"), new_budget_period_income_event_path(@budget_period), class: "inline-flex items-center justify-center min-h-[44px] px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded-lg hover:bg-blue-600 transition-colors" %>
   </div>
 <% end %>
 
@@ -142,49 +153,60 @@
           </span>
         </div>
       </div>
-      <table class="min-w-full bg-white">
-        <thead>
-          <tr class="bg-gray-100">
-            <th class="px-4 py-2 text-left"><%= t("budget_periods.show.income_event") %></th>
-            <th class="px-4 py-2 text-left"><%= t("budget_periods.show.expected_date") %></th>
-            <th class="px-4 py-2 text-right whitespace-nowrap"><%= t("budget_periods.show.amount") %></th>
-            <th class="px-4 py-2 text-left"><%= t("budget_periods.show.category") %></th>
-            <th class="px-4 py-2 text-left"><%= t("budget_periods.show.description") %></th>
-            <th class="px-4 py-2 text-left"><%= t("budget_periods.show.status") %></th>
-          </tr>
-        </thead>
-        <tbody>
-          <% planned_expenses.each do |planned_expense| %>
-            <tr class="border-t hover:bg-gray-50 transition-colors">
-              <td class="px-4 py-2">
-                <%= link_to income_event.description, income_event, class: "text-blue-500 hover:underline" %>
-              </td>
-              <td class="px-4 py-2 whitespace-nowrap"><%= income_event.expected_date.strftime("%b %d, %Y") %></td>
-              <td class="px-4 py-2 text-right whitespace-nowrap"><%= number_to_currency(planned_expense.amount) %></td>
-              <td class="px-4 py-2"><%= planned_expense.category.name %></td>
-              <td class="px-4 py-2"><%= planned_expense.description %></td>
-              <td class="px-4 py-2">
-                <span class="px-2 py-1 rounded text-xs <%= 
-                  case planned_expense.status
-                  when 'pending_to_pay', 'saved', 'transfer_to_savings' then 'bg-yellow-100 text-yellow-800'
-                  when 'transferring' then 'bg-blue-100 text-blue-800'
-                  when 'paid', 'transferred', 'spent' then 'bg-green-100 text-green-800'
-                  else 'bg-gray-100 text-gray-800'
-                  end
-                %>">
-                  <%= t("activerecord.attributes.planned_expense.status_options.#{planned_expense.status}", default: planned_expense.status) %>
-                </span>
-              </td>
+
+      <%# Mobile: compact list of planned expenses %>
+      <div class="md:hidden divide-y divide-gray-100">
+        <% planned_expenses.each do |planned_expense| %>
+          <%= render partial: "planned_expense_mobile_item", locals: { planned_expense: planned_expense } %>
+        <% end %>
+      </div>
+
+      <%# Desktop: table %>
+      <div class="hidden md:block overflow-x-auto">
+        <table class="min-w-full bg-white">
+          <thead>
+            <tr class="bg-gray-100">
+              <th class="px-4 py-2 text-left"><%= t("budget_periods.show.income_event") %></th>
+              <th class="px-4 py-2 text-left"><%= t("budget_periods.show.expected_date") %></th>
+              <th class="px-4 py-2 text-right whitespace-nowrap"><%= t("budget_periods.show.amount") %></th>
+              <th class="px-4 py-2 text-left"><%= t("budget_periods.show.category") %></th>
+              <th class="px-4 py-2 text-left"><%= t("budget_periods.show.description") %></th>
+              <th class="px-4 py-2 text-left"><%= t("budget_periods.show.status") %></th>
             </tr>
-          <% end %>
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            <% planned_expenses.each do |planned_expense| %>
+              <tr class="border-t hover:bg-gray-50 transition-colors">
+                <td class="px-4 py-2">
+                  <%= link_to income_event.description, income_event, class: "text-blue-500 hover:underline" %>
+                </td>
+                <td class="px-4 py-2 whitespace-nowrap"><%= income_event.expected_date.strftime("%b %d, %Y") %></td>
+                <td class="px-4 py-2 text-right whitespace-nowrap"><%= number_to_currency(planned_expense.amount) %></td>
+                <td class="px-4 py-2"><%= planned_expense.category.name %></td>
+                <td class="px-4 py-2"><%= planned_expense.description %></td>
+                <td class="px-4 py-2">
+                  <span class="px-2 py-1 rounded text-xs <%= 
+                    case planned_expense.status
+                    when 'pending_to_pay', 'saved', 'transfer_to_savings' then 'bg-yellow-100 text-yellow-800'
+                    when 'transferring' then 'bg-blue-100 text-blue-800'
+                    when 'paid', 'transferred', 'spent' then 'bg-green-100 text-green-800'
+                    else 'bg-gray-100 text-gray-800'
+                    end
+                  %>">
+                    <%= t("activerecord.attributes.planned_expense.status_options.#{planned_expense.status}", default: planned_expense.status) %>
+                  </span>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
     </div>
   <% end %>
 <% else %>
   <div class="text-center py-12 px-4 bg-gray-50 rounded-lg border border-gray-200">
     <p class="text-gray-600 mb-4"><%= t("budget_periods.show.no_planned_expenses") %></p>
-    <%= link_to t("budget_periods.show.add_income_event"), new_budget_period_income_event_path(@budget_period), class: "inline-flex items-center justify-center px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded-lg hover:bg-blue-600 transition-colors" %>
+    <%= link_to t("budget_periods.show.add_income_event"), new_budget_period_income_event_path(@budget_period), class: "inline-flex items-center justify-center min-h-[44px] px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded-lg hover:bg-blue-600 transition-colors" %>
   </div>
 <% end %>
 </div>

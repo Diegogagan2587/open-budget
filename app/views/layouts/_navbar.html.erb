@@ -1,8 +1,8 @@
-<header class="bg-gray-100 p-4 mb-6" data-controller="sidebar" data-action="turbo:before-visit@window->sidebar#close">
+<header class="sticky top-0 z-30 bg-gray-100 p-4 mb-6 shadow-sm" data-controller="sidebar" data-action="turbo:before-visit@window->sidebar#close">
   <div class="container mx-auto">
-    <%# Mobile header bar: brand + hamburger (visible only on mobile) %>
+    <%# Mobile header bar: current page title + hamburger (visible only on mobile) %>
     <div class="flex justify-between items-center sm:hidden">
-      <%= link_to t("nav.dashboard"), root_path, class: "font-semibold" %>
+      <span class="font-semibold truncate max-w-[60%]" title="<%= nav_page_title %>"><%= nav_page_title %></span>
       <button
         type="button"
         class="p-2 rounded-md text-gray-700 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400"
@@ -22,13 +22,14 @@
     <%# Desktop nav (hidden on mobile, horizontal on sm+) %>
     <nav class="hidden sm:flex sm:flex-row justify-between items-center" aria-label="<%= t("nav.dashboard") %>">
       <div class="flex space-x-4">
-        <%= link_to t("nav.dashboard"), root_path, class: "font-semibold" %>
-        <%= link_to t("nav.budgets"), budget_periods_path %>
-        <%= link_to t("nav.expenses"), expenses_path %>
-        <%= link_to t("nav.categories"), categories_path %>
-        <%= link_to t("nav.tasks"), task_recurring_tasks_path %>
+        <%= link_to t("nav.dashboard"), root_path, class: current_page?(root_path) ? "font-semibold text-gray-900" : "font-semibold text-gray-600 hover:text-gray-900" %>
+        <%= link_to t("nav.budgets"), budget_periods_path, class: controller_path == "budget_periods" ? "font-semibold text-gray-900" : "text-gray-600 hover:text-gray-900" %>
+        <%= link_to t("nav.incomes"), income_events_path, class: controller_path == "income_events" || controller_path == "planned_expenses" ? "font-semibold text-gray-900" : "text-gray-600 hover:text-gray-900" %>
+        <%= link_to t("nav.expenses"), expenses_path, class: controller_path == "expenses" ? "font-semibold text-gray-900" : "text-gray-600 hover:text-gray-900" %>
+        <%= link_to t("nav.categories"), categories_path, class: controller_path == "categories" ? "font-semibold text-gray-900" : "text-gray-600 hover:text-gray-900" %>
+        <%= link_to t("nav.tasks"), task_recurring_tasks_path, class: controller_path.include?("task") ? "font-semibold text-gray-900" : "text-gray-600 hover:text-gray-900" %>
         <%= link_to "Projects", projects_projects_path %>
-        <%= link_to t("nav.reports"), reports_path %>
+        <%= link_to t("nav.reports"), reports_path, class: controller_path == "reports" ? "font-semibold text-gray-900" : "text-gray-600 hover:text-gray-900" %>
       </div>
       <div class="flex space-x-4 items-center">
         <% if authenticated? %>
@@ -44,9 +45,9 @@
                     } %>
               <% end %>
             </div>
-            <%= link_to t("nav.accounts"), accounts_path, class: "text-sm text-gray-700 hover:text-gray-900" %>
+            <%= link_to t("nav.accounts"), accounts_path, class: "text-sm #{controller_path == "accounts" || controller_path == "account_memberships" ? "font-semibold text-gray-900" : "text-gray-700 hover:text-gray-900"}" %>
           <% end %>
-          <%= link_to t("nav.settings"), edit_settings_path, class: "text-sm text-gray-700 hover:text-gray-900" %>
+          <%= link_to t("nav.settings"), edit_settings_path, class: "text-sm #{controller_path == "settings" ? "font-semibold text-gray-900" : "text-gray-700 hover:text-gray-900"}" %>
           <%= link_to session_path, data: { turbo_method: :delete }, class: "px-4 py-2 bg-gray-500 text-white text-sm rounded-lg hover:bg-gray-600 transition-colors" do %>
             <%= t("nav.log_out") %>
           <% end %>
@@ -69,13 +70,14 @@
   >
     <div class="p-4 flex flex-col gap-4 pt-8">
       <div class="flex flex-col gap-2">
-        <%= link_to t("nav.dashboard"), root_path, class: "font-semibold py-2 text-gray-900 hover:text-gray-700" %>
-        <%= link_to t("nav.budgets"), budget_periods_path, class: "py-2 text-gray-700 hover:text-gray-900" %>
-        <%= link_to t("nav.expenses"), expenses_path, class: "py-2 text-gray-700 hover:text-gray-900" %>
-        <%= link_to t("nav.categories"), categories_path, class: "py-2 text-gray-700 hover:text-gray-900" %>
-        <%= link_to t("nav.tasks"), task_recurring_tasks_path, class: "py-2 text-gray-700 hover:text-gray-900" %>
+        <%= link_to t("nav.dashboard"), root_path, class: "py-2 #{current_page?(root_path) ? "font-semibold text-gray-900" : "text-gray-700 hover:text-gray-900"}" %>
+        <%= link_to t("nav.budgets"), budget_periods_path, class: "py-2 #{controller_path == "budget_periods" ? "font-semibold text-gray-900" : "text-gray-700 hover:text-gray-900"}" %>
+        <%= link_to t("nav.incomes"), income_events_path, class: "py-2 #{controller_path == "income_events" || controller_path == "planned_expenses" ? "font-semibold text-gray-900" : "text-gray-700 hover:text-gray-900"}" %>
+        <%= link_to t("nav.expenses"), expenses_path, class: "py-2 #{controller_path == "expenses" ? "font-semibold text-gray-900" : "text-gray-700 hover:text-gray-900"}" %>
+        <%= link_to t("nav.categories"), categories_path, class: "py-2 #{controller_path == "categories" ? "font-semibold text-gray-900" : "text-gray-700 hover:text-gray-900"}" %>
+        <%= link_to t("nav.tasks"), task_recurring_tasks_path, class: "py-2 #{controller_path.include?("task") ? "font-semibold text-gray-900" : "text-gray-700 hover:text-gray-900"}" %>
         <%= link_to "Projects", projects_projects_path, class: "py-2 text-gray-700 hover:text-gray-900" %>
-        <%= link_to t("nav.reports"), reports_path, class: "py-2 text-gray-700 hover:text-gray-900" %>
+        <%= link_to t("nav.reports"), reports_path, class: "py-2 #{controller_path == "reports" ? "font-semibold text-gray-900" : "text-gray-700 hover:text-gray-900"}" %>
       </div>
       <% if authenticated? %>
         <hr class="border-gray-200" />
@@ -92,9 +94,9 @@
                     } %>
               <% end %>
             </div>
-            <%= link_to t("nav.accounts"), accounts_path, class: "py-2 text-sm text-gray-700 hover:text-gray-900" %>
+            <%= link_to t("nav.accounts"), accounts_path, class: "py-2 text-sm #{controller_path == "accounts" || controller_path == "account_memberships" ? "font-semibold text-gray-900" : "text-gray-700 hover:text-gray-900"}" %>
           <% end %>
-          <%= link_to t("nav.settings"), edit_settings_path, class: "py-2 text-sm text-gray-700 hover:text-gray-900" %>
+          <%= link_to t("nav.settings"), edit_settings_path, class: "py-2 text-sm #{controller_path == "settings" ? "font-semibold text-gray-900" : "text-gray-700 hover:text-gray-900"}" %>
           <%= link_to session_path, data: { turbo_method: :delete }, class: "px-4 py-2 bg-gray-500 text-white text-sm rounded-lg hover:bg-gray-600 transition-colors inline-block w-fit" do %>
             <%= t("nav.log_out") %>
           <% end %>
