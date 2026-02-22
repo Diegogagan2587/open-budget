@@ -33,7 +33,7 @@ module Projects
 
     def update
       if @task.update(task_params)
-        redirect_to [@project, @task], notice: t("tasks.flash.updated")
+        redirect_to projects_project_task_path(@project, @task), notice: t("tasks.flash.updated")
       else
         render :edit
       end
@@ -41,7 +41,7 @@ module Projects
 
     def destroy
       @task.destroy
-      redirect_to project_tasks_url(@project), notice: t("tasks.flash.destroyed")
+      redirect_to projects_project_tasks_url(@project), notice: t("tasks.flash.destroyed")
     end
 
     private
