@@ -757,12 +757,12 @@ es:
       updated: "Tarea actualizada exitosamente."
       destroyed: "Tarea eliminada exitosamente."
     status:
+      blocked: "Bloqueado"
       backlog: "Backlog"
-      planning: "Planificación"
-      in_progress: "En progreso"
-      paused: "Pausada"
+      in_progress: "En Progreso"
+      in_review: "En Revisión"
       done: "Hecha"
-      canceled: "Cancelada"
+      cancelled: "Cancelada"
     priority:
       low: "Bajo"
       medium: "Medio"

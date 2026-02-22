@@ -757,12 +757,12 @@ en:
       updated: "Task was successfully updated."
       destroyed: "Task was successfully deleted."
     status:
+      blocked: "Blocked"
       backlog: "Backlog"
-      planning: "Planning"
       in_progress: "In Progress"
-      paused: "Paused"
+      in_review: "In Review"
       done: "Done"
-      canceled: "Canceled"
+      cancelled: "Cancelled"
     priority:
       low: "Low"
       medium: "Medium"
