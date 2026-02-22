@@ -58,7 +58,7 @@ module Projects
     end
 
     def set_doc
-      @doc = @project.docs.find(params[:id])
+      @doc = @project.docs.includes(:links).find(params[:id])
     rescue ActiveRecord::RecordNotFound
       redirect_to projects_project_docs_path(@project)
     end
