@@ -89,6 +89,7 @@ Rails.application.routes.draw do
     resources :projects do
       resources :tasks
       resources :docs
+      resources :links
     end
   end
 
