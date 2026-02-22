@@ -46,9 +46,9 @@ module Projects
       last_task = Task.where(account_id: current_acc.id).order(created_at: :desc).first
       next_number = if last_task
                       last_task.task_number.match(/\d+/)&.to_s&.to_i.to_i + 1
-                    else
+      else
                       1
-                    end
+      end
       self.task_number = "TASK-#{next_number}"
     end
   end
