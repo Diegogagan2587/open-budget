@@ -53,14 +53,59 @@
   <div class="bg-white rounded-lg shadow mb-8">
     <div class="px-6 py-4 border-b border-slate-200">
       <div class="flex items-center justify-between">
-        <h2 class="text-lg font-semibold text-slate-900">Tasks</h2>
+        <div>
+          <h2 class="text-lg font-semibold text-slate-900">Tasks</h2>
+          <p class="text-xs text-slate-500 mt-1">Vista: Kanban</p>
+        </div>
         <%= render AddButtonComponent.new(label: "New Task", path: new_projects_project_task_path(@project)) %>
       </div>
     </div>
+
     <% if @tasks.any? %>
-      <% @tasks.each do |task| %>
-        <%= render Projects::TaskRowComponent.new(task: task, project: @project) %>
-      <% end %>
+      <% statuses = Projects::Task::STATUSES %>
+      <div class="p-4 overflow-x-auto">
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-6 gap-4 min-w-[900px]">
+          <% statuses.each do |status| %>
+            <% status_tasks = @tasks.select { |task| task.status == status } %>
+            <div class="bg-slate-50 rounded-lg border border-slate-200">
+              <div class="px-3 py-2 border-b border-slate-200 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="text-xs font-semibold text-slate-700"><%= status.humanize %></span>
+                  <span class="text-[10px] px-2 py-0.5 rounded-full bg-slate-200 text-slate-600"><%= status_tasks.size %></span>
+                </div>
+              </div>
+
+              <div class="p-3 space-y-3">
+                <% if status_tasks.any? %>
+                  <% status_tasks.each do |task| %>
+                    <div class="bg-white rounded-md border border-slate-200 p-3 shadow-sm hover:shadow transition">
+                      <div class="flex items-start justify-between gap-2">
+                        <%= link_to task.title, projects_project_task_path(@project, task), class: "text-sm font-semibold text-slate-900 hover:text-blue-600" %>
+                        <span class="text-[10px] font-mono text-slate-400"><%= task.task_number %></span>
+                      </div>
+                      <% if task.description.present? %>
+                        <p class="text-xs text-slate-600 mt-2"><%= truncate(task.description, length: 80) %></p>
+                      <% end %>
+                      <div class="mt-3 flex items-center justify-between text-[11px] text-slate-500">
+                        <div class="flex items-center gap-2">
+                          <%= render StatusBadgeComponent.new(status: task.priority, type: :priority) %>
+                        </div>
+                        <% if task.due_date.present? %>
+                          <span class="<%= task.due_date < Date.current ? 'text-red-600 font-semibold' : '' %>">
+                            <%= task.due_date.strftime("%b %d") %>
+                          </span>
+                        <% end %>
+                      </div>
+                    </div>
+                  <% end %>
+                <% else %>
+                  <div class="text-xs text-slate-500 text-center py-6">Sin tareas</div>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
     <% else %>
       <div class="p-6 text-center text-slate-600">
         <%= link_to "Create the first task", new_projects_project_task_path(@project), class: "text-blue-600 hover:text-blue-800 font-medium" %>
