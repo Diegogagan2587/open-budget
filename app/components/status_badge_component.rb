@@ -11,10 +11,18 @@ class StatusBadgeComponent < ViewComponent::Base
     case @type
     when :status
       case @status
-      when "pending"
-        "px-2 py-1 rounded text-xs bg-yellow-100 text-yellow-800"
-      when "purchased"
+      when "pending", "backlog"
+        "px-2 py-1 rounded text-xs bg-slate-100 text-slate-800"
+      when "blocked"
+        "px-2 py-1 rounded text-xs bg-red-100 text-red-800"
+      when "in_progress"
+        "px-2 py-1 rounded text-xs bg-blue-100 text-blue-800"
+      when "in_review"
+        "px-2 py-1 rounded text-xs bg-purple-100 text-purple-800"
+      when "done", "purchased"
         "px-2 py-1 rounded text-xs bg-green-100 text-green-800"
+      when "cancelled"
+        "px-2 py-1 rounded text-xs bg-gray-400 text-gray-700"
       else
         "px-2 py-1 rounded text-xs bg-gray-100 text-gray-800"
       end
