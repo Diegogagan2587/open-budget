@@ -1,0 +1,57 @@
+<div class="container mx-auto px-4 py-8 max-w-2xl">
+  <h1 class="text-3xl font-bold text-slate-900 mb-8">Create New Project</h1>
+
+  <div class="bg-white rounded-lg shadow p-6">
+    <%= form_with model: [@project], url: projects_projects_path, method: :post, local: true, scope: :project do |form| %>
+      <% if @project.errors.any? %>
+        <div class="mb-6 bg-red-50 border border-red-200 rounded p-4">
+          <h2 class="text-sm font-semibold text-red-800 mb-2"><%= pluralize(@project.errors.count, "error") %> prohibited this project from being saved:</h2>
+          <ul class="text-sm text-red-700 list-disc list-inside">
+            <% @project.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div class="mb-6">
+        <%= form.label :name, "Project Name", class: "block text-sm font-semibold text-slate-700 mb-2" %>
+        <%= form.text_field :name, class: "w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500", placeholder: "e.g., Q1 Product Launch" %>
+      </div>
+
+      <div class="mb-6">
+        <%= form.label :summary, "Summary", class: "block text-sm font-semibold text-slate-700 mb-2" %>
+        <%= form.text_area :summary, class: "w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500", rows: 4, placeholder: "Describe your project goals and scope..." %>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div>
+          <%= form.label :status, "Status", class: "block text-sm font-semibold text-slate-700 mb-2" %>
+          <%= form.select :status, Projects::Project::STATUSES.map { |s| [s.humanize, s] }, {}, class: "w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+        </div>
+
+        <div>
+          <%= form.label :priority, "Priority", class: "block text-sm font-semibold text-slate-700 mb-2" %>
+          <%= form.select :priority, Projects::Project::PRIORITIES.map { |p| [p.humanize, p] }, {}, class: "w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div>
+          <%= form.label :start_date, "Start Date", class: "block text-sm font-semibold text-slate-700 mb-2" %>
+          <%= form.date_field :start_date, class: "w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+        </div>
+
+        <div>
+          <%= form.label :end_date, "End Date", class: "block text-sm font-semibold text-slate-700 mb-2" %>
+          <%= form.date_field :end_date, class: "w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+        </div>
+      </div>
+
+      <div class="flex gap-3">
+        <%= form.submit "Create Project", class: "px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium" %>
+        <%= link_to "Cancel", projects_projects_path, class: "px-6 py-2 text-slate-700 border border-slate-300 rounded-lg hover:bg-slate-50 font-medium" %>
+      </div>
+    <% end %>
+  </div>
+</div>
