@@ -13,7 +13,7 @@ class CreateProjects < ActiveRecord::Migration[8.0]
       t.timestamps
     end
 
-    add_index :projects, [:account_id, :name], unique: true
+    add_index :projects, [ :account_id, :name ], unique: true
     add_foreign_key :projects, :users, column: :owner_id, primary_key: :id
   end
 end

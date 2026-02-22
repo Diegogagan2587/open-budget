@@ -10,6 +10,6 @@ class CreateLinks < ActiveRecord::Migration[8.0]
       t.timestamps
     end
 
-    add_index :links, [:account_id, :url], unique: true
+    add_index :links, [ :account_id, :url ], unique: true
   end
 end

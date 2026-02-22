@@ -10,6 +10,6 @@ class CreateDocs < ActiveRecord::Migration[8.0]
       t.timestamps
     end
 
-    add_index :docs, [:account_id, :title], unique: true
+    add_index :docs, [ :account_id, :title ], unique: true
   end
 end

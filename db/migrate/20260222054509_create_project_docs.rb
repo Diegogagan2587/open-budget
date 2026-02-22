@@ -7,6 +7,6 @@ class CreateProjectDocs < ActiveRecord::Migration[8.0]
       t.timestamps
     end
 
-    add_index :project_docs, [:project_id, :doc_id], unique: true
+    add_index :project_docs, [ :project_id, :doc_id ], unique: true
   end
 end

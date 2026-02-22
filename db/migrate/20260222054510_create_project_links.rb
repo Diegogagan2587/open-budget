@@ -7,6 +7,6 @@ class CreateProjectLinks < ActiveRecord::Migration[8.0]
       t.timestamps
     end
 
-    add_index :project_links, [:project_id, :link_id], unique: true
+    add_index :project_links, [ :project_id, :link_id ], unique: true
   end
 end

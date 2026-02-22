@@ -15,8 +15,8 @@ class CreateTasks < ActiveRecord::Migration[8.0]
       t.timestamps
     end
 
-    add_index :tasks, [:account_id, :task_number], unique: true
-    add_index :tasks, [:project_id, :task_number], unique: true
+    add_index :tasks, [ :account_id, :task_number ], unique: true
+    add_index :tasks, [ :project_id, :task_number ], unique: true
     add_index :tasks, :status
     add_index :tasks, :priority
     add_foreign_key :tasks, :users, column: :owner_id, primary_key: :id

@@ -12,7 +12,7 @@ class CreateMeetings < ActiveRecord::Migration[8.0]
       t.timestamps
     end
 
-    add_index :meetings, [:account_id, :title]
+    add_index :meetings, [ :account_id, :title ]
     add_index :meetings, :start_time
   end
 end
