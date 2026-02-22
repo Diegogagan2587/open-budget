@@ -1,6 +1,6 @@
 module Projects
   class Task < ApplicationRecord
-    STATUSES = %w[backlog planning in_progress paused done canceled].freeze
+    STATUSES = %w[blocked backlog in_progress in_review done cancelled].freeze
     PRIORITIES = %w[low medium high].freeze
 
     belongs_to :project
@@ -19,8 +19,8 @@ module Projects
     validates :project_id, presence: true
 
     scope :for_account, ->(account) { where(account_id: account.id) }
-    scope :pending, -> { where(status: %w[backlog planning in_progress paused]) }
-    scope :completed, -> { where(status: %w[done canceled]) }
+    scope :pending, -> { where(status: %w[blocked backlog in_progress in_review]) }
+    scope :completed, -> { where(status: %w[done cancelled]) }
     scope :by_status, ->(status) { where(status: status) if status.present? }
     scope :by_priority, ->(priority) { where(priority: priority) if priority.present? }
 
