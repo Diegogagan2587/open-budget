@@ -716,3 +716,53 @@ es:
           in_stock: "En stock"
           low: "Bajo"
           empty: "Vacío"
+
+  projects:
+    flash:
+      created: "Proyecto creado exitosamente."
+      updated: "Proyecto actualizado exitosamente."
+      destroyed: "Proyecto eliminado exitosamente."
+    status:
+      pending: "Pendiente"
+      active: "Activo"
+      completed: "Completado"
+      archived: "Archivado"
+    priority:
+      low: "Bajo"
+      medium: "Medio"
+      high: "Alto"
+
+  tasks:
+    flash:
+      created: "Tarea creada exitosamente."
+      updated: "Tarea actualizada exitosamente."
+      destroyed: "Tarea eliminada exitosamente."
+    status:
+      backlog: "Backlog"
+      planning: "Planificación"
+      in_progress: "En progreso"
+      paused: "Pausada"
+      done: "Hecha"
+      canceled: "Cancelada"
+    priority:
+      low: "Bajo"
+      medium: "Medio"
+      high: "Alto"
+
+  docs:
+    flash:
+      created: "Documento creado exitosamente."
+      updated: "Documento actualizado exitosamente."
+      destroyed: "Documento eliminado exitosamente."
+
+  links:
+    flash:
+      created: "Enlace creado exitosamente."
+      updated: "Enlace actualizado exitosamente."
+      destroyed: "Enlace eliminado exitosamente."
+
+  meetings:
+    flash:
+      created: "Reunión creada exitosamente."
+      updated: "Reunión actualizada exitosamente."
+      destroyed: "Reunión eliminada exitosamente."
