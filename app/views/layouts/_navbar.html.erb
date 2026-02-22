@@ -27,6 +27,7 @@
         <%= link_to t("nav.expenses"), expenses_path %>
         <%= link_to t("nav.categories"), categories_path %>
         <%= link_to t("nav.tasks"), task_recurring_tasks_path %>
+        <%= link_to "Projects", projects_projects_path %>
         <%= link_to t("nav.reports"), reports_path %>
       </div>
       <div class="flex space-x-4 items-center">
@@ -73,6 +74,7 @@
         <%= link_to t("nav.expenses"), expenses_path, class: "py-2 text-gray-700 hover:text-gray-900" %>
         <%= link_to t("nav.categories"), categories_path, class: "py-2 text-gray-700 hover:text-gray-900" %>
         <%= link_to t("nav.tasks"), task_recurring_tasks_path, class: "py-2 text-gray-700 hover:text-gray-900" %>
+        <%= link_to "Projects", projects_projects_path, class: "py-2 text-gray-700 hover:text-gray-900" %>
         <%= link_to t("nav.reports"), reports_path, class: "py-2 text-gray-700 hover:text-gray-900" %>
       </div>
       <% if authenticated? %>
