@@ -88,6 +88,7 @@ Rails.application.routes.draw do
   namespace :projects do
     resources :projects do
       resources :tasks
+      resources :docs
     end
   end
 
