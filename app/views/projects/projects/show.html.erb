@@ -63,22 +63,22 @@
 
     <% if @tasks.any? %>
       <% statuses = Projects::Task::STATUSES %>
-      <div class="p-4 overflow-x-auto">
+      <div class="p-4 overflow-x-auto" data-controller="kanban">
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-6 gap-4 min-w-[900px]">
           <% statuses.each do |status| %>
             <% status_tasks = @tasks.select { |task| task.status == status } %>
-            <div class="bg-slate-50 rounded-lg border border-slate-200">
+            <div class="bg-slate-50 rounded-lg border border-slate-200" data-kanban-target="column" data-status="<%= status %>" data-action="dragover->kanban#dragOver drop->kanban#drop">
               <div class="px-3 py-2 border-b border-slate-200 flex items-center justify-between">
                 <div class="flex items-center gap-2">
                   <span class="text-xs font-semibold text-slate-700"><%= status.humanize %></span>
-                  <span class="text-[10px] px-2 py-0.5 rounded-full bg-slate-200 text-slate-600"><%= status_tasks.size %></span>
+                  <span class="text-[10px] px-2 py-0.5 rounded-full bg-slate-200 text-slate-600" data-kanban-target="count" data-status="<%= status %>"><%= status_tasks.size %></span>
                 </div>
               </div>
 
               <div class="p-3 space-y-3">
                 <% if status_tasks.any? %>
                   <% status_tasks.each do |task| %>
-                    <div class="bg-white rounded-md border border-slate-200 p-3 shadow-sm hover:shadow transition">
+                    <div class="bg-white rounded-md border border-slate-200 p-3 shadow-sm hover:shadow transition" draggable="true" data-kanban-target="card" data-task-id="<%= task.id %>" data-task-url="<%= projects_project_task_path(@project, task) %>" data-action="dragstart->kanban#dragStart dragend->kanban#dragEnd">
                       <div class="flex items-start justify-between gap-2">
                         <%= link_to task.title, projects_project_task_path(@project, task), class: "text-sm font-semibold text-slate-900 hover:text-blue-600" %>
                         <span class="text-[10px] font-mono text-slate-400"><%= task.task_number %></span>
