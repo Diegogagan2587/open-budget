@@ -1,0 +1,22 @@
+<div class="flex items-center justify-between p-4 border-b border-slate-200">
+  <div class="flex-1">
+    <div class="flex items-center gap-3">
+      <%= link_to project.name, project, class: "font-semibold text-blue-600 hover:text-blue-800" %>
+      <%= render StatusBadgeComponent.new(status: project.status, type: :status) %>
+      <%= render StatusBadgeComponent.new(status: project.priority, type: :priority) %>
+    </div>
+    <p class="text-sm text-slate-600 mt-1"><%= truncate(project.summary, length: 100) %></p>
+    <div class="flex items-center gap-4 mt-2 text-sm text-slate-500">
+      <span><%= pluralize(project.tasks.count, "task") %></span>
+      <span>Completion: <%= completion_percentage %>%</span>
+      <% if project.start_date %>
+        <span>Start: <%= project.start_date.strftime("%b %d, %Y") %></span>
+      <% end %>
+    </div>
+  </div>
+  <div class="flex gap-2">
+    <%= render ViewButtonComponent.new(path: projects_project_path(project), label: "View") %>
+    <%= render EditButtonComponent.new(path: edit_projects_project_path(project)) %>
+    <%= render DeleteButtonComponent.new(path: projects_project_path(project)) %>
+  </div>
+</div>
