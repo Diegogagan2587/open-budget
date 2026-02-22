@@ -738,11 +738,14 @@ en:
     links:
       title: "Links"
       add_existing: "Add Existing Link"
+      search_link: "Search for a link"
+      search_placeholder: "Type to search links..."
       select_link: "Select a link"
       select_prompt: "Choose a link..."
       add: "Add Link"
       create_new: "Create New Link"
       no_links: "No links added yet."
+      no_available_links: "No links available. Create one first."
     link_types:
       reference: "Reference"
       resource: "Resource"
