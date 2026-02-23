@@ -63,6 +63,11 @@ module ApplicationHelper
       strikethrough: true
     )
 
-    markdown.render(text)
+    # Sanitize the rendered HTML to prevent XSS attacks
+    sanitize(
+      markdown.render(text),
+      tags: %w[h1 h2 h3 h4 h5 h6 p br strong em u del code pre blockquote ul ol li a table thead tbody tr th td hr],
+      attributes: { 'a' => ['href', 'title'], 'th' => ['align'], 'td' => ['align'] }
+    )
   end
 end
