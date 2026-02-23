@@ -7,17 +7,17 @@ module Projects
       @link = Projects::Link.for_account(Current.account).find(params[:link_id])
 
       if @doc.links << @link
-        redirect_to projects_project_doc_path(@doc.projects.first, @doc), notice: t("projects.flash.link_added")
+        redirect_to doc_path, notice: t("projects.flash.link_added")
       else
-        redirect_to projects_project_doc_path(@doc.projects.first, @doc), alert: t("projects.flash.link_add_failed")
+        redirect_to doc_path, alert: t("projects.flash.link_add_failed")
       end
     rescue ActiveRecord::RecordInvalid
-      redirect_to projects_project_doc_path(@doc.projects.first, @doc), alert: t("projects.flash.link_already_added")
+      redirect_to doc_path, alert: t("projects.flash.link_already_added")
     end
 
     def destroy
       @doc.links.delete(@link)
-      redirect_to projects_project_doc_path(@doc.projects.first, @doc), notice: t("projects.flash.link_removed")
+      redirect_to doc_path, notice: t("projects.flash.link_removed")
     end
 
     private
@@ -28,6 +28,18 @@ module Projects
 
     def set_link
       @link = @doc.links.find(params[:id])
+    end
+
+    def doc_path
+      # If doc is associated with a project from params, redirect there
+      # Otherwise, redirect to standalone doc view
+      if params[:project_id]
+        projects_project_doc_path(params[:project_id], @doc)
+      elsif @doc.projects.any?
+        projects_project_doc_path(@doc.projects.first, @doc)
+      else
+        projects_doc_path(@doc)
+      end
     end
   end
 end

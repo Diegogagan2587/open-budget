@@ -46,8 +46,8 @@
   <% if @task.description.present? %>
     <div class="bg-white rounded-lg shadow p-6 mb-8">
       <h3 class="text-lg font-semibold text-slate-900 mb-3">Description</h3>
-      <div class="prose prose-sm max-w-none text-slate-700">
-        <%= simple_format(@task.description) %>
+      <div class="markdown-content text-slate-700">
+        <%= render_markdown(@task.description).html_safe %>
       </div>
     </div>
   <% end %>

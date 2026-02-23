@@ -51,4 +51,18 @@ module ApplicationHelper
   def report_trend_period_options
     ReportPeriodBuckets::TREND_PERIODS.map { |p| [ I18n.t("reports.period_#{p}"), p ] }
   end
+
+  def render_markdown(text)
+    return "" if text.blank?
+    
+    markdown = Redcarpet::Markdown.new(
+      Redcarpet::Render::HTML.new(hard_wrap: true),
+      autolink: true,
+      tables: true,
+      fenced_code_blocks: true,
+      strikethrough: true
+    )
+    
+    markdown.render(text)
+  end
 end
