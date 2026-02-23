@@ -44,7 +44,7 @@ module Projects
 
     def destroy
       @project.destroy
-      redirect_to projects_url, notice: t("projects.flash.destroyed")
+      redirect_to projects_projects_url, notice: t("projects.flash.destroyed")
     end
 
     private
@@ -52,12 +52,12 @@ module Projects
     def set_project
       @project = Project.for_account(Current.account).find(params[:id])
     rescue ActiveRecord::RecordNotFound
-      redirect_to projects_url
+      redirect_to projects_projects_url
     end
 
     def ensure_project_access
       unless @project && @project.account_id == Current.account.id
-        redirect_to projects_url
+        redirect_to projects_projects_url
       end
     end
 
