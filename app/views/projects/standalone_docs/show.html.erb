@@ -2,27 +2,48 @@
   <div class="mb-8">
     <div class="flex items-center justify-between">
       <div>
-        <p class="text-sm font-medium text-slate-600"><%= link_to @project.name, projects_project_path(@project), class: "text-blue-600 hover:text-blue-800" %></p>
-        <h1 class="text-3xl font-bold text-slate-900 mt-1"><%= @doc.title %></h1>
+        <h1 class="text-3xl font-bold text-slate-900"><%= @doc.title %></h1>
         <div class="flex items-center gap-3 mt-3">
           <%= render StatusBadgeComponent.new(status: @doc.doc_type, type: :status) %>
         </div>
       </div>
       <div class="flex gap-2">
-        <%= render EditButtonComponent.new(path: edit_projects_project_doc_path(@project, @doc)) %>
-        <%= render DeleteButtonComponent.new(path: projects_project_doc_path(@project, @doc)) %>
+        <%= render EditButtonComponent.new(path: edit_projects_doc_path(@doc)) %>
+        <%= render DeleteButtonComponent.new(path: projects_doc_path(@doc)) %>
       </div>
     </div>
   </div>
 
-  <div class="bg-white rounded-lg shadow p-6">
+  <div class="bg-white rounded-lg shadow p-6 mb-8">
     <div class="markdown-content">
       <%= render_markdown(@doc.content) %>
     </div>
   </div>
 
+  <!-- Projects using this doc -->
+  <% if @doc.projects.any? %>
+    <div class="bg-white rounded-lg shadow mb-8">
+      <div class="p-6 border-b border-slate-200">
+        <h2 class="text-xl font-semibold text-slate-900">Used in Projects</h2>
+      </div>
+      <div class="p-6">
+        <div class="space-y-2">
+          <% @doc.projects.each do |project| %>
+            <div class="flex items-center justify-between p-3 bg-slate-50 rounded-md hover:bg-slate-100 transition">
+              <div>
+                <%= link_to project.name, projects_project_path(project), class: "font-medium text-blue-600 hover:text-blue-800" %>
+                <p class="text-sm text-slate-600"><%= project.summary %></p>
+              </div>
+              <%= render StatusBadgeComponent.new(status: project.status, type: :status) %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
   <!-- Links Section -->
-  <div class="mt-8 bg-white rounded-lg shadow">
+  <div class="bg-white rounded-lg shadow">
     <div class="p-6 border-b border-slate-200">
       <div class="flex items-center justify-between">
         <h2 class="text-xl font-semibold text-slate-900"><%= t('projects.links.title') %></h2>
@@ -111,11 +132,11 @@
 
     <!-- Create New Link -->
     <div class="p-6 border-t border-slate-200 bg-slate-50">
-      <%= link_to t('projects.links.create_new'), new_projects_link_path(return_to_doc_id: @doc.id, return_to_project_id: @project.id), class: "inline-flex items-center px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 text-sm font-medium rounded-md border border-slate-300 transition-colors" %>
+      <%= link_to t('projects.links.create_new'), new_projects_link_path(return_to_doc_id: @doc.id), class: "inline-flex items-center px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 text-sm font-medium rounded-md border border-slate-300 transition-colors" %>
     </div>
   </div>
 
   <div class="mt-8">
-    <%= link_to "Back to Project", projects_project_path(@project), class: "text-blue-600 hover:text-blue-800 font-medium" %>
+    <%= link_to "← Back to Documents", projects_docs_path, class: "text-blue-600 hover:text-blue-800 font-medium" %>
   </div>
 </div>

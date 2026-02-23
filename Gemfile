@@ -65,3 +65,5 @@ end
 gem "tailwindcss-rails", "~> 4.4"
 
 gem "view_component", "~> 4.1"
+
+gem "redcarpet", "~> 3.6"

@@ -1,0 +1,47 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="mb-8">
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="text-3xl font-bold text-slate-900">Documents Library</h1>
+        <p class="text-slate-600 mt-2">Manage all your documents</p>
+      </div>
+      <%= render AddButtonComponent.new(label: "New Document", path: new_projects_doc_path) %>
+    </div>
+  </div>
+
+  <% if @docs.any? %>
+    <div class="bg-white rounded-lg shadow overflow-hidden">
+      <div class="divide-y divide-slate-200">
+        <% @docs.each do |doc| %>
+          <div class="flex items-center justify-between p-4 hover:bg-slate-50 transition">
+            <div class="flex-1">
+              <div class="flex items-center gap-3">
+                <%= link_to doc.title, projects_doc_path(doc), class: "font-semibold text-blue-600 hover:text-blue-800" %>
+                <%= render StatusBadgeComponent.new(status: doc.doc_type, type: :status) %>
+              </div>
+              <p class="text-sm text-slate-600 mt-1"><%= truncate(doc.content, length: 100) %></p>
+              <% if doc.projects.any? %>
+                <div class="flex gap-2 mt-2">
+                  <span class="text-xs text-slate-500">Projects:</span>
+                  <% doc.projects.each do |project| %>
+                    <%= link_to project.name, projects_project_path(project), class: "text-xs text-blue-600 hover:text-blue-800" %>
+                  <% end %>
+                </div>
+              <% end %>
+            </div>
+            <div class="flex gap-2">
+              <%= render ViewButtonComponent.new(path: projects_doc_path(doc), label: "View") %>
+              <%= render EditButtonComponent.new(path: edit_projects_doc_path(doc)) %>
+              <%= render DeleteButtonComponent.new(path: projects_doc_path(doc)) %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% else %>
+    <div class="bg-slate-50 rounded-lg border border-slate-200 p-8 text-center">
+      <p class="text-slate-600">No documents yet.</p>
+      <%= link_to "Create your first document", new_projects_doc_path, class: "text-blue-600 hover:text-blue-800 font-medium mt-2 inline-block" %>
+    </div>
+  <% end %>
+</div>

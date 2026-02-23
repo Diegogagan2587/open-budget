@@ -28,7 +28,8 @@
         <%= link_to t("nav.expenses"), expenses_path, class: controller_path == "expenses" ? "font-semibold text-gray-900" : "text-gray-600 hover:text-gray-900" %>
         <%= link_to t("nav.categories"), categories_path, class: controller_path == "categories" ? "font-semibold text-gray-900" : "text-gray-600 hover:text-gray-900" %>
         <%= link_to t("nav.tasks"), task_recurring_tasks_path, class: controller_path.include?("task") ? "font-semibold text-gray-900" : "text-gray-600 hover:text-gray-900" %>
-        <%= link_to "Projects", projects_projects_path %>
+        <%= link_to "Projects", projects_projects_path, class: controller_path == "projects/projects" ? "font-semibold text-gray-900" : "text-gray-600 hover:text-gray-900" %>
+        <%= link_to "Docs", projects_docs_path, class: controller_path == "projects/standalone_docs" ? "font-semibold text-gray-900" : "text-gray-600 hover:text-gray-900" %>
         <%= link_to t("nav.reports"), reports_path, class: controller_path == "reports" ? "font-semibold text-gray-900" : "text-gray-600 hover:text-gray-900" %>
       </div>
       <div class="flex space-x-4 items-center">
@@ -76,7 +77,8 @@
         <%= link_to t("nav.expenses"), expenses_path, class: "py-2 #{controller_path == "expenses" ? "font-semibold text-gray-900" : "text-gray-700 hover:text-gray-900"}" %>
         <%= link_to t("nav.categories"), categories_path, class: "py-2 #{controller_path == "categories" ? "font-semibold text-gray-900" : "text-gray-700 hover:text-gray-900"}" %>
         <%= link_to t("nav.tasks"), task_recurring_tasks_path, class: "py-2 #{controller_path.include?("task") ? "font-semibold text-gray-900" : "text-gray-700 hover:text-gray-900"}" %>
-        <%= link_to "Projects", projects_projects_path, class: "py-2 text-gray-700 hover:text-gray-900" %>
+        <%= link_to "Projects", projects_projects_path, class: "py-2 #{controller_path == "projects/projects" ? "font-semibold text-gray-900" : "text-gray-700 hover:text-gray-900"}" %>
+        <%= link_to "Docs", projects_docs_path, class: "py-2 #{controller_path == "projects/standalone_docs" ? "font-semibold text-gray-900" : "text-gray-700 hover:text-gray-900"}" %>
         <%= link_to t("nav.reports"), reports_path, class: "py-2 #{controller_path == "reports" ? "font-semibold text-gray-900" : "text-gray-700 hover:text-gray-900"}" %>
       </div>
       <% if authenticated? %>

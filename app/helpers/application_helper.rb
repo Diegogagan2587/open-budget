@@ -51,4 +51,23 @@ module ApplicationHelper
   def report_trend_period_options
     ReportPeriodBuckets::TREND_PERIODS.map { |p| [ I18n.t("reports.period_#{p}"), p ] }
   end
+
+  def render_markdown(text)
+    return "" if text.blank?
+
+    markdown = Redcarpet::Markdown.new(
+      Redcarpet::Render::HTML.new(hard_wrap: true),
+      autolink: true,
+      tables: true,
+      fenced_code_blocks: true,
+      strikethrough: true
+    )
+
+    # Sanitize the rendered HTML to prevent XSS attacks
+    sanitize(
+      markdown.render(text),
+      tags: %w[h1 h2 h3 h4 h5 h6 p br strong em u del code pre blockquote ul ol li a table thead tbody tr th td hr],
+      attributes: { "a" => [ "href", "title" ], "th" => [ "align" ], "td" => [ "align" ] }
+    )
+  end
 end
