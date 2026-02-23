@@ -54,7 +54,7 @@ module ApplicationHelper
 
   def render_markdown(text)
     return "" if text.blank?
-    
+
     markdown = Redcarpet::Markdown.new(
       Redcarpet::Render::HTML.new(hard_wrap: true),
       autolink: true,
@@ -62,7 +62,7 @@ module ApplicationHelper
       fenced_code_blocks: true,
       strikethrough: true
     )
-    
+
     markdown.render(text)
   end
 end

@@ -91,7 +91,7 @@ Rails.application.routes.draw do
       resources :docs
       resources :links
     end
-    resources :docs, only: [] do
+    resources :docs, only: [ :index, :show, :new, :create, :edit, :update, :destroy ], controller: "standalone_docs" do
       resources :doc_links, only: [ :create, :destroy ]
     end
     resources :links, only: [ :index, :show, :new, :create, :edit, :update, :destroy ]
