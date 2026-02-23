@@ -10,8 +10,8 @@ module Projects
     has_many :docs, through: :project_docs
     has_many :project_links, dependent: :destroy
     has_many :links, through: :project_links
-    has_many :project_meetings, dependent: :destroy, class_name: "Projects::ProjectMeeting"
-    has_many :meetings, through: :project_meetings, class_name: "Projects::Meeting"
+    has_many :project_meetings, dependent: :destroy
+    has_many :meetings, through: :project_meetings
 
     before_create :set_account
 
