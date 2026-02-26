@@ -1,6 +1,6 @@
 module Projects
   class Doc < ApplicationRecord
-    DOC_TYPES = %w[file link note].freeze
+    DOC_TYPES = %w[file note].freeze
 
     belongs_to :account
     has_many :project_docs, dependent: :destroy
