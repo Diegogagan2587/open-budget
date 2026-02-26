@@ -13,6 +13,7 @@ class Account < ApplicationRecord
   has_many :inventory_items, dependent: :destroy
   has_many :task_areas, dependent: :destroy
   has_many :recurring_tasks, dependent: :destroy
+  has_many :tags, dependent: :destroy
 
   validates :name, presence: true
 
