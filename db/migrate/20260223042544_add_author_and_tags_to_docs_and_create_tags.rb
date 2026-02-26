@@ -14,7 +14,7 @@ class AddAuthorAndTagsToDocsAndCreateTags < ActiveRecord::Migration[8.0]
       t.timestamps
     end
     add_index :tags, :account_id
-    add_index :tags, [:account_id, :name], unique: true
+    add_index :tags, [ :account_id, :name ], unique: true
     add_foreign_key :tags, :accounts, on_delete: :cascade
 
     # Create doc_tags junction table
@@ -26,7 +26,7 @@ class AddAuthorAndTagsToDocsAndCreateTags < ActiveRecord::Migration[8.0]
     end
     add_index :doc_tags, :doc_id
     add_index :doc_tags, :tag_id
-    add_index :doc_tags, [:doc_id, :tag_id], unique: true
+    add_index :doc_tags, [ :doc_id, :tag_id ], unique: true
     add_foreign_key :doc_tags, :docs, on_delete: :cascade
     add_foreign_key :doc_tags, :tags, on_delete: :cascade
   end
