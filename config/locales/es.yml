@@ -403,6 +403,20 @@ es:
       confirm_destroy: "¿Eliminar este gasto?"
     new:
       title: "Nuevo gasto"
+    quick_new:
+      title: "Agregar gasto directo rapido"
+      subtitle: "Agrega un gasto no planificado para este ingreso."
+      income_event: "Ingreso"
+      amount: "Importe"
+      date: "Fecha"
+      category: "Categoria"
+      budget_period: "Periodo"
+      description: "Descripcion"
+      description_placeholder: "Ej., Super, Gasolina, Servicios..."
+      select_category: "Selecciona una categoria"
+      select_budget_period: "Selecciona un periodo"
+      cancel: "Volver al ingreso"
+      save: "Guardar gasto"
     edit:
       title: "Editar gasto"
     show:
@@ -419,6 +433,7 @@ es:
       select_category: "Selecciona una categoría"
     flash:
       created: "Gasto creado correctamente."
+      quick_created: "Gasto agregado correctamente a este ingreso."
       updated: "Gasto actualizado correctamente."
       destroyed: "Gasto eliminado correctamente."
     errors_prohibited: "error impidió guardar este gasto:"
@@ -471,6 +486,11 @@ es:
       title: "Ingreso"
       back: "Volver a ingresos"
       receive: "Marcar como recibido"
+      direct_expenses: "Gastos directos"
+      direct_expenses_hint: "Gastos asignados directamente a este ingreso"
+      quick_add_direct_expense: "Agregar gasto no planificado"
+      no_direct_expenses: "Aun no hay gastos directos"
+      no_direct_expenses_hint: "Usa el alta rapida para registrar gastos no planificados de este ingreso."
     receive:
       title: "Recibir ingreso"
     form:

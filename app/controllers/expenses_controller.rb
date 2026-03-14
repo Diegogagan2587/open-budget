@@ -1,5 +1,6 @@
 class ExpensesController < ApplicationController
   before_action :set_budget_period, only: [ :new, :create ]
+  before_action :set_income_event_context, only: [ :quick_new, :quick_create ]
   before_action :set_expense, only: %i[ show edit update destroy ]
 
 
@@ -21,6 +22,16 @@ class ExpensesController < ApplicationController
 
   # GET /expenses/1 or /expenses/1.json
   def show
+  end
+
+  # GET /income_events/:income_event_id/direct_expenses/new
+  def quick_new
+    @expense = Expense.for_account(Current.account).new(
+      income_event: @income_event,
+      budget_period: @income_event.budget_period,
+      date: Date.current
+    )
+    load_quick_form_collections
   end
 
   # GET /expenses/1/edit
@@ -51,6 +62,21 @@ class ExpensesController < ApplicationController
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @expense.errors, status: :unprocessable_entity }
       end
+    end
+  end
+
+  # POST /income_events/:income_event_id/direct_expenses
+  def quick_create
+    @expense = Expense.for_account(Current.account).new(quick_expense_params)
+    @expense.account = Current.account
+    @expense.income_event = @income_event
+    @expense.budget_period ||= @income_event.budget_period
+
+    if @expense.save
+      redirect_to @income_event, notice: t("expenses.flash.quick_created")
+    else
+      load_quick_form_collections
+      render :quick_new, status: :unprocessable_entity
     end
   end
 
@@ -107,5 +133,18 @@ class ExpensesController < ApplicationController
       if params[:budget_period_id]
         @budget_period = BudgetPeriod.for_account(Current.account).find(params[:budget_period_id])
       end
+    end
+
+    def set_income_event_context
+      @income_event = IncomeEvent.for_account(Current.account).find(params[:income_event_id])
+    end
+
+    def quick_expense_params
+      params.expect(expense: [ :date, :amount, :description, :category_id, :budget_period_id ])
+    end
+
+    def load_quick_form_collections
+      @categories = Category.for_account(Current.account).order(:name)
+      @budget_periods = BudgetPeriod.for_account(Current.account).order(start_date: :desc)
     end
 end

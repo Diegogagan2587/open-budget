@@ -403,6 +403,20 @@ en:
       confirm_destroy: "Delete this expense?"
     new:
       title: "New Expense"
+    quick_new:
+      title: "Quick Add Direct Expense"
+      subtitle: "Add an unplanned expense for this income event."
+      income_event: "Income event"
+      amount: "Amount"
+      date: "Date"
+      category: "Category"
+      budget_period: "Budget period"
+      description: "Description"
+      description_placeholder: "e.g., Groceries, Fuel, Utilities..."
+      select_category: "Select a category"
+      select_budget_period: "Select a budget period"
+      cancel: "Back to income event"
+      save: "Save expense"
     edit:
       title: "Edit Expense"
     show:
@@ -419,6 +433,7 @@ en:
       select_category: "Select a category"
     flash:
       created: "Expense was successfully created."
+      quick_created: "Expense was successfully added to this income event."
       updated: "Expense was successfully updated."
       destroyed: "Expense was successfully destroyed."
     errors_prohibited: "error prohibited this expense from being saved:"
@@ -471,6 +486,11 @@ en:
       title: "Income Event"
       back: "Back to Income Events"
       receive: "Mark as Received"
+      direct_expenses: "Direct Expenses"
+      direct_expenses_hint: "Expenses assigned directly to this income event"
+      quick_add_direct_expense: "Add Unplanned Expense"
+      no_direct_expenses: "No direct expenses yet"
+      no_direct_expenses_hint: "Use quick add to register unplanned spending for this income."
     receive:
       title: "Receive Income"
     form:
