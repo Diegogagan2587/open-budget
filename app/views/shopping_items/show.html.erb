@@ -16,9 +16,13 @@
     data: { turbo_confirm: "Are you sure?" }
   ) %>
   <% if @shopping_item.status == "pending" %>
-    <%= link_to t("shopping_items.show.mark_purchased"), mark_as_purchased_shopping_item_path(@shopping_item),
-        data: { turbo_method: :patch },
-        class: "inline-flex items-center justify-center w-full sm:w-auto px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors" %>
+    <%= render Ui::ButtonComponent.new(
+      href: mark_as_purchased_shopping_item_path(@shopping_item),
+      label: t("shopping_items.show.mark_purchased"),
+      variant: "default",
+      method: :patch,
+      css_class: "w-full sm:w-auto"
+    ) %>
   <% end %>
 </div>
 
