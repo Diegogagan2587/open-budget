@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@import "./shadcn.css";
+
 
 @keyframes slide-in-right {
   from {
