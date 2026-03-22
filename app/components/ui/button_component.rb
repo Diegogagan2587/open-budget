@@ -53,7 +53,7 @@ module Ui
 
     def normalize_variant(variant)
       return :default if variant.nil?
-      
+
       variant = variant.to_sym
       return variant if VARIANT_CLASSES.key?(variant)
 
