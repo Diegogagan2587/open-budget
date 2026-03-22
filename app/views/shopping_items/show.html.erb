@@ -7,10 +7,13 @@
 <h1 class="text-2xl font-bold mb-4"><%= @shopping_item.name %></h1>
 
 <div class="mb-4 flex flex-wrap gap-2">
-  <%= render EditButtonComponent.new(path: edit_shopping_item_path(@shopping_item)) %>
-  <%= render DeleteButtonComponent.new(
-    path: @shopping_item,
-    confirm_message: "Are you sure?"
+  <%= render Ui::ButtonComponent.new(href: edit_shopping_item_path(@shopping_item), label: "Edit", variant: "outline") %>
+  <%= render Ui::ButtonComponent.new(
+    href: @shopping_item,
+    label: "Delete",
+    variant: "destructive",
+    method: :delete,
+    data: { turbo_confirm: "Are you sure?" }
   ) %>
   <% if @shopping_item.status == "pending" %>
     <%= link_to t("shopping_items.show.mark_purchased"), mark_as_purchased_shopping_item_path(@shopping_item),
