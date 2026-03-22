@@ -119,34 +119,37 @@
 
 <!-- Action Buttons -->
 <div class="flex flex-wrap gap-3 mb-8">
-  <%= render EditButtonComponent.new(path: edit_income_event_path(@income_event), size: :large) %>
+  <%= render Ui::ButtonComponent.new(href: edit_income_event_path(@income_event), label: "Edit", variant: "outline", size: "lg") %>
   <% unless @income_event.is_received? %>
-    <%= render ActionButtonComponent.new(
-      path: receive_income_event_path(@income_event),
+    <%= render Ui::ButtonComponent.new(
+      href: receive_income_event_path(@income_event),
       label: "Mark as Received",
-      color: :green,
-      size: :large
+      variant: "default",
+      size: "lg"
     ) %>
   <% end %>
   <% if @income_event.is_received? && !@income_event.is_applied? %>
-    <%= render ActionButtonComponent.new(
-      path: apply_all_income_event_path(@income_event),
+    <%= render Ui::ButtonComponent.new(
+      href: apply_all_income_event_path(@income_event),
       label: "Apply All Expenses",
-      color: :purple,
+      variant: "default",
       method: :post,
-      size: :large
+      size: "lg"
     ) %>
   <% end %>
-  <%= render ActionButtonComponent.new(
-    path: income_event_planned_expenses_path(@income_event),
+  <%= render Ui::ButtonComponent.new(
+    href: income_event_planned_expenses_path(@income_event),
     label: "Plan Expenses",
-    color: :indigo,
-    size: :large
+    variant: "default",
+    size: "lg"
   ) %>
-  <%= render DeleteButtonComponent.new(
-    path: @income_event,
-    confirm_message: "Are you sure? This will delete this income event and all associated planned expenses.",
-    size: :large
+  <%= render Ui::ButtonComponent.new(
+    href: @income_event,
+    label: "Delete",
+    variant: "destructive",
+    method: :delete,
+    data: { turbo_confirm: "Are you sure? This will delete this income event and all associated planned expenses." },
+    size: "lg"
   ) %>
 </div>
 
