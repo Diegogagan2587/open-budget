@@ -1,36 +1,37 @@
 # frozen_string_literal: true
 
 class ViewButtonComponent < ViewComponent::Base
-  def initialize(path:, label: "View", color: :blue, size: :default)
+  def initialize(path: nil, label: "View", variant: nil, color: nil, size: :default, disabled: false, icon: nil, type: "button", method: nil, data_attributes: {}, extra_class: nil)
     @path = path
     @label = label
-    @color = color
+    @variant = variant || legacy_variant_from_color(color)
     @size = size
-  end
-
-  def classes
-    color_classes = case @color
-    when :indigo
-      "bg-indigo-500 hover:bg-indigo-600 text-white"
-    when :gray
-      "bg-gray-200 text-gray-700 hover:bg-gray-300"
-    else # :blue
-      "bg-blue-500 hover:bg-blue-600 text-white"
-    end
-
-    base_classes = "#{color_classes} rounded transition-colors flex items-center gap-2"
-
-    case @size
-    when :small
-      "px-3 py-1 text-sm #{base_classes}"
-    when :large
-      "px-6 py-3 #{base_classes}"
-    else
-      "px-4 py-2 #{base_classes}"
-    end
+    @disabled = disabled
+    @show_icon = icon.nil? ? legacy_show_icon_for_color(color) : icon
+    @type = type
+    @method = method
+    @data_attributes = data_attributes
+    @extra_class = extra_class
   end
 
   def show_icon?
-    @color != :gray
+    @show_icon
+  end
+
+  private
+
+  def legacy_variant_from_color(color)
+    case color&.to_sym
+    when :gray
+      :secondary
+    when :red
+      :destructive
+    else
+      nil
+    end
+  end
+
+  def legacy_show_icon_for_color(color)
+    color&.to_sym != :gray
   end
 end

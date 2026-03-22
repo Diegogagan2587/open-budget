@@ -1,0 +1,11 @@
+<% if link? %>
+  <%= link_to @href, tag_options do %>
+    <%= content if content.present? %>
+    <%= @label %>
+  <% end %>
+<% else %>
+  <%= button_tag type: @type, **tag_options do %>
+    <%= content if content.present? %>
+    <%= @label %>
+  <% end %>
+<% end %>
