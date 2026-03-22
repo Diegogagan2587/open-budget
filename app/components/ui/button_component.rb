@@ -43,8 +43,12 @@ module Ui
 
     def tag_options
       options = { class: classes }
-      options[:data] = @data if @data.present?
-      options[:method] = @method if @method
+
+      data_options = @data.present? ? @data.dup : {}
+      data_options[:turbo_method] = @method if link? && @method.present? && !data_options.key?(:turbo_method)
+
+      options[:data] = data_options if data_options.present?
+      options[:method] = @method if @method.present? && !link?
       options[:disabled] = true if @disabled
       options.compact
     end
