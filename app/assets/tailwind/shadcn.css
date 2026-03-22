@@ -64,10 +64,10 @@
 
 @layer base {
   * {
-    @apply border-border;
+    @apply border-[hsl(var(--border))];
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-[hsl(var(--background))] text-[hsl(var(--foreground))];
     font-feature-settings:
       "rlig" 1,
       "calt" 1;
@@ -89,11 +89,11 @@
   }
 
   label.error {
-    @apply text-destructive;
+    @apply text-[hsl(var(--destructive))];
   }
 
   input.error:focus-visible {
-    @apply ring-destructive;
+    @apply ring-[hsl(var(--destructive))];
   }
 }
 
@@ -205,4 +205,8 @@ input[type="range"]::-ms-track {
   visibility: visible;
   overflow: hidden;
   transition: all 0.2s;
+}
+
+.debugger {
+  border: 1px solid red;
 }
