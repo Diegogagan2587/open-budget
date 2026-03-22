@@ -3,9 +3,10 @@
 <div class="mb-6">
   <div class="flex justify-between items-center mb-6">
     <h1 class="text-3xl font-bold text-gray-900">Income Events</h1>
-    <%= render AddButtonComponent.new(
+    <%= render Ui::ButtonComponent.new(
+      href: @budget_period ? new_budget_period_income_event_path(@budget_period) : new_income_event_path,
       label: "New Income Event",
-      path: @budget_period ? new_budget_period_income_event_path(@budget_period) : new_income_event_path
+      variant: "default"
     ) %>
   </div>
 
