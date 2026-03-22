@@ -69,3 +69,5 @@ gem "view_component", "~> 4.1"
 gem "redcarpet", "~> 3.6"
 # backgroun jobs monitoring errors
 gem "mission_control-jobs"
+
+gem "shadcn-ui", "~> 0.0.15"
