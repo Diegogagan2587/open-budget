@@ -231,9 +231,10 @@
       <h2 class="text-2xl font-bold text-gray-900"><%= t("income_events.show.direct_expenses") %></h2>
       <p class="text-sm text-gray-600"><%= t("income_events.show.direct_expenses_hint") %></p>
     </div>
-    <%= render AddButtonComponent.new(
+    <%= render Ui::ButtonComponent.new(
+      href: income_event_new_direct_expense_path(@income_event),
       label: t("income_events.show.quick_add_direct_expense"),
-      path: income_event_new_direct_expense_path(@income_event)
+      variant: "default"
     ) %>
   </div>
 
