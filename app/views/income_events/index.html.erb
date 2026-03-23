@@ -3,9 +3,10 @@
 <div class="mb-6">
   <div class="flex justify-between items-center mb-6">
     <h1 class="text-3xl font-bold text-gray-900">Income Events</h1>
-    <%= render AddButtonComponent.new(
+    <%= render Ui::ButtonComponent.new(
+      href: @budget_period ? new_budget_period_income_event_path(@budget_period) : new_income_event_path,
       label: "New Income Event",
-      path: @budget_period ? new_budget_period_income_event_path(@budget_period) : new_income_event_path
+      variant: "default"
     ) %>
   </div>
 
@@ -185,33 +186,44 @@
           </div>
 
           <!-- Card Footer -->
-          <div class="bg-gray-50 px-6 py-4 border-t border-gray-200 flex items-center justify-between">
-            <div class="flex gap-2">
-              <%= render ViewButtonComponent.new(path: income_event, size: :small) %>
-              <%= render EditButtonComponent.new(path: edit_income_event_path(income_event), size: :small) %>
+          <div class="bg-gray-50 px-6 py-4 border-t border-gray-200 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div class="flex flex-col gap-2 w-full sm:w-auto sm:flex-row sm:flex-wrap">
+              <%= render Ui::ButtonComponent.new(href: income_event, label: "View", variant: "outline", size: "sm", css_class: "w-full sm:w-auto justify-center") do %>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                </svg>
+              <% end %>
+              <%= render Ui::ButtonComponent.new(href: edit_income_event_path(income_event), label: "Edit", variant: "outline", size: "sm", css_class: "w-full sm:w-auto justify-center") %>
             </div>
-            <div class="flex gap-2">
+            <div class="flex flex-col gap-2 w-full sm:w-auto sm:flex-row sm:flex-wrap sm:justify-end">
               <% unless income_event.is_received? %>
-                <%= render ActionButtonComponent.new(
-                  path: receive_income_event_path(income_event),
+                <%= render Ui::ButtonComponent.new(
+                  href: receive_income_event_path(income_event),
                   label: "Mark Received",
-                  color: :green,
-                  size: :small
+                  variant: "default",
+                  size: "sm",
+                  css_class: "w-full sm:w-auto justify-center"
                 ) %>
               <% end %>
               <% if income_event.is_received? && !income_event.is_applied? %>
-                <%= render ActionButtonComponent.new(
-                  path: apply_all_income_event_path(income_event),
+                <%= render Ui::ButtonComponent.new(
+                  href: apply_all_income_event_path(income_event),
                   label: "Apply All",
-                  color: :purple,
+                  variant: "default",
                   method: :post,
-                  size: :small
+                  size: "sm",
+                  css_class: "w-full sm:w-auto justify-center"
                 ) %>
               <% end %>
-              <%= render DeleteButtonComponent.new(
-                path: income_event,
-                confirm_message: "Are you sure? This will delete all associated planned expenses.",
-                size: :small
+              <%= render Ui::ButtonComponent.new(
+                href: income_event,
+                label: "Delete",
+                variant: "destructive",
+                method: :delete,
+                data: { turbo_confirm: "Are you sure? This will delete all associated planned expenses." },
+                size: "sm",
+                css_class: "w-full sm:w-auto justify-center"
               ) %>
             </div>
           </div>
@@ -228,9 +240,10 @@
     <h3 class="mt-2 text-sm font-medium text-gray-900">No income events</h3>
     <p class="mt-1 text-sm text-gray-500">Get started by creating your first income event.</p>
     <div class="mt-6">
-      <%= render AddButtonComponent.new(
+      <%= render Ui::ButtonComponent.new(
+        href: @budget_period ? new_budget_period_income_event_path(@budget_period) : new_income_event_path,
         label: "New Income Event",
-        path: @budget_period ? new_budget_period_income_event_path(@budget_period) : new_income_event_path
+        variant: "default"
       ) %>
     </div>
   </div>
