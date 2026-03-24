@@ -3,7 +3,7 @@
 <h1 class="text-2xl font-bold mb-4 px-2"><%= t("accounts.index.title") %></h1>
 
 <div class="mb-4 flex justify-end px-8">
-  <%= render AddButtonComponent.new( label: t("accounts.new_account"), path: new_account_path ) %>
+  <%= render Ui::ButtonComponent.new(href: new_account_path, label: t("accounts.new_account"), variant: "default") %>
 </div>
 
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -15,9 +15,14 @@
         Role: <span class="font-semibold"><%= membership&.role&.capitalize %></span>
       </p>
       <div class="flex space-x-2">
-        <%= render ViewButtonComponent.new(path: account, size: :small) %>
+        <%= render Ui::ButtonComponent.new(href: account, label: "View", variant: "outline", size: "sm") do %>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+          </svg>
+        <% end %>
         <% if membership&.owner? %>
-          <%= render EditButtonComponent.new(path: edit_account_path(account), size: :small) %>
+          <%= render Ui::ButtonComponent.new(href: edit_account_path(account), label: "Edit", variant: "outline", size: "sm") %>
         <% end %>
         <% if account == current_account %>
           <span class="px-3 py-1 bg-green-100 text-green-800 text-sm rounded"><%= t("shared.current") %></span>

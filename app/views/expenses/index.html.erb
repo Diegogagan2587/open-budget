@@ -29,9 +29,10 @@
 
   <div class="mb-4 flex justify-between items-center">
     <div class="w-full sm:w-auto [&>a]:w-full [&>a]:sm:w-auto [&>a]:flex [&>a]:justify-center">
-      <%= render AddButtonComponent.new(
+      <%= render Ui::ButtonComponent.new(
+        href: new_expense_path,
         label: t("expenses.index.new_expense"),
-        path: new_expense_path
+        variant: "default"
       ) %>
     </div>
   </div>

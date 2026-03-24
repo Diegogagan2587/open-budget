@@ -28,7 +28,7 @@
 
     <div class="flex space-x-2">
       <%= f.submit t("settings.update"), class: "px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600" %>
-      <%= render CancelButtonComponent.new(path: root_path, label: t("settings.cancel")) %>
+      <%= render Ui::ButtonComponent.new(href: root_path, label: t("settings.cancel"), variant: "ghost") %>
     </div>
   <% end %>
 </div>

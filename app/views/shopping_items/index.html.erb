@@ -4,9 +4,10 @@
   <h1 class="text-2xl font-bold mb-4"><%= t("shopping_items.index.title") %></h1>
 
   <div class="mb-6 flex flex-col sm:flex-row gap-3 sm:gap-0 sm:justify-between sm:items-center">
-    <%= render AddButtonComponent.new(
+    <%= render Ui::ButtonComponent.new(
+        href: new_shopping_item_path,
         label: t("shopping_items.index.add_item"),
-        path: new_shopping_item_path
+        variant: "default"
       ) %>
 
     <div class="flex flex-wrap gap-2">

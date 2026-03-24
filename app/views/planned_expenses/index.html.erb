@@ -33,9 +33,10 @@
 </div>
 
 <div class="mb-6 flex justify-between items-center">
-  <%= render AddButtonComponent.new(
+  <%= render Ui::ButtonComponent.new(
+    href: new_income_event_planned_expense_path(@income_event),
     label: "New Planned Expense",
-    path: new_income_event_planned_expense_path(@income_event)
+    variant: "default"
   ) %>
 </div>
 
@@ -137,22 +138,25 @@
 
           <!-- Actions -->
           <div class="ml-11 mt-4 pt-4 border-t border-gray-200 flex items-center gap-3 flex-wrap">
-            <%= render EditButtonComponent.new(path: edit_income_event_planned_expense_path(@income_event, planned_expense), size: :small) %>
+            <%= render Ui::ButtonComponent.new(href: edit_income_event_planned_expense_path(@income_event, planned_expense), label: "Edit", variant: "outline", size: "sm") %>
             <button onclick="document.getElementById('move-modal-<%= planned_expense.id %>').classList.remove('hidden')" class="px-4 py-2 bg-purple-500 text-white text-sm rounded-lg hover:bg-purple-600 transition-colors">
               Move
             </button>
             <% if planned_expense.expense.nil? %>
-              <%= render ActionButtonComponent.new(
-                path: apply_income_event_planned_expense_path(@income_event, planned_expense),
+              <%= render Ui::ButtonComponent.new(
+                href: apply_income_event_planned_expense_path(@income_event, planned_expense),
                 label: "Apply",
-                color: :green,
-                data_attributes: { turbo_method: :patch },
-                size: :small
+                variant: "default",
+                data: { turbo_method: :patch },
+                size: "sm"
               ) %>
             <% end %>
-            <%= render DeleteButtonComponent.new(
-              path: [@income_event, planned_expense],
-              size: :small
+            <%= render Ui::ButtonComponent.new(
+              href: [@income_event, planned_expense],
+              label: "Delete",
+              variant: "destructive",
+              method: :delete,
+              size: "sm"
             ) %>
           </div>
           
