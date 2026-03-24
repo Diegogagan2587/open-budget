@@ -33,9 +33,10 @@
 </div>
 
 <div class="mb-6 flex justify-between items-center">
-  <%= render AddButtonComponent.new(
+  <%= render Ui::ButtonComponent.new(
+    href: new_income_event_planned_expense_path(@income_event),
     label: "New Planned Expense",
-    path: new_income_event_planned_expense_path(@income_event)
+    variant: "default"
   ) %>
 </div>
 
