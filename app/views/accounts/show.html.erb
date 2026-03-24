@@ -10,11 +10,11 @@
       </svg>
     <% end %>
     <% if @account.account_memberships.find_by(user: Current.user)&.owner? %>
-      <%= render EditButtonComponent.new(path: edit_account_path(@account)) %>
-      <%= render ActionButtonComponent.new(
-        path: account_account_memberships_path(@account),
+      <%= render Ui::ButtonComponent.new(href: edit_account_path(@account), label: "Edit", variant: "outline") %>
+      <%= render Ui::ButtonComponent.new(
+        href: account_account_memberships_path(@account),
         label: t("accounts.show.manage_members"),
-        color: :green
+        variant: "default"
       ) %>
     <% end %>
   </div>
