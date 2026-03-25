@@ -8,8 +8,8 @@
         </div>
       </div>
       <div class="flex gap-2">
-        <%= render EditButtonComponent.new(path: edit_projects_doc_path(@doc)) %>
-        <%= render DeleteButtonComponent.new(path: projects_doc_path(@doc)) %>
+        <%= render Ui::ButtonComponent.new(href: edit_projects_doc_path(@doc), label: "Edit", variant: "outline") %>
+        <%= render Ui::ButtonComponent.new(href: projects_doc_path(@doc), label: "Delete", variant: "destructive", method: :delete) %>
       </div>
     </div>
   </div>
