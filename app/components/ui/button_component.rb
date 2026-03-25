@@ -45,7 +45,11 @@ module Ui
       options = { class: classes }
 
       data_options = @data.present? ? @data.dup : {}
-      data_options[:turbo_method] = @method if link? && @method.present? && !data_options.key?(:turbo_method)
+      if link? && @method.present?
+        # Support both Turbo and legacy UJS handlers for non-GET links.
+        data_options[:turbo_method] = @method unless data_options.key?(:turbo_method)
+        data_options[:method] = @method unless data_options.key?(:method)
+      end
 
       options[:data] = data_options if data_options.present?
       options[:method] = @method if @method.present? && !link?
