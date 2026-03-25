@@ -5,7 +5,7 @@
   </div>
 
   <div class="mb-6">
-    <%= render AddButtonComponent.new(label: "New Project", path: new_projects_project_path) %>
+    <%= render Ui::ButtonComponent.new(href: new_projects_project_path, label: "New Project", variant: "default") %>
   </div>
 
   <% if @projects.any? %>
