@@ -5,7 +5,7 @@
         <h1 class="text-3xl font-bold text-slate-900">Documents Library</h1>
         <p class="text-slate-600 mt-2">Manage all your documents</p>
       </div>
-      <%= render AddButtonComponent.new(label: "New Document", path: new_projects_doc_path) %>
+      <%= render Ui::ButtonComponent.new(href: new_projects_doc_path, label: "New Document", variant: "default") %>
     </div>
   </div>
 
