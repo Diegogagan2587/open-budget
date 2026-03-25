@@ -5,7 +5,7 @@
         <h1 class="text-3xl font-bold text-slate-900"><%= link_to @project.name, projects_project_path(@project), class: "hover:text-blue-600" %></h1>
         <p class="text-slate-600 mt-2">Links</p>
       </div>
-      <%= render AddButtonComponent.new(label: "New Link", path: new_projects_project_link_path(@project)) %>
+      <%= render Ui::ButtonComponent.new(href: new_projects_project_link_path(@project), label: "New Link", variant: "default") %>
     </div>
   </div>
 
