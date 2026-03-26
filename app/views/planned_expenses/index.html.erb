@@ -187,9 +187,10 @@
     <h3 class="mt-2 text-sm font-medium text-gray-900">No planned expenses</h3>
     <p class="mt-1 text-sm text-gray-500">Start planning how to allocate this income.</p>
     <div class="mt-6">
-      <%= render AddButtonComponent.new(
+      <%= render Ui::ButtonComponent.new(
+        href: new_income_event_planned_expense_path(@income_event),
         label: "Add Planned Expense",
-        path: new_income_event_planned_expense_path(@income_event)
+        variant: "default"
       ) %>
     </div>
   </div>

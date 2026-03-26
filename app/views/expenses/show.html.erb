@@ -60,13 +60,18 @@
 
   <div class="flex flex-col sm:flex-row gap-2">
     <div class="w-full sm:w-auto [&>a]:w-full [&>a]:sm:w-auto [&>a]:flex [&>a]:justify-center">
-      <%= render EditButtonComponent.new(path: edit_expense_path(@expense), label: t("shared.edit")) %>
+      <%= render Ui::ButtonComponent.new(href: edit_expense_path(@expense), label: t("shared.edit"), variant: "outline") %>
     </div>
     <div class="w-full sm:w-auto [&>a]:w-full [&>a]:sm:w-auto [&>a]:flex [&>a]:justify-center">
-      <%= render DeleteButtonComponent.new(path: @expense, label: t("shared.delete"), confirm_message: t("expenses.index.confirm_destroy")) %>
+      <%= render Ui::ButtonComponent.new(href: @expense, label: t("shared.delete"), variant: "destructive", method: :delete, data: { turbo_confirm: t("expenses.index.confirm_destroy") }) %>
     </div>
     <div class="w-full sm:w-auto [&>a]:w-full [&>a]:sm:w-auto [&>a]:flex [&>a]:justify-center">
-      <%= render ViewButtonComponent.new(path: expenses_path, label: t("expenses.show.back"), color: :gray) %>
+      <%= render Ui::ButtonComponent.new(href: expenses_path, label: t("expenses.show.back"), variant: "ghost") do %>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+        </svg>
+      <% end %>
     </div>
   </div>
 </div>

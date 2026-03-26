@@ -96,9 +96,10 @@
 
   <!-- Form Actions -->
   <div class="flex items-center justify-end gap-4 pt-6 border-t border-gray-200">
-    <%= render CancelButtonComponent.new(
-      path: @budget_period ? @budget_period : expenses_path,
-      label: "Cancelar"
+    <%= render Ui::ButtonComponent.new(
+      href: @budget_period ? @budget_period : expenses_path,
+      label: "Cancelar",
+      variant: "ghost"
     ) %>
     <%= form.submit "Guardar", class: "px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg shadow-md hover:shadow-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-200 font-medium" %>
   </div>

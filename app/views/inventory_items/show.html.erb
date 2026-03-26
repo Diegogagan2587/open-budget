@@ -7,10 +7,13 @@
 <h1 class="text-2xl font-bold mb-4"><%= @inventory_item.name %></h1>
 
 <div class="mb-4 flex space-x-2">
-  <%= render EditButtonComponent.new(path: edit_inventory_item_path(@inventory_item)) %>
-  <%= render DeleteButtonComponent.new(
-    path: @inventory_item,
-    confirm_message: "Are you sure?"
+  <%= render Ui::ButtonComponent.new(href: edit_inventory_item_path(@inventory_item), label: "Edit", variant: "outline") %>
+  <%= render Ui::ButtonComponent.new(
+    href: @inventory_item,
+    label: "Delete",
+    variant: "destructive",
+    method: :delete,
+    data: { turbo_confirm: "Are you sure?" }
   ) %>
   <% if @inventory_item.stock_state == "empty" || @inventory_item.stock_state == "low" %>
     <%= link_to "Add to Shopping List", add_to_shopping_list_inventory_item_path(@inventory_item), 

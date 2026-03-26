@@ -9,8 +9,8 @@
         </div>
       </div>
       <div class="flex gap-2">
-        <%= render EditButtonComponent.new(path: edit_projects_project_path(@project)) %>
-        <%= render DeleteButtonComponent.new(path: projects_project_path(@project)) %>
+        <%= render Ui::ButtonComponent.new(href: edit_projects_project_path(@project), label: "Edit", variant: "outline") %>
+        <%= render Ui::ButtonComponent.new(href: projects_project_path(@project), label: "Delete", variant: "destructive", method: :delete) %>
       </div>
     </div>
   </div>
@@ -57,7 +57,7 @@
           <h2 class="text-lg font-semibold text-slate-900">Tasks</h2>
           <p class="text-xs text-slate-500 mt-1">Vista: Kanban</p>
         </div>
-        <%= render AddButtonComponent.new(label: "New Task", path: new_projects_project_task_path(@project)) %>
+        <%= render Ui::ButtonComponent.new(href: new_projects_project_task_path(@project), label: "New Task", variant: "default") %>
       </div>
     </div>
 
@@ -116,7 +116,7 @@
   <div class="bg-white rounded-lg shadow mb-8">
     <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
       <h2 class="text-lg font-semibold text-slate-900">Documents</h2>
-      <%= render AddButtonComponent.new(label: "New Document", path: new_projects_project_doc_path(@project)) %>
+      <%= render Ui::ButtonComponent.new(href: new_projects_project_doc_path(@project), label: "New Document", variant: "default") %>
     </div>
     <% if @docs.any? %>
       <div class="p-4">
@@ -137,7 +137,7 @@
   <div class="bg-white rounded-lg shadow mb-8">
     <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
       <h2 class="text-lg font-semibold text-slate-900">Links</h2>
-      <%= render AddButtonComponent.new(label: "New Link", path: new_projects_project_link_path(@project)) %>
+      <%= render Ui::ButtonComponent.new(href: new_projects_project_link_path(@project), label: "New Link", variant: "default") %>
     </div>
     <% if @links.any? %>
       <div class="p-4">
