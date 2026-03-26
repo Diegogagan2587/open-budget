@@ -98,7 +98,7 @@
 
 <!-- Action Buttons -->
 <div class="mb-8">
-  <%= render EditButtonComponent.new(path: edit_expense_template_path(@expense_template), label: "Edit Template", size: :large) %>
+  <%= render Ui::ButtonComponent.new(href: edit_expense_template_path(@expense_template), label: "Edit Template", variant: "outline", size: "lg") %>
 </div>
 
 <!-- Planned Expenses Timeline -->
