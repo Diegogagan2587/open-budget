@@ -102,9 +102,10 @@
     <h3 class="mt-2 text-sm font-medium text-gray-900">No expense templates</h3>
     <p class="mt-1 text-sm text-gray-500">Create templates for recurring expenses like bills and subscriptions.</p>
     <div class="mt-6">
-      <%= render AddButtonComponent.new(
+      <%= render Ui::ButtonComponent.new(
+        href: new_expense_template_path,
         label: "New Expense Template",
-        path: new_expense_template_path
+        variant: "default"
       ) %>
     </div>
   </div>
