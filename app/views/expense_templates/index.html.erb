@@ -3,9 +3,10 @@
 <div class="mb-6">
   <div class="flex justify-between items-center mb-6">
     <h1 class="text-3xl font-bold text-gray-900">Expense Templates</h1>
-    <%= render AddButtonComponent.new(
+    <%= render Ui::ButtonComponent.new(
+      href: new_expense_template_path,
       label: "New Expense Template",
-      path: new_expense_template_path
+      variant: "default"
     ) %>
   </div>
 </div>
