@@ -46,7 +46,8 @@ module Projects
           redirect_to projects_link_path(@link), notice: t("links.flash.created")
         end
       else
-        render :new
+        flash.now[:alert] = @link.errors.full_messages.to_sentence
+        render :new, status: :unprocessable_entity
       end
     end
 
