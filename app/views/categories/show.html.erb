@@ -7,10 +7,13 @@
 <h1 class="text-2xl font-bold mb-4"><%= @category.name %></h1>
 
 <div class="mb-4 flex space-x-2">
-  <%= render EditButtonComponent.new(path: edit_category_path(@category)) %>
-  <%= render DeleteButtonComponent.new(
-    path: @category,
-    confirm_message: "Are you sure? This will delete all associated expenses, templates, and planned expenses."
+  <%= render Ui::ButtonComponent.new(href: edit_category_path(@category), label: "Edit", variant: "outline") %>
+  <%= render Ui::ButtonComponent.new(
+    href: @category,
+    label: "Delete",
+    variant: "destructive",
+    method: :delete,
+    data: { turbo_confirm: "Are you sure? This will delete all associated expenses, templates, and planned expenses." }
   ) %>
 </div>
 
