@@ -6,9 +6,9 @@ module Projects
     belongs_to :project
     belongs_to :account
     belongs_to :user, foreign_key: :owner_id
-    has_many :project_docs, dependent: :destroy
-    has_many :project_links, dependent: :destroy
-    has_many :project_meetings, dependent: :destroy
+    has_many :project_docs, through: :project
+    has_many :project_links, through: :project
+    has_many :project_meetings, through: :project
 
     before_create :set_account_and_task_number
 

@@ -13,17 +13,18 @@
   <h1 class="text-xl sm:text-2xl font-bold mb-4"><%= @budget_period.name %></h1>
 
   <div class="mb-6 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:gap-x-2">
-    <%= render EditButtonComponent.new(path: edit_budget_period_path(@budget_period), extra_class: "w-full sm:w-auto justify-center min-h-[44px]") %>
-    <%= render ActionButtonComponent.new(
-      path: budget_period_income_events_path(@budget_period),
+    <%= render Ui::ButtonComponent.new(href: edit_budget_period_path(@budget_period), label: "Edit", variant: "outline", css_class: "w-full sm:w-auto justify-center min-h-[44px]") %>
+    <%= render Ui::ButtonComponent.new(
+      href: budget_period_income_events_path(@budget_period),
       label: t("budget_periods.show.income_events"),
-      color: :green,
-      extra_class: "w-full sm:w-auto justify-center min-h-[44px]",
+      variant: "default",
+      css_class: "w-full sm:w-auto justify-center min-h-[44px]"
     ) %>
-    <%= render AddButtonComponent.new(
+    <%= render Ui::ButtonComponent.new(
+      href: new_budget_period_income_event_path(@budget_period),
       label: t("income_events.new_income_event"),
-      path: new_budget_period_income_event_path(@budget_period),
-      extra_class: "w-full sm:w-auto justify-center min-h-[44px]",
+      variant: "default",
+      css_class: "w-full sm:w-auto justify-center min-h-[44px]"
     ) %>
   </div>
 

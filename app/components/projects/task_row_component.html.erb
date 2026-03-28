@@ -23,13 +23,23 @@
   </div>
   <div class="flex gap-2">
     <% if project %>
-      <%= render ViewButtonComponent.new(path: projects_project_task_path(project, task), label: "View") %>
-      <%= render EditButtonComponent.new(path: edit_projects_project_task_path(project, task)) %>
-      <%= render DeleteButtonComponent.new(path: projects_project_task_path(project, task)) %>
+      <%= render Ui::ButtonComponent.new(href: projects_project_task_path(project, task), label: "View", variant: "outline") do %>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+        </svg>
+      <% end %>
+      <%= render Ui::ButtonComponent.new(href: edit_projects_project_task_path(project, task), label: "Edit", variant: "outline") %>
+      <%= render Ui::ButtonComponent.new(href: projects_project_task_path(project, task), label: "Delete", variant: "destructive", method: :delete) %>
     <% else %>
-      <%= render ViewButtonComponent.new(path: projects_task_path(task), label: "View") %>
-      <%= render EditButtonComponent.new(path: edit_projects_task_path(task)) %>
-      <%= render DeleteButtonComponent.new(path: projects_task_path(task)) %>
+      <%= render Ui::ButtonComponent.new(href: projects_task_path(task), label: "View", variant: "outline") do %>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+        </svg>
+      <% end %>
+      <%= render Ui::ButtonComponent.new(href: edit_projects_task_path(task), label: "Edit", variant: "outline") %>
+      <%= render Ui::ButtonComponent.new(href: projects_task_path(task), label: "Delete", variant: "destructive", method: :delete) %>
     <% end %>
   </div>
 </div>
