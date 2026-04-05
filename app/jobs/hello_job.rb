@@ -6,5 +6,6 @@ class HelloJob < ApplicationJob
     # we console.log if we are on development
     if Rails.env.development?
       puts "[HelloJob]: Hi from Hello job"
+    end
   end
 end
