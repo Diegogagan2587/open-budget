@@ -222,6 +222,13 @@ export default class extends Controller {
     if (configOptions) {
       options = deepMerge(options, configOptions)
     }
+    if (this._useHtmlLegend) {
+      options = deepMerge(options, {
+        plugins: {
+          legend: { display: false }
+        }
+      })
+    }
 
     if (this.presetValue === "shadcn-line" && type === "line") {
       options.onResize = (chart) => {
