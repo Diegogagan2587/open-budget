@@ -55,18 +55,24 @@ function applyShadcnLineResponsive(chart, useCanvasLegend) {
   if (!chart?.canvas) return
   const w = chartAreaWidth(chart.canvas)
   const compact = w < 640
-  const xTicks = chart.options.scales.x.ticks
+  const xTicks = isPlainObject(chart.options?.scales?.x?.ticks) ? chart.options.scales.x.ticks : null
 
   if (useCanvasLegend) {
+    chart.options ||= {}
+    chart.options.plugins = isPlainObject(chart.options.plugins) ? chart.options.plugins : {}
+    chart.options.plugins.legend = isPlainObject(chart.options.plugins.legend) ? chart.options.plugins.legend : {}
+
     const legend = chart.options.plugins.legend
     legend.display = true
-    legend.labels.font ||= {}
+    legend.labels = isPlainObject(legend.labels) ? legend.labels : {}
+    legend.labels.font = isPlainObject(legend.labels.font) ? legend.labels.font : {}
     legend.labels.font.size = compact ? 10 : 12
     legend.labels.padding = compact ? 10 : 16
     legend.labels.boxWidth = compact ? 10 : 12
     legend.labels.boxHeight = compact ? 6 : 8
   }
 
+  if (!xTicks) return
   xTicks.maxRotation = compact ? 45 : 0
   xTicks.minRotation = 0
   xTicks.autoSkip = true
