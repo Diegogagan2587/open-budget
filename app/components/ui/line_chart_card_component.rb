@@ -1,4 +1,4 @@
-# frozen_string_literal: true
+  # frozen_string_literal: true
 
   class Ui::LineChartCardComponent < ViewComponent::Base
     def initialize(chart_config:, title: nil, description: nil, legend_aria_label: nil, wrapper_class: nil, canvas_class: nil, preset: "shadcn-line", extra_class: nil)
