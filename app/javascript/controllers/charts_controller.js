@@ -245,10 +245,15 @@ export default class extends Controller {
     if (this.presetValue === "shadcn-line" && type === "line") {
       applyShadcnLineResponsive(this.chart, !this._useHtmlLegend)
       this.chart.update()
+      this._resizeAnimationFrame = null
       this._onWindowResize = () => {
-        if (!this.chart) return
-        applyShadcnLineResponsive(this.chart, !this._useHtmlLegend)
-        this.chart.update("none")
+        if (this._resizeAnimationFrame !== null) return
+        this._resizeAnimationFrame = window.requestAnimationFrame(() => {
+          this._resizeAnimationFrame = null
+          if (!this.chart) return
+          applyShadcnLineResponsive(this.chart, !this._useHtmlLegend)
+          this.chart.update("none")
+        })
       }
       window.addEventListener("resize", this._onWindowResize)
     }
