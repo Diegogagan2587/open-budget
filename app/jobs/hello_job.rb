@@ -2,7 +2,9 @@ class HelloJob < ApplicationJob
   queue_as :default
 
   def perform(*args)
-    # Do something later
-    puts "[HelloJob]: Hi! how are you doing?"
+    Rails.logger.info "[HeloJob] Hi from hello job"
+    # we console.log if we are on development
+    if Rails.env.development?
+      puts "[HelloJob]: Hi from Hello job"
   end
 end
