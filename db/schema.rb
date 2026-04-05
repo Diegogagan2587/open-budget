@@ -70,6 +70,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_22_224445) do
     t.bigint "link_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["doc_id", "link_id"], name: "index_doc_links_on_doc_id_and_link_id", unique: true
     t.index ["doc_id"], name: "index_doc_links_on_doc_id"
     t.index ["link_id"], name: "index_doc_links_on_link_id"
   end
@@ -108,9 +109,9 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_22_224445) do
     t.bigint "budget_period_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "account_id", null: false
     t.bigint "income_event_id"
     t.bigint "planned_expense_id"
+    t.bigint "account_id", null: false
     t.index ["account_id"], name: "index_expenses_on_account_id"
     t.index ["budget_period_id"], name: "index_expenses_on_budget_period_id"
     t.index ["category_id"], name: "index_expenses_on_category_id"

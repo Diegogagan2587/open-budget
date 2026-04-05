@@ -21,8 +21,13 @@ default: &default
 
 
 development:
-  <<: *default
-  database: diego_app_development
+  primary:
+    <<: *default
+    database: diego_app_development
+  queue:
+    <<: *default
+    database: diego_app_development_queue
+    migrations_paths: db/queue_migrate
 
   # The specified database role being used to connect to PostgreSQL.
   # To create additional roles in PostgreSQL see `$ createuser --help`.
@@ -88,7 +93,7 @@ production:
     migrations_paths: db/cache_migrate
   queue:
     <<: *primary_production
-    database: diego_app_production_queue
+    database: ENV["DATABASE_QUEUE_URL"]
     migrations_paths: db/queue_migrate
   cable:
     <<: *primary_production

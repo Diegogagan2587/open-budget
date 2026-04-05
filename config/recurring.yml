@@ -8,6 +8,11 @@
 #     command: "SoftDeletedRecord.due.delete_all"
 #     priority: 2
 #     schedule: at 5am every day
+development:
+  hello_job:
+    class: HelloJob
+    queue: default
+    schedule: "every 1 minute"
 
 production:
   clear_solid_queue_finished_jobs:
