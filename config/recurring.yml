@@ -20,6 +20,6 @@ production:
     schedule: every hour at minute 12
 development:
   hello_job_test:
-  class: HelloJob
-  queue: default
-  schedule: "every 1 minute"
+    class: HelloJob
+    queue: default
+    schedule: "every 1 minute"
