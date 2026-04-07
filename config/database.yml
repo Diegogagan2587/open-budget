@@ -93,7 +93,7 @@ production:
     migrations_paths: db/cache_migrate
   queue:
     <<: *primary_production
-    database: ENV["DATABASE_QUEUE_URL"]
+    url: <%= ENV["DATABASE_QUEUE_URL"] %>
     migrations_paths: db/queue_migrate
   cable:
     <<: *primary_production

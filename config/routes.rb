@@ -101,4 +101,7 @@ Rails.application.routes.draw do
   end
 
   root "dashboard#index"
+
+  # Misson control for inspecgtin queue jobs
+  mount MissionControl::Jobs::Engine, at: "/jobs"
 end

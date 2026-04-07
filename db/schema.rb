@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_02_22_224445) do
+ActiveRecord::Schema[8.0].define(version: 2026_02_23_042544) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -65,14 +65,33 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_22_224445) do
     t.index ["account_id"], name: "index_categories_on_account_id"
   end
 
+  create_table "doc_docs", force: :cascade do |t|
+    t.bigint "doc_id", null: false
+    t.bigint "related_doc_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["doc_id", "related_doc_id"], name: "index_doc_docs_on_doc_id_and_related_doc_id", unique: true
+    t.index ["doc_id"], name: "index_doc_docs_on_doc_id"
+    t.index ["related_doc_id"], name: "index_doc_docs_on_related_doc_id"
+  end
+
   create_table "doc_links", force: :cascade do |t|
     t.bigint "doc_id", null: false
     t.bigint "link_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["doc_id", "link_id"], name: "index_doc_links_on_doc_id_and_link_id", unique: true
     t.index ["doc_id"], name: "index_doc_links_on_doc_id"
     t.index ["link_id"], name: "index_doc_links_on_link_id"
+  end
+
+  create_table "doc_tags", force: :cascade do |t|
+    t.bigint "doc_id", null: false
+    t.bigint "tag_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["doc_id", "tag_id"], name: "index_doc_tags_on_doc_id_and_tag_id", unique: true
+    t.index ["doc_id"], name: "index_doc_tags_on_doc_id"
+    t.index ["tag_id"], name: "index_doc_tags_on_tag_id"
   end
 
   create_table "docs", force: :cascade do |t|
@@ -83,8 +102,10 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_22_224445) do
     t.string "doc_type", default: "note", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "created_by_id"
     t.index ["account_id", "title"], name: "index_docs_on_account_id_and_title", unique: true
     t.index ["account_id"], name: "index_docs_on_account_id"
+    t.index ["created_by_id"], name: "index_docs_on_created_by_id"
   end
 
   create_table "expense_templates", force: :cascade do |t|
@@ -109,9 +130,9 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_22_224445) do
     t.bigint "budget_period_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "account_id", null: false
     t.bigint "income_event_id"
     t.bigint "planned_expense_id"
-    t.bigint "account_id", null: false
     t.index ["account_id"], name: "index_expenses_on_account_id"
     t.index ["budget_period_id"], name: "index_expenses_on_budget_period_id"
     t.index ["category_id"], name: "index_expenses_on_category_id"
@@ -288,6 +309,16 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_22_224445) do
     t.index ["status"], name: "index_shopping_items_on_status"
   end
 
+  create_table "tags", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.string "name", null: false
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id", "name"], name: "index_tags_on_account_id_and_name", unique: true
+    t.index ["account_id"], name: "index_tags_on_account_id"
+  end
+
   create_table "task_areas", force: :cascade do |t|
     t.bigint "account_id", null: false
     t.string "name", null: false
@@ -295,6 +326,16 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_22_224445) do
     t.datetime "updated_at", null: false
     t.index ["account_id", "name"], name: "index_task_areas_on_account_id_and_name", unique: true
     t.index ["account_id"], name: "index_task_areas_on_account_id"
+  end
+
+  create_table "task_docs", force: :cascade do |t|
+    t.bigint "task_id", null: false
+    t.bigint "doc_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["doc_id"], name: "index_task_docs_on_doc_id"
+    t.index ["task_id", "doc_id"], name: "index_task_docs_on_task_id_and_doc_id", unique: true
+    t.index ["task_id"], name: "index_task_docs_on_task_id"
   end
 
   create_table "tasks", force: :cascade do |t|
@@ -335,9 +376,14 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_22_224445) do
   add_foreign_key "budget_line_items", "categories"
   add_foreign_key "budget_periods", "accounts"
   add_foreign_key "categories", "accounts"
+  add_foreign_key "doc_docs", "docs"
+  add_foreign_key "doc_docs", "docs", column: "related_doc_id"
   add_foreign_key "doc_links", "docs"
   add_foreign_key "doc_links", "links"
+  add_foreign_key "doc_tags", "docs", on_delete: :cascade
+  add_foreign_key "doc_tags", "tags", on_delete: :cascade
   add_foreign_key "docs", "accounts"
+  add_foreign_key "docs", "users", column: "created_by_id", on_delete: :nullify
   add_foreign_key "expense_templates", "accounts"
   add_foreign_key "expense_templates", "categories"
   add_foreign_key "expenses", "accounts"
@@ -371,7 +417,10 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_22_224445) do
   add_foreign_key "shopping_items", "categories"
   add_foreign_key "shopping_items", "expenses"
   add_foreign_key "shopping_items", "planned_expenses"
+  add_foreign_key "tags", "accounts", on_delete: :cascade
   add_foreign_key "task_areas", "accounts"
+  add_foreign_key "task_docs", "docs"
+  add_foreign_key "task_docs", "tasks"
   add_foreign_key "tasks", "accounts"
   add_foreign_key "tasks", "projects"
   add_foreign_key "tasks", "users", column: "owner_id"
