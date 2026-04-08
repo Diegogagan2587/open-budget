@@ -226,6 +226,8 @@ es:
     period_to: "Hasta"
     filter: "Filtrar periodo"
     apply: "Aplicar"
+    reset_filters: "Restablecer"
+    active_filters: "Filtros activos"
     last_3_months: "Últimos 3 meses"
     last_6_months: "Últimos 6 meses"
     last_12_months: "Últimos 12 meses"
