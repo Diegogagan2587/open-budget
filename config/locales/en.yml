@@ -196,6 +196,21 @@ en:
 
   settings:
     title: "Settings"
+    sections:
+      general: "General"
+      finance: "Finance"
+    general:
+      title: "General settings"
+      description: "Manage account-wide preferences like language."
+    finance:
+      title: "Finance settings"
+      description: "Configure the core finance domain used for planning, budgeting, and expense tracking."
+      categories_title: "Categories"
+      categories_description: "Define the category taxonomy used across budgets, plans, and expenses."
+      category_count:
+        one: "1 category"
+        other: "%{count} categories"
+      manage_categories: "Manage categories"
     language: "Language"
     update: "Save changes"
     updated: "Settings updated."
