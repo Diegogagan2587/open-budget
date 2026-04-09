@@ -2,6 +2,11 @@ Rails.application.routes.draw do
   resource :session
   resource :registration, only: [ :new, :create ]
   resource :settings, only: [ :edit, :update ]
+  namespace :settings do
+    namespace :finance do
+      resources :categories, controller: "/categories"
+    end
+  end
   resources :passwords, param: :token
   get "dashboard/index"
   # resources :budget_line_items
@@ -47,7 +52,10 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :categories
+  get "categories", to: redirect("/settings/finance/categories")
+  get "categories/new", to: redirect("/settings/finance/categories/new")
+  get "categories/:id", to: redirect { |params, _request| "/settings/finance/categories/#{params[:id]}" }
+  get "categories/:id/edit", to: redirect { |params, _request| "/settings/finance/categories/#{params[:id]}/edit" }
   resources :expenses
 
   resources :shopping_items do

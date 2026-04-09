@@ -196,6 +196,21 @@ es:
 
   settings:
     title: "Ajustes"
+    sections:
+      general: "General"
+      finance: "Finanzas"
+    general:
+      title: "Ajustes generales"
+      description: "Gestiona preferencias de la cuenta, como el idioma."
+    finance:
+      title: "Ajustes financieros"
+      description: "Configura el dominio financiero base para planificación, presupuestos y seguimiento de gastos."
+      categories_title: "Categorías"
+      categories_description: "Define la taxonomía de categorías usada en presupuestos, planes y gastos."
+      category_count:
+        one: "1 categoría"
+        other: "%{count} categorías"
+      manage_categories: "Gestionar categorías"
     language: "Idioma"
     update: "Guardar cambios"
     updated: "Ajustes actualizados."
