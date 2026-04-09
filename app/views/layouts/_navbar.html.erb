@@ -26,7 +26,6 @@
         <%= link_to t("nav.budgets"), budget_periods_path, class: controller_path == "budget_periods" ? "font-semibold text-gray-900" : "text-gray-600 hover:text-gray-900" %>
         <%= link_to t("nav.incomes"), income_events_path, class: controller_path == "income_events" || controller_path == "planned_expenses" ? "font-semibold text-gray-900" : "text-gray-600 hover:text-gray-900" %>
         <%= link_to t("nav.expenses"), expenses_path, class: controller_path == "expenses" ? "font-semibold text-gray-900" : "text-gray-600 hover:text-gray-900" %>
-        <%= link_to t("nav.categories"), categories_path, class: controller_path == "categories" ? "font-semibold text-gray-900" : "text-gray-600 hover:text-gray-900" %>
         <%= link_to t("nav.tasks"), task_recurring_tasks_path, class: controller_path.include?("task") ? "font-semibold text-gray-900" : "text-gray-600 hover:text-gray-900" %>
         <%= link_to "Projects", projects_projects_path, class: controller_path == "projects/projects" ? "font-semibold text-gray-900" : "text-gray-600 hover:text-gray-900" %>
         <%= link_to "Docs", projects_docs_path, class: controller_path == "projects/standalone_docs" ? "font-semibold text-gray-900" : "text-gray-600 hover:text-gray-900" %>
@@ -48,7 +47,7 @@
             </div>
             <%= link_to t("nav.accounts"), accounts_path, class: "text-sm #{controller_path == "accounts" || controller_path == "account_memberships" ? "font-semibold text-gray-900" : "text-gray-700 hover:text-gray-900"}" %>
           <% end %>
-          <%= link_to t("nav.settings"), edit_settings_path, class: "text-sm #{controller_path == "settings" ? "font-semibold text-gray-900" : "text-gray-700 hover:text-gray-900"}" %>
+          <%= link_to t("nav.settings"), edit_settings_path(section: (controller_path == "categories" ? "finance" : nil)), class: "text-sm #{controller_path == "settings" || controller_path == "categories" ? "font-semibold text-gray-900" : "text-gray-700 hover:text-gray-900"}" %>
           <%= link_to session_path, data: { turbo_method: :delete }, class: "px-4 py-2 bg-gray-500 text-white text-sm rounded-lg hover:bg-gray-600 transition-colors" do %>
             <%= t("nav.log_out") %>
           <% end %>
@@ -75,7 +74,6 @@
         <%= link_to t("nav.budgets"), budget_periods_path, class: "py-2 #{controller_path == "budget_periods" ? "font-semibold text-gray-900" : "text-gray-700 hover:text-gray-900"}" %>
         <%= link_to t("nav.incomes"), income_events_path, class: "py-2 #{controller_path == "income_events" || controller_path == "planned_expenses" ? "font-semibold text-gray-900" : "text-gray-700 hover:text-gray-900"}" %>
         <%= link_to t("nav.expenses"), expenses_path, class: "py-2 #{controller_path == "expenses" ? "font-semibold text-gray-900" : "text-gray-700 hover:text-gray-900"}" %>
-        <%= link_to t("nav.categories"), categories_path, class: "py-2 #{controller_path == "categories" ? "font-semibold text-gray-900" : "text-gray-700 hover:text-gray-900"}" %>
         <%= link_to t("nav.tasks"), task_recurring_tasks_path, class: "py-2 #{controller_path.include?("task") ? "font-semibold text-gray-900" : "text-gray-700 hover:text-gray-900"}" %>
         <%= link_to "Projects", projects_projects_path, class: "py-2 #{controller_path == "projects/projects" ? "font-semibold text-gray-900" : "text-gray-700 hover:text-gray-900"}" %>
         <%= link_to "Docs", projects_docs_path, class: "py-2 #{controller_path == "projects/standalone_docs" ? "font-semibold text-gray-900" : "text-gray-700 hover:text-gray-900"}" %>
@@ -98,7 +96,7 @@
             </div>
             <%= link_to t("nav.accounts"), accounts_path, class: "py-2 text-sm #{controller_path == "accounts" || controller_path == "account_memberships" ? "font-semibold text-gray-900" : "text-gray-700 hover:text-gray-900"}" %>
           <% end %>
-          <%= link_to t("nav.settings"), edit_settings_path, class: "py-2 text-sm #{controller_path == "settings" ? "font-semibold text-gray-900" : "text-gray-700 hover:text-gray-900"}" %>
+          <%= link_to t("nav.settings"), edit_settings_path(section: (controller_path == "categories" ? "finance" : nil)), class: "py-2 text-sm #{controller_path == "settings" || controller_path == "categories" ? "font-semibold text-gray-900" : "text-gray-700 hover:text-gray-900"}" %>
           <%= link_to session_path, data: { turbo_method: :delete }, class: "px-4 py-2 bg-gray-500 text-white text-sm rounded-lg hover:bg-gray-600 transition-colors inline-block w-fit" do %>
             <%= t("nav.log_out") %>
           <% end %>
