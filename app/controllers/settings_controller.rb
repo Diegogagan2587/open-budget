@@ -1,11 +1,14 @@
 class SettingsController < ApplicationController
   def edit
+    @section = settings_section
+    @category_count = Category.for_account(Current.account).count if @section == "finance" && Current.account.present?
   end
 
   def update
     if Current.user.update(settings_params)
-      redirect_to edit_settings_path, notice: t("settings.updated")
+      redirect_to edit_settings_path(section: "general"), notice: t("settings.updated")
     else
+      @section = "general"
       render :edit, status: :unprocessable_entity
     end
   end
@@ -14,5 +17,10 @@ class SettingsController < ApplicationController
 
   def settings_params
     params.require(:user).permit(:locale)
+  end
+
+  def settings_section
+    section = params[:section].presence_in(%w[general finance])
+    section || "general"
   end
 end
