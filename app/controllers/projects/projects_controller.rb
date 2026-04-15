@@ -25,7 +25,7 @@ module Projects
       @project.account = Current.account
 
       if @project.save
-        redirect_to @project, notice: t("projects.flash.created")
+        redirect_to project_path(@project), notice: t("projects.flash.created")
       else
         render :new
       end
@@ -36,7 +36,7 @@ module Projects
 
     def update
       if @project.update(project_params)
-        redirect_to @project, notice: t("projects.flash.updated")
+        redirect_to project_path(@project), notice: t("projects.flash.updated")
       else
         render :edit
       end
@@ -44,7 +44,7 @@ module Projects
 
     def destroy
       @project.destroy
-      redirect_to projects_projects_url, notice: t("projects.flash.destroyed")
+      redirect_to projects_url, notice: t("projects.flash.destroyed")
     end
 
     private
@@ -52,18 +52,18 @@ module Projects
     def set_project
       @project = Project.for_account(Current.account).find(params[:id])
     rescue ActiveRecord::RecordNotFound
-      redirect_to projects_projects_url
+      redirect_to projects_url
     end
 
     def ensure_project_access
       unless @project && @project.account_id == Current.account.id
-        redirect_to projects_projects_url
+        redirect_to projects_url
       end
     end
 
     def ensure_project_owner
       unless @project.owner_id == Current.user.id
-        redirect_to @project
+        redirect_to project_path(@project)
       end
     end
 

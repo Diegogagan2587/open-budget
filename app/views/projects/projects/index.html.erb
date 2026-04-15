@@ -5,7 +5,7 @@
   </div>
 
   <div class="mb-6">
-    <%= render Ui::ButtonComponent.new(href: new_projects_project_path, label: "New Project", variant: "default") %>
+    <%= render Ui::ButtonComponent.new(href: new_project_path, label: "New Project", variant: "default") %>
   </div>
 
   <% if @projects.any? %>
@@ -17,7 +17,7 @@
   <% else %>
     <div class="bg-slate-50 rounded-lg border border-slate-200 p-8 text-center">
       <p class="text-slate-600">No projects yet.</p>
-      <%= link_to "Create your first project", new_projects_project_path, class: "text-blue-600 hover:text-blue-800 font-medium mt-2 inline-block" %>
+      <%= link_to "Create your first project", new_project_path, class: "text-blue-600 hover:text-blue-800 font-medium mt-2 inline-block" %>
     </div>
   <% end %>
 </div>

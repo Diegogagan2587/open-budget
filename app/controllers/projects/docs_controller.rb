@@ -21,7 +21,7 @@ module Projects
 
       if @doc.save
         @project.docs << @doc unless @project.docs.include?(@doc)
-        redirect_to projects_project_doc_path(@project, @doc), notice: t("docs.flash.created")
+        redirect_to project_doc_path(@project, @doc), notice: t("docs.flash.created")
       else
         render :new
       end
@@ -33,7 +33,7 @@ module Projects
     def update
       if @doc.update(doc_params)
         respond_to do |format|
-          format.html { redirect_to projects_project_doc_path(@project, @doc), notice: t("docs.flash.updated") }
+          format.html { redirect_to project_doc_path(@project, @doc), notice: t("docs.flash.updated") }
           format.json { render json: { id: @doc.id }, status: :ok }
         end
       else
@@ -46,7 +46,7 @@ module Projects
 
     def destroy
       @doc.destroy
-      redirect_to projects_project_docs_path(@project), notice: t("docs.flash.destroyed")
+      redirect_to project_docs_path(@project), notice: t("docs.flash.destroyed")
     end
 
     private
@@ -60,12 +60,12 @@ module Projects
     def set_doc
       @doc = @project.docs.includes(:links).find(params[:id])
     rescue ActiveRecord::RecordNotFound
-      redirect_to projects_project_docs_path(@project)
+      redirect_to project_docs_path(@project)
     end
 
     def ensure_doc_access
       unless @doc && @doc.account_id == Current.account.id
-        redirect_to projects_project_docs_path(@project)
+        redirect_to project_docs_path(@project)
       end
     end
 

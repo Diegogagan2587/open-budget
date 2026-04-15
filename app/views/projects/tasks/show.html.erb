@@ -2,7 +2,7 @@
   <div class="mb-8">
     <div class="flex items-center justify-between">
       <div>
-        <p class="text-sm font-medium text-slate-600"><%= link_to @project.name, projects_project_path(@project), class: "text-blue-600 hover:text-blue-800" %></p>
+        <p class="text-sm font-medium text-slate-600"><%= link_to @project.name, project_path(@project), class: "text-blue-600 hover:text-blue-800" %></p>
         <h1 class="text-3xl font-bold text-slate-900 mt-1"><%= @task.task_number %> - <%= @task.title %></h1>
         <div class="flex items-center gap-3 mt-3">
           <%= render StatusBadgeComponent.new(status: @task.status, type: :status) %>
@@ -10,8 +10,8 @@
         </div>
       </div>
       <div class="flex gap-2">
-        <%= render Ui::ButtonComponent.new(href: edit_projects_project_task_path(@project, @task), label: "Edit", variant: "outline") %>
-        <%= render Ui::ButtonComponent.new(href: projects_project_task_path(@project, @task), label: "Delete", variant: "destructive", method: :delete) %>
+        <%= render Ui::ButtonComponent.new(href: edit_project_task_path(@project, @task), label: "Edit", variant: "outline") %>
+        <%= render Ui::ButtonComponent.new(href: project_task_path(@project, @task), label: "Delete", variant: "destructive", method: :delete) %>
       </div>
     </div>
   </div>
@@ -52,5 +52,5 @@
     </div>
   <% end %>
 
-  <%= link_to "← Back to tasks", projects_project_tasks_path(@project), class: "text-blue-600 hover:text-blue-800 font-medium" %>
+  <%= link_to "← Back to tasks", project_tasks_path(@project), class: "text-blue-600 hover:text-blue-800 font-medium" %>
 </div>

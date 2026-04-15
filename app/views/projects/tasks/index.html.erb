@@ -1,11 +1,11 @@
 <div class="container mx-auto px-4 py-8">
   <div class="mb-8">
-    <h1 class="text-3xl font-bold text-slate-900"><%= link_to @project.name, projects_project_path(@project), class: "hover:text-blue-600" %></h1>
+    <h1 class="text-3xl font-bold text-slate-900"><%= link_to @project.name, project_path(@project), class: "hover:text-blue-600" %></h1>
     <p class="text-slate-600 mt-2">Tasks</p>
   </div>
 
   <div class="mb-6">
-    <%= render Ui::ButtonComponent.new(href: new_projects_project_task_path(@project), label: "New Task", variant: "default") %>
+    <%= render Ui::ButtonComponent.new(href: new_project_task_path(@project), label: "New Task", variant: "default") %>
   </div>
 
   <div class="bg-white rounded-lg shadow">
@@ -15,7 +15,7 @@
       <% end %>
     <% else %>
       <div class="p-8 text-center text-slate-600">
-        <%= link_to "Create your first task", new_projects_project_task_path(@project), class: "text-blue-600 hover:text-blue-800 font-medium" %>
+        <%= link_to "Create your first task", new_project_task_path(@project), class: "text-blue-600 hover:text-blue-800 font-medium" %>
       </div>
     <% end %>
   </div>

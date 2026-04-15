@@ -2,7 +2,7 @@
   <h1 class="text-3xl font-bold text-slate-900 mb-8">Create New Link</h1>
 
   <div class="bg-white rounded-lg shadow p-6">
-    <%= form_with model: @link, url: @project ? projects_project_links_path(@project) : projects_links_path, method: :post, local: true, scope: :link do |form| %>
+    <%= form_with model: @link, url: @project ? project_links_path(@project) : links_path, method: :post, local: true, scope: :link do |form| %>
       <% if @link.errors.any? %>
         <div class="mb-6 bg-red-50 border border-red-200 rounded p-4">
           <h2 class="text-sm font-semibold text-red-800 mb-2"><%= pluralize(@link.errors.count, "error") %> prohibited this link from being saved:</h2>
@@ -47,7 +47,7 @@
 
       <div class="flex gap-3">
         <%= form.submit "Create Link", class: "px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium" %>
-        <% cancel_path = @project ? projects_project_path(@project) : (@return_to_project_id.present? && @return_to_doc_id.present? ? projects_project_doc_path(@return_to_project_id, @return_to_doc_id) : projects_links_path) %>
+        <% cancel_path = @project ? project_path(@project) : (@return_to_project_id.present? && @return_to_doc_id.present? ? project_doc_path(@return_to_project_id, @return_to_doc_id) : links_path) %>
         <%= link_to "Cancel", cancel_path, class: "px-4 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 font-medium" %>
       </div>
     <% end %>

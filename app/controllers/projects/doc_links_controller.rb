@@ -34,11 +34,11 @@ module Projects
       # If doc is associated with a project from params, redirect there
       # Otherwise, redirect to standalone doc view
       if params[:project_id]
-        projects_project_doc_path(params[:project_id], @doc)
+        project_doc_path(params[:project_id], @doc)
       elsif @doc.projects.any?
-        projects_project_doc_path(@doc.projects.first, @doc)
+        project_doc_path(@doc.projects.first, @doc)
       else
-        projects_doc_path(@doc)
+        doc_path(@doc)
       end
     end
   end
