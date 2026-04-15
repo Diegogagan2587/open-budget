@@ -2,7 +2,7 @@
   <h1 class="text-3xl font-bold text-slate-900 mb-8">Create New Document</h1>
 
   <div class="bg-white rounded-lg shadow p-6">
-    <%= form_with model: @doc, url: projects_docs_path, method: :post, local: true, scope: :doc do |form| %>
+    <%= form_with model: @doc, url: docs_path, method: :post, local: true, scope: :doc do |form| %>
       <% if @doc.errors.any? %>
         <div class="mb-6 bg-red-50 border border-red-200 rounded p-4">
           <h2 class="text-sm font-semibold text-red-800 mb-2"><%= pluralize(@doc.errors.count, "error") %> prohibited this document from being saved:</h2>
@@ -31,7 +31,7 @@
 
       <div class="flex gap-3">
         <%= form.submit "Create Document", class: "px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium" %>
-        <%= link_to "Cancel", projects_docs_path, class: "px-4 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 font-medium" %>
+        <%= link_to "Cancel", docs_path, class: "px-4 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 font-medium" %>
       </div>
     <% end %>
   </div>

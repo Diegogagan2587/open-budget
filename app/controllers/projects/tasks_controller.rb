@@ -21,7 +21,7 @@ module Projects
       @task.account = Current.account
 
       if @task.save
-        redirect_to projects_project_task_path(@project, @task), notice: t("tasks.flash.created")
+        redirect_to project_task_path(@project, @task), notice: t("tasks.flash.created")
       else
         Rails.logger.error("Task validation errors: #{@task.errors.full_messages}")
         render :new
@@ -34,7 +34,7 @@ module Projects
     def update
       if @task.update(task_params)
         respond_to do |format|
-          format.html { redirect_to projects_project_task_path(@project, @task), notice: t("tasks.flash.updated") }
+          format.html { redirect_to project_task_path(@project, @task), notice: t("tasks.flash.updated") }
           format.json { render json: { id: @task.id, status: @task.status }, status: :ok }
         end
       else
@@ -47,7 +47,7 @@ module Projects
 
     def destroy
       @task.destroy
-      redirect_to projects_project_tasks_url(@project), notice: t("tasks.flash.destroyed")
+      redirect_to project_tasks_url(@project), notice: t("tasks.flash.destroyed")
     end
 
     private

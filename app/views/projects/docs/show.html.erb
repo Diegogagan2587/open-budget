@@ -2,15 +2,15 @@
   <div class="mb-8">
     <div class="flex items-center justify-between">
       <div>
-        <p class="text-sm font-medium text-slate-600"><%= link_to @project.name, projects_project_path(@project), class: "text-blue-600 hover:text-blue-800" %></p>
+        <p class="text-sm font-medium text-slate-600"><%= link_to @project.name, project_path(@project), class: "text-blue-600 hover:text-blue-800" %></p>
         <h1 class="text-3xl font-bold text-slate-900 mt-1"><%= @doc.title %></h1>
         <div class="flex items-center gap-3 mt-3">
           <%= render StatusBadgeComponent.new(status: @doc.doc_type, type: :status) %>
         </div>
       </div>
       <div class="flex gap-2">
-        <%= render Ui::ButtonComponent.new(href: edit_projects_project_doc_path(@project, @doc), label: "Edit", variant: "outline") %>
-        <%= render Ui::ButtonComponent.new(href: projects_project_doc_path(@project, @doc), label: "Delete", variant: "destructive", method: :delete) %>
+        <%= render Ui::ButtonComponent.new(href: edit_project_doc_path(@project, @doc), label: "Edit", variant: "outline") %>
+        <%= render Ui::ButtonComponent.new(href: project_doc_path(@project, @doc), label: "Delete", variant: "destructive", method: :delete) %>
       </div>
     </div>
   </div>
@@ -49,7 +49,7 @@
         <div class="max-h-64 overflow-y-auto border border-slate-200 rounded-md bg-white">
           <% if Projects::Link.for_account(Current.account).any? %>
             <% Projects::Link.for_account(Current.account).order(:title).each do |link| %>
-              <%= form_with url: projects_doc_doc_links_path(@doc), method: :post, local: true, class: "border-b border-slate-100 last:border-0" do |f| %>
+              <%= form_with url: doc_doc_links_path(@doc), method: :post, local: true, class: "border-b border-slate-100 last:border-0" do |f| %>
                 <%= f.hidden_field :link_id, value: link.id %>
                 <button 
                   type="submit"
@@ -91,10 +91,10 @@
                 <p class="text-xs text-slate-500 mt-1"><%= t("projects.link_types.#{link.link_type}") %></p>
               </div>
               <div class="flex items-center gap-2 ml-4">
-                <%= link_to projects_link_path(link), class: "inline-flex items-center px-3 py-1.5 bg-white hover:bg-slate-50 text-slate-700 text-xs font-medium rounded border border-slate-300 transition-colors" do %>
+                <%= link_to link_path(link), class: "inline-flex items-center px-3 py-1.5 bg-white hover:bg-slate-50 text-slate-700 text-xs font-medium rounded border border-slate-300 transition-colors" do %>
                   <%= t('shared.view') %>
                 <% end %>
-                <%= button_to projects_doc_doc_link_path(@doc, link), 
+                <%= button_to doc_doc_link_path(@doc, link), 
                              method: :delete, 
                              data: { turbo_confirm: t('shared.confirm_destroy') },
                              class: "inline-flex items-center px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-700 text-xs font-medium rounded border border-red-200 transition-colors" do %>
@@ -111,11 +111,11 @@
 
     <!-- Create New Link -->
     <div class="p-6 border-t border-slate-200 bg-slate-50">
-      <%= link_to t('projects.links.create_new'), new_projects_link_path(return_to_doc_id: @doc.id, return_to_project_id: @project.id), class: "inline-flex items-center px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 text-sm font-medium rounded-md border border-slate-300 transition-colors" %>
+      <%= link_to t('projects.links.create_new'), new_link_path(return_to_doc_id: @doc.id, return_to_project_id: @project.id), class: "inline-flex items-center px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 text-sm font-medium rounded-md border border-slate-300 transition-colors" %>
     </div>
   </div>
 
   <div class="mt-8">
-    <%= link_to "Back to Project", projects_project_path(@project), class: "text-blue-600 hover:text-blue-800 font-medium" %>
+    <%= link_to "Back to Project", project_path(@project), class: "text-blue-600 hover:text-blue-800 font-medium" %>
   </div>
 </div>

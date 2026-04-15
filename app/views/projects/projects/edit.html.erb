@@ -2,7 +2,7 @@
   <h1 class="text-3xl font-bold text-slate-900 mb-8">Edit Project</h1>
 
   <div class="bg-white rounded-lg shadow p-6">
-    <%= form_with model: [@project], url: projects_project_path(@project), method: :patch, local: true, scope: :project do |form| %>
+    <%= form_with model: [@project], url: project_path(@project), method: :patch, local: true, scope: :project do |form| %>
       <% if @project.errors.any? %>
         <div class="mb-6 bg-red-50 border border-red-200 rounded p-4">
           <h2 class="text-sm font-semibold text-red-800 mb-2"><%= pluralize(@project.errors.count, "error") %> prohibited this project from being saved:</h2>
@@ -50,7 +50,7 @@
 
       <div class="flex gap-3">
         <%= form.submit "Update Project", class: "px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium" %>
-        <%= link_to "Cancel", projects_project_path(@project), class: "px-6 py-2 text-slate-700 border border-slate-300 rounded-lg hover:bg-slate-50 font-medium" %>
+        <%= link_to "Cancel", project_path(@project), class: "px-6 py-2 text-slate-700 border border-slate-300 rounded-lg hover:bg-slate-50 font-medium" %>
       </div>
     <% end %>
   </div>

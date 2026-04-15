@@ -5,7 +5,7 @@
         <h1 class="text-3xl font-bold text-slate-900">Documents Library</h1>
         <p class="text-slate-600 mt-2">Manage all your documents</p>
       </div>
-      <%= render Ui::ButtonComponent.new(href: new_projects_doc_path, label: "New Document", variant: "default") %>
+      <%= render Ui::ButtonComponent.new(href: new_doc_path, label: "New Document", variant: "default") %>
     </div>
   </div>
 
@@ -16,7 +16,7 @@
           <div class="flex items-center justify-between p-4 hover:bg-slate-50 transition">
             <div class="flex-1">
               <div class="flex items-center gap-3">
-                <%= link_to doc.title, projects_doc_path(doc), class: "font-semibold text-blue-600 hover:text-blue-800" %>
+                <%= link_to doc.title, doc_path(doc), class: "font-semibold text-blue-600 hover:text-blue-800" %>
                 <%= render StatusBadgeComponent.new(status: doc.doc_type, type: :status) %>
               </div>
               <p class="text-sm text-slate-600 mt-1"><%= truncate(doc.content, length: 100) %></p>
@@ -24,20 +24,20 @@
                 <div class="flex gap-2 mt-2">
                   <span class="text-xs text-slate-500">Projects:</span>
                   <% doc.projects.each do |project| %>
-                    <%= link_to project.name, projects_project_path(project), class: "text-xs text-blue-600 hover:text-blue-800" %>
+                    <%= link_to project.name, project_path(project), class: "text-xs text-blue-600 hover:text-blue-800" %>
                   <% end %>
                 </div>
               <% end %>
             </div>
             <div class="flex gap-2">
-              <%= render Ui::ButtonComponent.new(href: projects_doc_path(doc), label: "View", variant: "outline") do %>
+              <%= render Ui::ButtonComponent.new(href: doc_path(doc), label: "View", variant: "outline") do %>
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                 </svg>
               <% end %>
-              <%= render Ui::ButtonComponent.new(href: edit_projects_doc_path(doc), label: "Edit", variant: "outline") %>
-              <%= render Ui::ButtonComponent.new(href: projects_doc_path(doc), label: "Delete", variant: "destructive", method: :delete) %>
+              <%= render Ui::ButtonComponent.new(href: edit_doc_path(doc), label: "Edit", variant: "outline") %>
+              <%= render Ui::ButtonComponent.new(href: doc_path(doc), label: "Delete", variant: "destructive", method: :delete) %>
             </div>
           </div>
         <% end %>
@@ -46,7 +46,7 @@
   <% else %>
     <div class="bg-slate-50 rounded-lg border border-slate-200 p-8 text-center">
       <p class="text-slate-600">No documents yet.</p>
-      <%= link_to "Create your first document", new_projects_doc_path, class: "text-blue-600 hover:text-blue-800 font-medium mt-2 inline-block" %>
+      <%= link_to "Create your first document", new_doc_path, class: "text-blue-600 hover:text-blue-800 font-medium mt-2 inline-block" %>
     </div>
   <% end %>
 </div>

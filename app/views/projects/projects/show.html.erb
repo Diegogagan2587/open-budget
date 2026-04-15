@@ -9,8 +9,8 @@
         </div>
       </div>
       <div class="flex gap-2">
-        <%= render Ui::ButtonComponent.new(href: edit_projects_project_path(@project), label: "Edit", variant: "outline") %>
-        <%= render Ui::ButtonComponent.new(href: projects_project_path(@project), label: "Delete", variant: "destructive", method: :delete) %>
+        <%= render Ui::ButtonComponent.new(href: edit_project_path(@project), label: "Edit", variant: "outline") %>
+        <%= render Ui::ButtonComponent.new(href: project_path(@project), label: "Delete", variant: "destructive", method: :delete) %>
       </div>
     </div>
   </div>
@@ -57,7 +57,7 @@
           <h2 class="text-lg font-semibold text-slate-900">Tasks</h2>
           <p class="text-xs text-slate-500 mt-1">Vista: Kanban</p>
         </div>
-        <%= render Ui::ButtonComponent.new(href: new_projects_project_task_path(@project), label: "New Task", variant: "default") %>
+        <%= render Ui::ButtonComponent.new(href: new_project_task_path(@project), label: "New Task", variant: "default") %>
       </div>
     </div>
 
@@ -78,9 +78,9 @@
               <div class="p-3 space-y-3">
                 <% if status_tasks.any? %>
                   <% status_tasks.each do |task| %>
-                    <div class="bg-white rounded-md border border-slate-200 p-3 shadow-sm hover:shadow transition" draggable="true" data-kanban-target="card" data-task-id="<%= task.id %>" data-task-url="<%= projects_project_task_path(@project, task) %>" data-action="dragstart->kanban#dragStart dragend->kanban#dragEnd">
+                    <div class="bg-white rounded-md border border-slate-200 p-3 shadow-sm hover:shadow transition" draggable="true" data-kanban-target="card" data-task-id="<%= task.id %>" data-task-url="<%= project_task_path(@project, task) %>" data-action="dragstart->kanban#dragStart dragend->kanban#dragEnd">
                       <div class="flex items-start justify-between gap-2">
-                        <%= link_to task.title, projects_project_task_path(@project, task), class: "text-sm font-semibold text-slate-900 hover:text-blue-600" %>
+                        <%= link_to task.title, project_task_path(@project, task), class: "text-sm font-semibold text-slate-900 hover:text-blue-600" %>
                         <span class="text-[10px] font-mono text-slate-400"><%= task.task_number %></span>
                       </div>
                       <% if task.description.present? %>
@@ -108,7 +108,7 @@
       </div>
     <% else %>
       <div class="p-6 text-center text-slate-600">
-        <%= link_to "Create the first task", new_projects_project_task_path(@project), class: "text-blue-600 hover:text-blue-800 font-medium" %>
+        <%= link_to "Create the first task", new_project_task_path(@project), class: "text-blue-600 hover:text-blue-800 font-medium" %>
       </div>
     <% end %>
   </div>
@@ -116,20 +116,20 @@
   <div class="bg-white rounded-lg shadow mb-8">
     <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
       <h2 class="text-lg font-semibold text-slate-900">Documents</h2>
-      <%= render Ui::ButtonComponent.new(href: new_projects_project_doc_path(@project), label: "New Document", variant: "default") %>
+      <%= render Ui::ButtonComponent.new(href: new_project_doc_path(@project), label: "New Document", variant: "default") %>
     </div>
     <% if @docs.any? %>
       <div class="p-4">
         <% @docs.each do |doc| %>
           <div class="py-2 text-sm border-b border-slate-100 last:border-0 pb-3">
-            <p class="font-medium text-blue-600"><%= link_to doc.title, projects_project_doc_path(@project, doc) %></p>
+            <p class="font-medium text-blue-600"><%= link_to doc.title, project_doc_path(@project, doc) %></p>
             <p class="text-slate-600"><%= truncate(doc.content, length: 100) %></p>
           </div>
         <% end %>
       </div>
     <% else %>
       <div class="p-6 text-center text-slate-600">
-        <%= link_to "Create the first document", new_projects_project_doc_path(@project), class: "text-blue-600 hover:text-blue-800 font-medium" %>
+        <%= link_to "Create the first document", new_project_doc_path(@project), class: "text-blue-600 hover:text-blue-800 font-medium" %>
       </div>
     <% end %>
   </div>
@@ -137,13 +137,13 @@
   <div class="bg-white rounded-lg shadow mb-8">
     <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
       <h2 class="text-lg font-semibold text-slate-900">Links</h2>
-      <%= render Ui::ButtonComponent.new(href: new_projects_project_link_path(@project), label: "New Link", variant: "default") %>
+      <%= render Ui::ButtonComponent.new(href: new_project_link_path(@project), label: "New Link", variant: "default") %>
     </div>
     <% if @links.any? %>
       <div class="p-4">
         <% @links.each do |link| %>
           <div class="py-2 text-sm border-b border-slate-100 last:border-0 pb-3">
-            <p class="font-medium"><%= link_to link.title, projects_project_link_path(@project, link), class: "text-blue-600 hover:text-blue-800" %></p>
+            <p class="font-medium"><%= link_to link.title, project_link_path(@project, link), class: "text-blue-600 hover:text-blue-800" %></p>
             <p class="text-xs text-slate-500"><%= link_to link.url, link.url, target: "_blank", rel: "noopener noreferrer" %></p>
             <p class="text-slate-600"><%= truncate(link.description, length: 100) %></p>
           </div>
@@ -151,7 +151,7 @@
       </div>
     <% else %>
       <div class="p-6 text-center text-slate-600">
-        <%= link_to "Create the first link", new_projects_project_link_path(@project), class: "text-blue-600 hover:text-blue-800 font-medium" %>
+        <%= link_to "Create the first link", new_project_link_path(@project), class: "text-blue-600 hover:text-blue-800 font-medium" %>
       </div>
     <% end %>
   </div>

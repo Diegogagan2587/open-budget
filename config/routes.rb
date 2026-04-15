@@ -96,7 +96,7 @@ Rails.application.routes.draw do
     end
   end
 
-  namespace :projects do
+  scope module: :projects do
     resources :projects do
       resources :tasks
       resources :docs
