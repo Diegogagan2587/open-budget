@@ -5,7 +5,7 @@ Open Budget is a household finance application for planning, tracking, and execu
 
 The app is focused on:
 - planning future income and expenses
-- tracking actual spending
+- tracking executed transactions
 - coordinating loans, debts, and repayment schedules
 - keeping household shopping and inventory tied to future obligations
 - separating planning from execution
@@ -21,12 +21,14 @@ The app is focused on:
 - Budget Period: a time window for planning income and expenses
 - Income Event: an expected or received inflow of money
 - Planned Expense: a future obligation reserved against an income event
-- Expense: a real transaction that happened
+- Transaction: a unified executed money movement record (type: income, Expense, Transfer, Debt Payment, Adjustment)
 - Financial Account: a real cash-holding account such as checking or savings
 - Liability: a debt or credit structure such as a credit card or personal loan
-- Financial Entry: a ledger record that connects money movement to accounts, liabilities, income events, and expenses
 - Shopping Item: a future purchase that can become a planned or actual expense
 - Inventory Item: a household item that can trigger a shopping obligation when stock is low
+- Transaction types must include: income, expense, transfer, debt_payment, refund, and adjustment.
+- The current Expense model is expected to be refactored and renamed to become the Transaction entity.
+- The transaction entity is the ledger of executed movements and must support links to planning and finance records.
 
 ## 4. Functional Requirements
 
@@ -45,28 +47,31 @@ The app is focused on:
 - Users must be able to create income events with expected and received dates.
 - Users must be able to mark an income event as received.
 - The system must track balance carryover between income events.
+- Marking an income event as received should be able to create a transaction of type income.
 - The system must support loan-type income events.
 - Loan income events must generate repayment schedules.
 - Loan repayment schedules must preserve paid installments when a loan is edited.
 - The system must support multiple repayment frequencies, including monthly, weekly, biweekly, quincenal, and catorcenal/biweekly variants.
 - The system must estimate interest dynamically while a loan is being created or edited.
 
-### 4.4 Planned Expenses and Actual Expenses
+### 4.4 Planned Expenses and Transactions
 - Users must be able to create planned expenses against an income event.
 - Planned expenses must support statuses that represent future, saved, paid, spent, or transferred states.
-- The system must create an actual expense when a planned expense is executed.
+- The system must create a transaction(Expense refactored to transaction) when a planned expense is executed.
+- The transaction created from planned expense execution should typically use transaction type expense.
 - Users must be able to manually apply a planned expense when needed.
 - Users must be able to view planned expenses and loan payments in checklist-style views.
 - The system must keep planned obligations visible even after they are executed.
 
-### 4.5 Financial Accounts and Ledger
+### 4.5 Financial Accounts and Transaction Ledger
 - Users must be able to create financial accounts such as cash, checking, and savings accounts.
 - Users must be able to create liabilities such as credit cards and personal credits.
-- Users must be able to record financial entries that represent money movement.
-- Financial entries must link to source and destination accounts when relevant.
-- Financial entries must link to liabilities when a debt is involved.
-- Financial entries must link to income events or expenses when those records are the origin or destination of the movement.
-- The system must keep a clear separation between planning records and ledger records.
+- Users must be able to record transactions that represent money movement.
+- Transactions must link to source and destination financial accounts when relevant.
+- Transactions must link to liabilities when a debt is involved.
+- Transactions must link to income events, planned expenses, loans, shopping items, or inventory-driven purchases when those records are the origin or destination of the movement.
+- The system must keep a clear separation between planning records and transaction records.
+- Transaction types must support: income, expense, transfer, debt_payment, refund, and adjustment.
 
 ### 4.6 Loans and Repayments
 - Users must be able to create loan income events.
@@ -74,12 +79,12 @@ The app is focused on:
 - Users must be able to view a loan summary page.
 - The system must show total repayable amount, total interest, and installment details.
 - The system must preserve completed payment history when the schedule is regenerated.
-- The system must allow repayment execution to be tied to a real financial entry.
+- The system must allow repayment execution to be tied to a transaction of type debt_payment without replacing the loan schedule or planned repayment records.
 
 ### 4.7 Shopping List and Inventory
 - Users must be able to add shopping items with optional estimated amounts.
 - Users must be able to mark shopping items as purchased.
-- Users must be able to convert shopping items into planned expenses or actual expenses.
+- Users must be able to convert shopping items into planned expenses or executed transactions (typically expense-type).
 - Users must be able to link shopping items to existing planned expenses.
 - Users must be able to maintain household inventory items.
 - Low or empty inventory items should be easy to move into the shopping flow.
@@ -92,9 +97,11 @@ The app is focused on:
 
 ## 5. Data Requirements
 - Every tenant-scoped record must include account ownership.
-- Planned expenses must optionally map to actual expenses.
+- Planned expenses must optionally map to transactions.
 - Loan payment schedules must store installment state and due dates.
-- Financial entries must record entry type, date, amount, and descriptions.
+- Transactions must record transaction type, date, amount, and descriptions.
+- Transactions should support source account, destination account, and optional liability links.
+- Transactions should support references to planning entities (income events, planned expenses, loan installments).
 - Financial accounts and liabilities must maintain current balance information.
 - Historical repayment and paid installment data must remain auditable.
 
@@ -117,6 +124,6 @@ The app is focused on:
 ## 8. Success Criteria
 - Users can plan future money before it arrives.
 - Users can see what will be spent and what has already been spent.
-- Users can manage loans, repayments, accounts, and liabilities in one coherent flow.
+- Users can manage loans, repayments, accounts, and liabilities in one coherent flow through a unified transaction model.
 - Users can understand the finance workflow without searching through settings.
 - The system reduces missed obligations and financial guesswork.
