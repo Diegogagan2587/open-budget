@@ -53,7 +53,7 @@ The app is focused on:
 - The system must support loan-type income events.
 - Loan income events must generate repayment schedules.
 - Loan repayment schedules must preserve paid installments when a loan is edited.
-- The system must support multiple repayment frequencies, including monthly, weekly, biweekly, quincenal, and catorcenal/biweekly variants.
+- The system must support multiple repayment frequencies, including monthly, weekly, every 14 days (catorcenal), and every 15 days (quincenal).
 - The system must estimate interest dynamically while a loan is being created or edited.
 
 ### 4.4 Planned Expenses and Transactions
