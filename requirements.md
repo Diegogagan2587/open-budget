@@ -58,7 +58,7 @@ The app is focused on:
 
 ### 4.4 Planned Expenses and Transactions
 - Users must be able to create planned expenses against an income event.
-- Planned expenses must support statuses that represent future, saved, paid, spent, or transferred states.
+- Planned expenses must support statuses representing the business states future, saved, paid, spent, and transferred; in the current application these may map to existing canonical status values such as `pending_to_pay`, so any rename/refactor must preserve and document the mapping between requirement terminology and stored status values.
 - The system must create a transaction (Expense refactored to Transaction) when a planned expense is executed.
 - The transaction created from planned expense execution should typically use transaction type expense.
 - Users must be able to manually apply a planned expense when needed.
