@@ -117,7 +117,8 @@ The app is focused on:
 - Transactions must record transaction type, date, amount, and descriptions.
 - Transactions should support source account, destination account, and optional liability links.
 - Transactions should support references to planning entities (income events, planned expenses, loan installments).
-- Financial accounts and liabilities must maintain current balance information.
+- Financial accounts must store account group (asset/liability), subtype, and current balance information.
+- Financial accounts must store subtype-specific properties such as interest rate, fee rules, billing cycle day, payment frequency, number of payments, and scheduled payment amount when applicable.
 - Historical repayment and paid installment data must remain auditable.
 
 ## 6. Non-Functional Requirements
