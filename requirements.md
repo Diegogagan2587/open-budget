@@ -66,8 +66,11 @@ The app is focused on:
 - The system must keep planned obligations visible even after they are executed.
 
 ### 4.5 Financial Accounts and Transaction Ledger
-- Users must be able to create financial accounts such as cash, checking, and savings accounts.
-- Users must be able to create liabilities such as credit cards and personal credits.
+- Users must be able to create, name, and manage financial accounts.
+- Every financial account must have an account group (asset or liability) and a subtype.
+- Users must be able to view accounts grouped by Assets vs Liabilities.
+- Asset account subtypes must support debit/checking, savings, and investment behavior.
+- Liability account subtypes must support credit card, personal loan, and mortgage behavior.
 - Users must be able to record transactions that represent money movement.
 - Transactions must link to source and destination financial accounts when relevant.
 - Transactions must link to liabilities when a debt is involved.
