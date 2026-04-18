@@ -73,7 +73,7 @@ The app is focused on:
 - Liability account subtypes must support credit card, personal loan, and mortgage behavior.
 - Users must be able to record transactions that represent money movement.
 - Transactions must link to source and destination financial accounts when relevant.
-- Transactions must link to liabilities when a debt is involved.
+- Transactions involving debt must link to the corresponding liability financial account.
 - Transactions must link to income events, planned expenses, loans, shopping items, or inventory-driven purchases when those records are the origin or destination of the movement.
 - The system must keep a clear separation between planning records and transaction records.
 - Transaction types must support: income, expense, transfer, debt_payment, refund, and adjustment.
