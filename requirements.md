@@ -59,7 +59,7 @@ The app is focused on:
 ### 4.4 Planned Expenses and Transactions
 - Users must be able to create planned expenses against an income event.
 - Planned expenses must support statuses that represent future, saved, paid, spent, or transferred states.
-- The system must create a transaction(Expense refactored to transaction) when a planned expense is executed.
+- The system must create a transaction (Expense refactored to Transaction) when a planned expense is executed.
 - The transaction created from planned expense execution should typically use transaction type expense.
 - Users must be able to manually apply a planned expense when needed.
 - Users must be able to view planned expenses and loan payments in checklist-style views.
