@@ -78,7 +78,17 @@ The app is focused on:
 - The system must keep a clear separation between planning records and transaction records.
 - Transaction types must support: income, expense, transfer, debt_payment, refund, and adjustment.
 
-### 4.6 Loans and Repayments
+### 4.6 Financial Account Type-Specific Behavior
+- Credit card accounts must support billing-cycle behavior, monthly payment obligations, fees, and interest charges.
+- Personal loan accounts must support repayment plans with monthly or quincenal frequency.
+- Personal loan accounts must support fixed-payment schedules based on number of payments and amount per payment, even when an interest percentage is not provided.
+- Debit/checking accounts should allow balance tracking with typical expected behavior of non-negative balances unless explicitly allowed by product settings.
+- Savings accounts must support balance growth and interest or yield accrual tracking.
+- Investment accounts must support earnings tracking and performance-related adjustments.
+- The system must allow subtype-specific required fields and validation rules.
+- The system should allow subtype-specific defaults for transaction creation and repayment scheduling.
+
+### 4.7 Loans and Repayments
 - Users must be able to create loan income events.
 - The system must generate a repayment schedule automatically from the loan terms.
 - Users must be able to view a loan summary page.
