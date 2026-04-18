@@ -96,7 +96,7 @@ The app is focused on:
 - The system must preserve completed payment history when the schedule is regenerated.
 - The system must allow repayment execution to be tied to a transaction of type debt_payment without replacing the loan schedule or planned repayment records.
 
-### 4.7 Shopping List and Inventory
+### 4.8 Shopping List and Inventory
 - Users must be able to add shopping items with optional estimated amounts.
 - Users must be able to mark shopping items as purchased.
 - Users must be able to convert shopping items into planned expenses or executed transactions (typically expense-type).
@@ -104,7 +104,7 @@ The app is focused on:
 - Users must be able to maintain household inventory items.
 - Low or empty inventory items should be easy to move into the shopping flow.
 
-### 4.8 Navigation and Guidance
+### 4.9 Navigation and Guidance
 - Finance must have its own area in the application, separate from settings.
 - Settings must remain focused on configuration and preferences.
 - The app must provide a hub page that explains how the finance flow works.
