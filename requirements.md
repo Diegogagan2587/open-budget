@@ -17,7 +17,7 @@ The app is focused on:
 - Users who need visibility into liabilities, repayments, and household needs
 
 ## 3. Core Concepts
-- Account: the household tenancy boundary used for data isolation
+- Household Account: the tenancy boundary used for data isolation
 - Budget Period: a time window for planning income and expenses
 - Income Event: an expected or received inflow of money
 - Planned Expense: a future obligation reserved against an income event
@@ -29,6 +29,9 @@ The app is focused on:
 - Transaction types must include: income, expense, transfer, debt_payment, refund, and adjustment.
 - The current Expense model is expected to be refactored and renamed to become the Transaction entity.
 - The transaction entity is the ledger of executed movements and must support links to planning and finance records.
+- Financial Account groups must include Asset Accounts and Liability Accounts.
+- Asset subtypes must include at least debit/checking, savings, and investment.
+- Liability subtypes must include at least credit card, personal loan, and mortgage.
 
 ## 4. Functional Requirements
 
