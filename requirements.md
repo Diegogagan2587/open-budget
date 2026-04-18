@@ -140,5 +140,6 @@ The app is focused on:
 - Users can plan future money before it arrives.
 - Users can see what will be spent and what has already been spent.
 - Users can manage loans, repayments, accounts, and liabilities in one coherent flow through a unified transaction model.
+- Users can clearly see and manage Asset accounts vs Liability accounts and their subtype-specific obligations.
 - Users can understand the finance workflow without searching through settings.
 - The system reduces missed obligations and financial guesswork.
