@@ -54,13 +54,11 @@ The app is focused on:
 - Loan income events must generate repayment schedules.
 - Loan repayment schedules must preserve paid installments when a loan is edited.
 - The system must support multiple repayment frequencies, including monthly, weekly, every 14 days (catorcenal), and every 15 days (quincenal).
->>>>>>> Stashed changes
 - The system must estimate interest dynamically while a loan is being created or edited.
 
 ### 4.4 Planned Expenses and Transactions
 - Users must be able to create planned expenses against an income event.
 - Planned expenses must support statuses representing the business states future, saved, paid, spent, and transferred; in the current application these may map to existing canonical status values such as `pending_to_pay`, so any rename/refactor must preserve and document the mapping between requirement terminology and stored status values.
->>>>>>> Stashed changes
 - The system must create a transaction (Expense refactored to Transaction) when a planned expense is executed.
 - The transaction created from planned expense execution should typically use transaction type expense.
 - Users must be able to manually apply a planned expense when needed.
