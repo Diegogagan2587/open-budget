@@ -53,7 +53,13 @@ class ExpensesController < ApplicationController
     end
 
     respond_to do |format|
-      if @expense.save
+      result = Expenses::RecordExecutionService.call(
+        expense: @expense,
+        financial_account_id: expense_params[:financial_account_id],
+        financial_liability_id: expense_params[:financial_liability_id]
+      )
+
+      if result.success?
         target = @expense.budget_period || @expense
         format.html { redirect_to target, notice: t("expenses.flash.created") }
         format.json { render :show, status: :created, location: @expense }
