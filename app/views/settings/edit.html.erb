@@ -38,12 +38,27 @@
       <div class="border rounded-lg p-4 bg-white">
         <div class="flex items-center justify-between gap-4">
           <div>
-            <h3 class="font-semibold">Accounts</h3>
-            <p class="text-sm text-gray-600">Manage Financial Accounts</p>
+            <h3 class="font-semibold">Assets Accounts</h3>
+            <p class="text-sm text-gray-600">Manage Assets accounts as Debit Cards, Invesmetns, savings, other bank accounts</p>
             <p class="text-sm text-gray-500 mt-1">Available Accounts -</p>
           </div>
           <%= render Ui::ButtonComponent.new(
               href: finance_financial_accounts_path,
+              label: "Manage Accounts",
+              variant: "outline"
+            ) %>
+        </div>
+      </div>
+      
+      <div class="border rounded-lg p-4 bg-white">
+        <div class="flex items-center justify-between gap-4">
+          <div>
+            <h3 class="font-semibold">Liability Accounts</h3>
+            <p class="text-sm text-gray-600">Manage Liability acccounts such as Credit cards, Personal loands and others</p>
+            <p class="text-sm text-gray-500 mt-1">Available Accounts -</p>
+          </div>
+          <%= render Ui::ButtonComponent.new(
+              href: finance_financial_liabilities_path,
               label: "Manage Accounts",
               variant: "outline"
             ) %>
