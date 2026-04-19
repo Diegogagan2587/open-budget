@@ -21,13 +21,13 @@ The app is focused on:
 - Budget Period: a time window for planning income and expenses
 - Income Event: an expected or received inflow of money
 - Planned Expense: a future obligation reserved against an income event
-- Transaction: a unified executed money movement record with typed flows such as income, expense, transfer, debt_payment, refund, and adjustment
+- Transaction: the target name for a unified executed money movement record with typed flows such as income, expense, transfer, debt_payment, refund, and adjustment
 - Financial Account: a user-defined account that represents where value is stored or owed, grouped as Asset or Liability and specialized by subtype
 - Shopping Item: a future purchase that can become a planned or actual expense
 - Inventory Item: a household item that can trigger a shopping obligation when stock is low
 - Transaction types must include: income, expense, transfer, debt_payment, refund, and adjustment.
-- The current Expense model is expected to be refactored and renamed to become the Transaction entity.
-- The transaction entity is the ledger of executed movements and must support links to planning and finance records.
+- The current implementation still uses the Expense model as the executed-ledger record; Transaction is the target name after the planned refactor lands.
+- Until that refactor lands, references in this document to the transaction entity describe the future form of the current Expense-ledger model, which must support links to planning and finance records.
 - Financial Account groups must include Asset Accounts and Liability Accounts.
 - Asset subtypes must include at least debit/checking, savings, and investment.
 - Liability subtypes must include at least credit card, personal loan, and mortgage.
@@ -53,12 +53,14 @@ The app is focused on:
 - The system must support loan-type income events.
 - Loan income events must generate repayment schedules.
 - Loan repayment schedules must preserve paid installments when a loan is edited.
-- The system must support multiple repayment frequencies, including monthly, weekly, biweekly, quincenal, and catorcenal/biweekly variants.
+- The system must support multiple repayment frequencies, including monthly, weekly, every 14 days (catorcenal), and every 15 days (quincenal).
+>>>>>>> Stashed changes
 - The system must estimate interest dynamically while a loan is being created or edited.
 
 ### 4.4 Planned Expenses and Transactions
 - Users must be able to create planned expenses against an income event.
-- Planned expenses must support statuses that represent future, saved, paid, spent, or transferred states.
+- Planned expenses must support statuses representing the business states future, saved, paid, spent, and transferred; in the current application these may map to existing canonical status values such as `pending_to_pay`, so any rename/refactor must preserve and document the mapping between requirement terminology and stored status values.
+>>>>>>> Stashed changes
 - The system must create a transaction (Expense refactored to Transaction) when a planned expense is executed.
 - The transaction created from planned expense execution should typically use transaction type expense.
 - Users must be able to manually apply a planned expense when needed.
