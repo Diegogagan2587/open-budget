@@ -10,65 +10,65 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_02_23_042544) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_17_093000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
   create_table "account_memberships", force: :cascade do |t|
-    t.bigint "user_id", null: false
     t.bigint "account_id", null: false
-    t.string "role", default: "member", null: false
     t.datetime "created_at", null: false
+    t.string "role", default: "member", null: false
     t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
     t.index ["account_id"], name: "index_account_memberships_on_account_id"
     t.index ["user_id", "account_id"], name: "index_account_memberships_on_user_id_and_account_id", unique: true
     t.index ["user_id"], name: "index_account_memberships_on_user_id"
   end
 
   create_table "accounts", force: :cascade do |t|
-    t.string "name", null: false
     t.datetime "created_at", null: false
+    t.string "name", null: false
     t.datetime "updated_at", null: false
   end
 
   create_table "budget_line_items", force: :cascade do |t|
+    t.bigint "account_id", null: false
     t.bigint "budget_period_id", null: false
     t.bigint "category_id", null: false
-    t.string "description"
-    t.decimal "planned_amount", precision: 10, scale: 2
-    t.float "percentage_of_total"
     t.datetime "created_at", null: false
+    t.string "description"
+    t.float "percentage_of_total"
+    t.decimal "planned_amount", precision: 10, scale: 2
     t.datetime "updated_at", null: false
-    t.bigint "account_id", null: false
     t.index ["account_id"], name: "index_budget_line_items_on_account_id"
     t.index ["budget_period_id"], name: "index_budget_line_items_on_budget_period_id"
     t.index ["category_id"], name: "index_budget_line_items_on_category_id"
   end
 
   create_table "budget_periods", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.datetime "created_at", null: false
+    t.date "end_date"
     t.string "name"
     t.string "period_type"
     t.date "start_date"
-    t.date "end_date"
     t.decimal "total_amount", precision: 10, scale: 2
-    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "account_id", null: false
     t.index ["account_id"], name: "index_budget_periods_on_account_id"
   end
 
   create_table "categories", force: :cascade do |t|
-    t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.bigint "account_id", null: false
+    t.datetime "created_at", null: false
+    t.string "name"
+    t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_categories_on_account_id"
   end
 
   create_table "doc_docs", force: :cascade do |t|
+    t.datetime "created_at", null: false
     t.bigint "doc_id", null: false
     t.bigint "related_doc_id", null: false
-    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["doc_id", "related_doc_id"], name: "index_doc_docs_on_doc_id_and_related_doc_id", unique: true
     t.index ["doc_id"], name: "index_doc_docs_on_doc_id"
@@ -76,18 +76,18 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_23_042544) do
   end
 
   create_table "doc_links", force: :cascade do |t|
+    t.datetime "created_at", null: false
     t.bigint "doc_id", null: false
     t.bigint "link_id", null: false
-    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["doc_id"], name: "index_doc_links_on_doc_id"
     t.index ["link_id"], name: "index_doc_links_on_link_id"
   end
 
   create_table "doc_tags", force: :cascade do |t|
+    t.datetime "created_at", null: false
     t.bigint "doc_id", null: false
     t.bigint "tag_id", null: false
-    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["doc_id", "tag_id"], name: "index_doc_tags_on_doc_id_and_tag_id", unique: true
     t.index ["doc_id"], name: "index_doc_tags_on_doc_id"
@@ -96,73 +96,143 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_23_042544) do
 
   create_table "docs", force: :cascade do |t|
     t.bigint "account_id", null: false
-    t.string "title", null: false
     t.text "content"
-    t.string "url"
-    t.string "doc_type", default: "note", null: false
     t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.bigint "created_by_id"
+    t.string "doc_type", default: "note", null: false
+    t.string "title", null: false
+    t.datetime "updated_at", null: false
+    t.string "url"
     t.index ["account_id", "title"], name: "index_docs_on_account_id_and_title", unique: true
     t.index ["account_id"], name: "index_docs_on_account_id"
     t.index ["created_by_id"], name: "index_docs_on_created_by_id"
   end
 
   create_table "expense_templates", force: :cascade do |t|
-    t.string "name", null: false
-    t.bigint "category_id", null: false
-    t.string "description"
-    t.decimal "total_amount", precision: 10, scale: 2, null: false
-    t.string "frequency", null: false
-    t.text "notes"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.bigint "account_id", null: false
+    t.bigint "category_id", null: false
+    t.datetime "created_at", null: false
+    t.string "description"
+    t.string "frequency", null: false
+    t.string "name", null: false
+    t.text "notes"
+    t.decimal "total_amount", precision: 10, scale: 2, null: false
+    t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_expense_templates_on_account_id"
     t.index ["category_id"], name: "index_expense_templates_on_category_id"
   end
 
   create_table "expenses", force: :cascade do |t|
-    t.date "date"
-    t.decimal "amount", precision: 10, scale: 2
-    t.string "description"
-    t.bigint "category_id", null: false
-    t.bigint "budget_period_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.bigint "account_id", null: false
+    t.decimal "amount", precision: 10, scale: 2
+    t.bigint "budget_period_id", null: false
+    t.bigint "category_id", null: false
+    t.datetime "created_at", null: false
+    t.date "date"
+    t.string "description"
+    t.bigint "financial_account_id"
+    t.bigint "financial_liability_id"
     t.bigint "income_event_id"
+    t.bigint "loan_id"
     t.bigint "planned_expense_id"
+    t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_expenses_on_account_id"
     t.index ["budget_period_id"], name: "index_expenses_on_budget_period_id"
     t.index ["category_id"], name: "index_expenses_on_category_id"
+    t.index ["financial_account_id"], name: "index_expenses_on_financial_account_id"
+    t.index ["financial_liability_id"], name: "index_expenses_on_financial_liability_id"
     t.index ["income_event_id"], name: "index_expenses_on_income_event_id"
+    t.index ["loan_id"], name: "index_expenses_on_loan_id"
     t.index ["planned_expense_id"], name: "index_expenses_on_planned_expense_id"
   end
 
-  create_table "income_events", force: :cascade do |t|
-    t.bigint "budget_period_id"
-    t.date "expected_date", null: false
-    t.decimal "expected_amount", precision: 10, scale: 2, null: false
-    t.date "received_date"
-    t.decimal "received_amount", precision: 10, scale: 2
-    t.string "description", null: false
-    t.string "status", default: "pending", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+  create_table "financial_accounts", force: :cascade do |t|
     t.bigint "account_id", null: false
+    t.string "account_type", null: false
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.text "notes"
+    t.decimal "opening_balance", precision: 12, scale: 2, default: "0.0", null: false
+    t.string "status", default: "active", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id", "name"], name: "index_financial_accounts_on_account_id_and_name", unique: true
+    t.index ["account_id"], name: "index_financial_accounts_on_account_id"
+    t.index ["status"], name: "index_financial_accounts_on_status"
+  end
+
+  create_table "financial_entries", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.decimal "amount", precision: 12, scale: 2, null: false
+    t.bigint "counterparty_financial_account_id"
+    t.datetime "created_at", null: false
+    t.string "description", null: false
+    t.date "entry_date", null: false
+    t.string "entry_type", null: false
+    t.bigint "expense_id"
+    t.bigint "financial_account_id"
+    t.bigint "financial_liability_id"
+    t.bigint "income_event_id"
+    t.text "notes"
+    t.datetime "updated_at", null: false
+    t.index ["account_id", "entry_date"], name: "index_financial_entries_on_account_id_and_entry_date"
+    t.index ["account_id"], name: "index_financial_entries_on_account_id"
+    t.index ["counterparty_financial_account_id"], name: "index_financial_entries_on_counterparty_financial_account_id"
+    t.index ["entry_type"], name: "index_financial_entries_on_entry_type"
+    t.index ["expense_id"], name: "index_financial_entries_on_expense_id"
+    t.index ["financial_account_id"], name: "index_financial_entries_on_financial_account_id"
+    t.index ["financial_liability_id"], name: "index_financial_entries_on_financial_liability_id"
+    t.index ["income_event_id"], name: "index_financial_entries_on_income_event_id"
+  end
+
+  create_table "financial_liabilities", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.datetime "archived_at"
+    t.datetime "created_at", null: false
+    t.decimal "credit_limit", precision: 12, scale: 2
+    t.string "liability_type", null: false
+    t.string "name", null: false
+    t.text "notes"
+    t.decimal "opening_balance", precision: 12, scale: 2, default: "0.0", null: false
+    t.string "status", default: "active", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id", "name"], name: "index_financial_liabilities_on_account_id_and_name", unique: true
+    t.index ["account_id"], name: "index_financial_liabilities_on_account_id"
+    t.index ["status"], name: "index_financial_liabilities_on_status"
+  end
+
+  create_table "income_events", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.bigint "budget_period_id"
+    t.datetime "created_at", null: false
+    t.string "description", null: false
+    t.decimal "expected_amount", precision: 10, scale: 2, null: false
+    t.date "expected_date", null: false
+    t.string "income_type", default: "regular", null: false
+    t.decimal "interest_rate", precision: 6, scale: 3
+    t.boolean "interest_rate_estimated", default: false, null: false
+    t.string "lender_name"
+    t.decimal "loan_amount", precision: 10, scale: 2
+    t.text "notes"
+    t.integer "number_of_payments"
+    t.decimal "payment_amount", precision: 10, scale: 2
+    t.string "payment_frequency"
+    t.decimal "received_amount", precision: 10, scale: 2
+    t.date "received_date"
+    t.string "status", default: "pending", null: false
+    t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_income_events_on_account_id"
     t.index ["budget_period_id"], name: "index_income_events_on_budget_period_id"
+    t.index ["income_type"], name: "index_income_events_on_income_type"
   end
 
   create_table "inventory_items", force: :cascade do |t|
-    t.string "name", null: false
-    t.string "stock_state", default: "in_stock", null: false
-    t.boolean "consumable", default: true, null: false
-    t.bigint "category_id"
-    t.text "notes"
     t.bigint "account_id", null: false
+    t.bigint "category_id"
+    t.boolean "consumable", default: true, null: false
     t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.text "notes"
+    t.string "stock_state", default: "in_stock", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_inventory_items_on_account_id"
     t.index ["category_id"], name: "index_inventory_items_on_category_id"
@@ -172,25 +242,44 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_23_042544) do
 
   create_table "links", force: :cascade do |t|
     t.bigint "account_id", null: false
-    t.string "title", null: false
-    t.string "url", null: false
+    t.datetime "created_at", null: false
     t.text "description"
     t.string "link_type", default: "reference", null: false
-    t.datetime "created_at", null: false
+    t.string "title", null: false
     t.datetime "updated_at", null: false
+    t.string "url", null: false
     t.index ["account_id", "url"], name: "index_links_on_account_id_and_url", unique: true
     t.index ["account_id"], name: "index_links_on_account_id"
   end
 
+  create_table "loan_payment_schedules", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.decimal "amount", precision: 10, scale: 2, null: false
+    t.datetime "created_at", null: false
+    t.date "due_date", null: false
+    t.integer "installment_number", null: false
+    t.decimal "interest_amount", precision: 10, scale: 2, default: "0.0", null: false
+    t.bigint "loan_id", null: false
+    t.date "paid_at"
+    t.decimal "principal_amount", precision: 10, scale: 2, default: "0.0", null: false
+    t.string "status", default: "scheduled", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_loan_payment_schedules_on_account_id"
+    t.index ["loan_id", "due_date"], name: "index_loan_payment_schedules_on_loan_id_and_due_date"
+    t.index ["loan_id", "installment_number"], name: "index_loan_payment_schedules_on_loan_id_and_installment_number", unique: true
+    t.index ["loan_id"], name: "index_loan_payment_schedules_on_loan_id"
+    t.index ["status"], name: "index_loan_payment_schedules_on_status"
+  end
+
   create_table "meetings", force: :cascade do |t|
     t.bigint "account_id", null: false
-    t.string "title", null: false
-    t.text "description"
-    t.datetime "start_time", null: false
-    t.datetime "end_time"
-    t.string "meeting_url"
-    t.string "location"
     t.datetime "created_at", null: false
+    t.text "description"
+    t.datetime "end_time"
+    t.string "location"
+    t.string "meeting_url"
+    t.datetime "start_time", null: false
+    t.string "title", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id", "title"], name: "index_meetings_on_account_id_and_title"
     t.index ["account_id"], name: "index_meetings_on_account_id"
@@ -198,18 +287,18 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_23_042544) do
   end
 
   create_table "planned_expenses", force: :cascade do |t|
-    t.bigint "income_event_id", null: false
-    t.bigint "category_id", null: false
-    t.bigint "expense_template_id"
-    t.string "description", null: false
-    t.decimal "amount", precision: 10, scale: 2, null: false
-    t.text "notes"
-    t.string "status", null: false
-    t.integer "position"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.bigint "account_id", null: false
+    t.decimal "amount", precision: 10, scale: 2, null: false
+    t.bigint "category_id", null: false
+    t.datetime "created_at", null: false
+    t.string "description", null: false
+    t.bigint "expense_template_id"
+    t.bigint "income_event_id", null: false
+    t.text "notes"
+    t.integer "position"
     t.bigint "shopping_item_id"
+    t.string "status", null: false
+    t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_planned_expenses_on_account_id"
     t.index ["category_id"], name: "index_planned_expenses_on_category_id"
     t.index ["expense_template_id"], name: "index_planned_expenses_on_expense_template_id"
@@ -218,9 +307,9 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_23_042544) do
   end
 
   create_table "project_docs", force: :cascade do |t|
-    t.bigint "project_id", null: false
-    t.bigint "doc_id", null: false
     t.datetime "created_at", null: false
+    t.bigint "doc_id", null: false
+    t.bigint "project_id", null: false
     t.datetime "updated_at", null: false
     t.index ["doc_id"], name: "index_project_docs_on_doc_id"
     t.index ["project_id", "doc_id"], name: "index_project_docs_on_project_id_and_doc_id", unique: true
@@ -228,9 +317,9 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_23_042544) do
   end
 
   create_table "project_links", force: :cascade do |t|
-    t.bigint "project_id", null: false
-    t.bigint "link_id", null: false
     t.datetime "created_at", null: false
+    t.bigint "link_id", null: false
+    t.bigint "project_id", null: false
     t.datetime "updated_at", null: false
     t.index ["link_id"], name: "index_project_links_on_link_id"
     t.index ["project_id", "link_id"], name: "index_project_links_on_project_id_and_link_id", unique: true
@@ -238,9 +327,9 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_23_042544) do
   end
 
   create_table "project_meetings", force: :cascade do |t|
-    t.bigint "project_id", null: false
-    t.bigint "meeting_id", null: false
     t.datetime "created_at", null: false
+    t.bigint "meeting_id", null: false
+    t.bigint "project_id", null: false
     t.datetime "updated_at", null: false
     t.index ["meeting_id"], name: "index_project_meetings_on_meeting_id"
     t.index ["project_id", "meeting_id"], name: "index_project_meetings_on_project_id_and_meeting_id", unique: true
@@ -249,14 +338,14 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_23_042544) do
 
   create_table "projects", force: :cascade do |t|
     t.bigint "account_id", null: false
-    t.bigint "owner_id", null: false
+    t.datetime "created_at", null: false
+    t.date "end_date"
     t.string "name", null: false
-    t.text "summary"
-    t.string "status", default: "pending", null: false
+    t.bigint "owner_id", null: false
     t.string "priority", default: "medium", null: false
     t.date "start_date"
-    t.date "end_date"
-    t.datetime "created_at", null: false
+    t.string "status", default: "pending", null: false
+    t.text "summary"
     t.datetime "updated_at", null: false
     t.index ["account_id", "name"], name: "index_projects_on_account_id_and_name", unique: true
     t.index ["account_id"], name: "index_projects_on_account_id"
@@ -264,42 +353,42 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_23_042544) do
 
   create_table "recurring_tasks", force: :cascade do |t|
     t.bigint "account_id", null: false
-    t.bigint "task_area_id"
-    t.string "name", null: false
-    t.string "recurrence", default: "none", null: false
-    t.date "next_due_date"
+    t.datetime "created_at", null: false
     t.datetime "last_done_at"
+    t.string "name", null: false
+    t.date "next_due_date"
     t.text "notes"
     t.integer "position"
-    t.datetime "created_at", null: false
+    t.string "recurrence", default: "none", null: false
+    t.bigint "task_area_id"
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_recurring_tasks_on_account_id"
     t.index ["task_area_id"], name: "index_recurring_tasks_on_task_area_id"
   end
 
   create_table "sessions", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.string "ip_address"
-    t.string "user_agent"
     t.datetime "created_at", null: false
+    t.string "ip_address"
     t.datetime "updated_at", null: false
+    t.string "user_agent"
+    t.bigint "user_id", null: false
     t.index ["user_id"], name: "index_sessions_on_user_id"
   end
 
   create_table "shopping_items", force: :cascade do |t|
-    t.string "name", null: false
-    t.string "status", default: "pending", null: false
-    t.string "item_type", default: "one_time", null: false
-    t.string "quantity"
-    t.decimal "estimated_amount", precision: 10, scale: 2
+    t.bigint "account_id", null: false
     t.bigint "category_id"
-    t.bigint "planned_expense_id"
+    t.datetime "created_at", null: false
+    t.decimal "estimated_amount", precision: 10, scale: 2
     t.bigint "expense_id"
     t.string "frequency"
+    t.string "item_type", default: "one_time", null: false
     t.date "last_purchased_at"
+    t.string "name", null: false
     t.text "notes"
-    t.bigint "account_id", null: false
-    t.datetime "created_at", null: false
+    t.bigint "planned_expense_id"
+    t.string "quantity"
+    t.string "status", default: "pending", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_shopping_items_on_account_id"
     t.index ["category_id"], name: "index_shopping_items_on_category_id"
@@ -311,9 +400,9 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_23_042544) do
 
   create_table "tags", force: :cascade do |t|
     t.bigint "account_id", null: false
-    t.string "name", null: false
-    t.text "description"
     t.datetime "created_at", null: false
+    t.text "description"
+    t.string "name", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id", "name"], name: "index_tags_on_account_id_and_name", unique: true
     t.index ["account_id"], name: "index_tags_on_account_id"
@@ -321,17 +410,17 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_23_042544) do
 
   create_table "task_areas", force: :cascade do |t|
     t.bigint "account_id", null: false
-    t.string "name", null: false
     t.datetime "created_at", null: false
+    t.string "name", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id", "name"], name: "index_task_areas_on_account_id_and_name", unique: true
     t.index ["account_id"], name: "index_task_areas_on_account_id"
   end
 
   create_table "task_docs", force: :cascade do |t|
-    t.bigint "task_id", null: false
-    t.bigint "doc_id", null: false
     t.datetime "created_at", null: false
+    t.bigint "doc_id", null: false
+    t.bigint "task_id", null: false
     t.datetime "updated_at", null: false
     t.index ["doc_id"], name: "index_task_docs_on_doc_id"
     t.index ["task_id", "doc_id"], name: "index_task_docs_on_task_id_and_doc_id", unique: true
@@ -339,17 +428,17 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_23_042544) do
   end
 
   create_table "tasks", force: :cascade do |t|
-    t.bigint "project_id", null: false
     t.bigint "account_id", null: false
-    t.bigint "owner_id", null: false
-    t.string "title", null: false
-    t.text "description"
-    t.string "task_number", null: false
-    t.string "status", default: "backlog", null: false
-    t.string "priority", default: "medium", null: false
-    t.date "due_date"
     t.datetime "completed_at"
     t.datetime "created_at", null: false
+    t.text "description"
+    t.date "due_date"
+    t.bigint "owner_id", null: false
+    t.string "priority", default: "medium", null: false
+    t.bigint "project_id", null: false
+    t.string "status", default: "backlog", null: false
+    t.string "task_number", null: false
+    t.string "title", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id", "task_number"], name: "index_tasks_on_account_id_and_task_number", unique: true
     t.index ["account_id"], name: "index_tasks_on_account_id"
@@ -360,12 +449,12 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_23_042544) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.string "email_address", null: false
-    t.string "password_digest", null: false
     t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "name", null: false
+    t.string "email_address", null: false
     t.string "locale", default: "en"
+    t.string "name", null: false
+    t.string "password_digest", null: false
+    t.datetime "updated_at", null: false
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
   end
 
@@ -389,13 +478,26 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_23_042544) do
   add_foreign_key "expenses", "accounts"
   add_foreign_key "expenses", "budget_periods"
   add_foreign_key "expenses", "categories"
+  add_foreign_key "expenses", "financial_accounts"
+  add_foreign_key "expenses", "financial_liabilities"
   add_foreign_key "expenses", "income_events"
+  add_foreign_key "expenses", "income_events", column: "loan_id"
   add_foreign_key "expenses", "planned_expenses"
+  add_foreign_key "financial_accounts", "accounts"
+  add_foreign_key "financial_entries", "accounts"
+  add_foreign_key "financial_entries", "expenses"
+  add_foreign_key "financial_entries", "financial_accounts"
+  add_foreign_key "financial_entries", "financial_accounts", column: "counterparty_financial_account_id"
+  add_foreign_key "financial_entries", "financial_liabilities"
+  add_foreign_key "financial_entries", "income_events"
+  add_foreign_key "financial_liabilities", "accounts"
   add_foreign_key "income_events", "accounts"
   add_foreign_key "income_events", "budget_periods"
   add_foreign_key "inventory_items", "accounts"
   add_foreign_key "inventory_items", "categories"
   add_foreign_key "links", "accounts"
+  add_foreign_key "loan_payment_schedules", "accounts"
+  add_foreign_key "loan_payment_schedules", "income_events", column: "loan_id"
   add_foreign_key "meetings", "accounts"
   add_foreign_key "planned_expenses", "accounts"
   add_foreign_key "planned_expenses", "categories"
