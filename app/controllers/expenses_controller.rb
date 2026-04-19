@@ -140,7 +140,7 @@ class ExpensesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def expense_params
-      params.expect(expense: [ :date, :amount, :description, :category_id, :budget_period_id, :income_event_id ])
+      params.expect(expense: [ :date, :amount, :description, :category_id, :budget_period_id, :income_event_id, :financial_account_id, :financial_liability_id ])
     end
 
     def set_budget_period
@@ -154,7 +154,7 @@ class ExpensesController < ApplicationController
     end
 
     def quick_expense_params
-      params.expect(expense: [ :date, :amount, :description, :category_id, :budget_period_id ])
+      params.expect(expense: [ :date, :amount, :description, :category_id, :budget_period_id, :financial_account_id, :financial_liability_id ])
     end
 
     def load_quick_form_collections
