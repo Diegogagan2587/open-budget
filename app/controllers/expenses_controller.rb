@@ -48,7 +48,7 @@ class ExpensesController < ApplicationController
 
     # Auto-suggest budget_period from income_event if income_event is set and budget_period is not
     if @expense.income_event_id.present? && @expense.budget_period_id.blank?
-      income_event = IncomeEvent.find(@expense.income_event_id)
+      income_event = IncomeEvent.for_account(Current.account).find(@expense.income_event_id)
       @expense.budget_period_id = income_event.budget_period_id if income_event.budget_period_id
     end
 
@@ -66,6 +66,7 @@ class ExpensesController < ApplicationController
       else
         # Load income events for form re-render on error
         @income_events = IncomeEvent.for_account(Current.account).order(expected_date: :desc)
+        flash.now[:alert] = result.error_message
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @expense.errors, status: :unprocessable_entity }
       end
@@ -116,6 +117,7 @@ class ExpensesController < ApplicationController
       else
         # Load income events for form re-render on error
         @income_events = IncomeEvent.for_account(Current.account).order(expected_date: :desc)
+        load_finance_account_collections
         format.html { render :edit, status: :unprocessable_entity }
         format.json { render json: @expense.errors, status: :unprocessable_entity }
       end
