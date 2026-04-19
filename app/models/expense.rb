@@ -13,9 +13,17 @@ class Expense < ApplicationRecord
 
   scope :for_account, ->(account) { where(account: account) }
 
+  validate :financial_account_or_liability_exclusive
+
   private
 
   def set_account
     self.account ||= Current.account if Current.account
+  end
+
+  def financial_account_or_liability_exclusive
+    return if financial_account.blank? || financial_liability.blank?
+
+    errors.add(:base, "Select either an asset account or a liability account, not both")
   end
 end
