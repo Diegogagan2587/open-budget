@@ -2,6 +2,7 @@ class ExpensesController < ApplicationController
   before_action :set_budget_period, only: [ :new, :create ]
   before_action :set_income_event_context, only: [ :quick_new, :quick_create ]
   before_action :set_expense, only: %i[ show edit update destroy ]
+  before_action :load_finance_account_collections, only: [ :new, :create, :edit, :update, :quick_new, :quick_create ]
 
 
   def index
@@ -146,5 +147,10 @@ class ExpensesController < ApplicationController
     def load_quick_form_collections
       @categories = Category.for_account(Current.account).order(:name)
       @budget_periods = BudgetPeriod.for_account(Current.account).order(start_date: :desc)
+    end
+
+    def load_finance_account_collections
+      @financial_accounts = Financial::Asset.for_account(Current.account).active.order(:name)
+      @financial_liabilities = Financial::Liability.for_account(Current.account).active.order(:name)
     end
 end
