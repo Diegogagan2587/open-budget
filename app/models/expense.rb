@@ -3,6 +3,9 @@ class Expense < ApplicationRecord
   belongs_to :category
   belongs_to :budget_period
   belongs_to :income_event, optional: true
+  belongs_to :loan, class_name: "IncomeEvent", optional: true
+  belongs_to :financial_account, class_name: "Financial::Account", optional: true
+  belongs_to :financial_liability, class_name: "Financial::Liability", optional: true
   belongs_to :planned_expense, optional: true
   has_one :shopping_item, dependent: :nullify
 
