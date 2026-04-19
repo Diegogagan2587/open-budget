@@ -1,25 +1,31 @@
 ---
 name: rails-ui-component-porter
-description: Use this skill when asked to build, redesign, or improve Rails views, pages, dashboards, forms, tables, dialogs, navigation, or reusable UI components. Prioritize existing ViewComponents first. If missing, recreate matching shadcn/ui components using Rails ViewComponent, Tailwind, Hotwire, Turbo, and Stimulus only when needed.
+description: Use this skill when asked to build Rails views, dashboards, forms, tables, dialogs, navigation, or reusable UI components. Reuse existing ViewComponents first. If missing, recreate matching shadcn/ui components using Rails ViewComponent generator, Tailwind, Hotwire, Turbo, and Stimulus only when needed.
 license: MIT
+allowed-tools:
+  - bash
 ---
 
 # Rails UI Component Porter Skill
 
 When working on UI tasks in this repository, follow this workflow strictly.
 
+---
+
 ## Primary Goal
 
-Build interfaces fast by reusing existing components first.  
-If missing, port high-quality components into reusable Rails ViewComponents.
+Deliver premium Rails UI fast by:
+
+1. Reusing existing components first
+2. Generating missing components with ViewComponent generator
+3. Porting shadcn/ui patterns into reusable Rails components
+4. Building pages from components instead of duplicated markup
 
 ---
 
 ## Step 1: Inspect Existing Components First
 
-Before generating new markup:
-
-1. Search:
+1. Before generating anything, search:
 
 - `app/components`
 - `app/views/shared`
@@ -33,7 +39,7 @@ Before generating new markup:
 - extend it only if necessary
 - do not duplicate markup
 
-3. Prefer composition over creating new one-off components.
+3. Prefer composition over creating new one-off components when possible.
 
 ---
 
@@ -43,7 +49,7 @@ Review shadcn/ui documentation:
 
 https://ui.shadcn.com/docs/components
 
-Find the closest component(s) needed for the request.
+Find the closest matching component required.
 
 Examples:
 
@@ -62,28 +68,58 @@ Examples:
 
 ---
 
-## Step 3: Port Component to Rails Stack
+## Step 3: Generate Using Official ViewComponent Command
 
-Rebuild the component using:
+Always use the Rails generator first.
 
-- Ruby on Rails ERB
-- ViewComponent
-- TailwindCSS
-- Turbo
-- Hotwire
-- Stimulus only if interaction requires JavaScript
+Example:
+
+```bash
+bin/rails generate view_component:component Ui::Card title description etc
+````
+
+This should create files like:
+
+* `app/components/ui/card_component.rb`
+* `app/components/ui/card_component.html.erb`
+* tests
+
+Use namespaced `Ui::` components whenever appropriate.
+
+Examples:
+
+```bash
+bin/rails generate view_component:component Ui::Button variant
+bin/rails generate view_component:component Ui::Dialog title
+bin/rails generate view_component:component Ui::Table rows
+bin/rails generate view_component:component Ui::Badge label
+```
+
+Never manually create component files when generator is available.
+
+---
+
+## Step 4: Port Design to Rails Stack
+
+After generation, implement the component using:
+
+* ERB
+* TailwindCSS
+* Turbo
+* Hotwire
+* Stimulus only when interaction requires JavaScript
 
 Do NOT use React.
 
 ---
 
-## Step 4: Preserve Fidelity
+## Step 5: Preserve Fidelity
 
-Match shadcn/ui as closely as possible:
+Match shadcn/ui quality closely:
 
 - spacing
 - dimensions
-- border radius
+- radius
 - typography
 - colors
 - hover states
@@ -91,52 +127,51 @@ Match shadcn/ui as closely as possible:
 - transitions
 - responsive behavior
 - accessibility
-- keyboard navigation when relevant
+- keyboard support & navigation when relevant
 
 ---
 
-## Step 5: Create Reusable Component
+## Step 6: Make Reusable
 
-Generate:
+Generated components should support configurable arguments.
 
-- Ruby component class
-- ERB template
-- configurable options / props
-- sane defaults
-- examples of usage
+Example:
 
-Preferred namespace:
+```ruby
+Ui::ButtonComponent.new(
+  label: "Save",
+  variant: :primary,
+  size: :md
+)
+```
 
-- `Ui::ButtonComponent`
-- `Ui::CardComponent`
-- `Ui::DialogComponent`
-- `Ui::TableComponent`
+Use sane defaults.
 
 ---
 
-## Step 6: Reuse in Final Page
-
-Pages should use components, not repeated inline HTML.
+## Step 7: Reuse in Final Pages
 
 Prefer:
 
 ```erb
-<%= render Ui::CardComponent.new(...) %>
-````
+<%= render Ui::CardComponent.new(title: "Revenue") do %>
+  Content
+<% end %>
+```
 
-Instead of duplicated markup blocks.
+Instead of repeated inline HTML.
 
 ---
 
-## Step 7: Rails Behavior Standards
+## Step 8: Rails Interaction Standards
 
-Use:
+Prefer:
 
-* Turbo Frames for partial updates
-* Turbo Streams for async UI updates
-* Stimulus for dropdowns, dialogs, tabs, toggles only when necessary
+* Turbo Frames
+* Turbo Streams
+* Stimulus only when necessary
 
-Prefer Rails-first patterns over custom JavaScript.
+Avoid unnecessary custom JavaScript.
 
 ---
 
@@ -144,22 +179,24 @@ Prefer Rails-first patterns over custom JavaScript.
 
 When asked to build a page:
 
-1. identify reusable existing components
-2. create missing components
-3. assemble page using components
-4. keep code clean and maintainable
+1. Search existing components
+2. Generate missing components with ViewComponent command
+3. Port styles/behavior
+4. Build final page using components
+5. Keep code maintainable
 
 ---
 
 ## Example Triggers
 
 * Build admin dashboard
-* Create customers index page
-* Improve form UI
+* Create customer table
 * Add modal dialog
 * Build responsive navbar
-* Create pricing page
+* Improve settings page
+* Create pricing cards
 * Make this page look like shadcn/ui
+* review if this page does look like shadcn/ui
 
 ---
 
@@ -167,14 +204,15 @@ When asked to build a page:
 
 Do NOT:
 
-* duplicate existing component code
-* generate huge inline ERB files
+* duplicate components
+* manually create component files if generator exists
+* generate giant ERB templates
 * use React
 * add JS when Turbo solves it
-* create inconsistent styling
+* create inconsistent styles
 
 ---
 
 ## Success Metric
 
-Fast delivery + reusable components + consistent premium UI.
+Fast delivery + reusable Rails components + premium consistent UI.
