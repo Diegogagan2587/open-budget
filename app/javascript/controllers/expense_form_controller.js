@@ -1,7 +1,15 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["dateField", "incomeEventSelect", "incomeEventContainer", "message"]
+  static targets = [
+    "dateField",
+    "incomeEventSelect",
+    "incomeEventContainer",
+    "message",
+    "accountTypeSelect",
+    "assetAccountSection",
+    "liabilityAccountSection"
+  ]
   static values = {
     incomeEvents: Array,
     locale: String
@@ -18,6 +26,8 @@ export default class extends Controller {
       // Show all income events initially
       this.updateIncomeEventOptions(this.allIncomeEvents)
     }
+
+    this.toggleFinanceAccountFields()
   }
 
   filterByDate() {
@@ -207,5 +217,29 @@ export default class extends Controller {
     if (!this.hasMessageTarget) return
 
     this.messageTarget.classList.add('hidden')
+  }
+
+  toggleFinanceAccountFields() {
+    if (!this.hasAccountTypeSelectTarget) return
+
+    const accountType = this.accountTypeSelectTarget.value || 'asset'
+    const showAsset = accountType === 'asset'
+    const showLiability = accountType === 'liability'
+
+    if (this.hasAssetAccountSectionTarget) {
+      this.assetAccountSectionTarget.classList.toggle('hidden', !showAsset)
+    }
+
+    if (this.hasLiabilityAccountSectionTarget) {
+      this.liabilityAccountSectionTarget.classList.toggle('hidden', !showLiability)
+    }
+
+    if (showAsset && this.element.querySelector("#expense_financial_liability_id")) {
+      this.element.querySelector("#expense_financial_liability_id").value = ""
+    }
+
+    if (showLiability && this.element.querySelector("#expense_financial_account_id")) {
+      this.element.querySelector("#expense_financial_account_id").value = ""
+    }
   }
 }
