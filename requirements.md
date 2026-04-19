@@ -18,6 +18,7 @@ The app is focused on:
 
 ## 3. Core Concepts
 - Household Account: the tenancy boundary used for data isolation
+    - Naming target: this tenancy container should be renamed to Tenant in application language and domain code, with backward-compatible aliases during migration.
 - Budget Period: a time window for planning income and expenses
 - Income Event: an expected or received inflow of money
 - Planned Expense: a future obligation reserved against an income event
@@ -50,6 +51,7 @@ Liability < Account
 - The system must isolate all data by household account.
 - Users must only see records that belong to their current account.
 - Users must be able to switch between allowed household accounts.
+    - The domain naming migration should move from Account terminology to Tenant terminology for tenancy concerns (for example, Current.tenant and Tenant model aliases), while preserving compatibility in existing APIs during rollout.
 
 ### 4.2 Budget Planning
 - Users must be able to create and manage budget periods.
@@ -125,6 +127,7 @@ Liability < Account
 
 ## 5. Data Requirements
 - Every tenant-scoped record must include account ownership.
+    - Data model migration target: replace tenancy-facing naming from account/account_id to tenant/tenant_id in code and schema in phased migrations; maintain compatibility bridges until complete.
 - The financial account schema target must use one account table with `account_group` and subtype fields; any split asset/liability schema should be treated as a migration stage.
 - Planned expenses must optionally map to transactions.
 - Loan payment schedules must store installment state and due dates.
@@ -158,3 +161,4 @@ Liability < Account
 - Users can clearly see and manage Asset accounts vs Liability accounts and their subtype-specific obligations.
 - Users can understand the finance workflow without searching through settings.
 - The system reduces missed obligations and financial guesswork.
+    - Tenancy language in UI and documentation is consistently expressed as Tenant rather than Account after migration completion.
