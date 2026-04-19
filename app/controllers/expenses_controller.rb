@@ -79,10 +79,17 @@ class ExpensesController < ApplicationController
     @expense.income_event = @income_event
     @expense.budget_period ||= @income_event.budget_period
 
-    if @expense.save
+    result = Expenses::RecordExecutionService.call(
+      expense: @expense,
+      financial_account_id: quick_expense_params[:financial_account_id],
+      financial_liability_id: quick_expense_params[:financial_liability_id]
+    )
+
+    if result.success?
       redirect_to @income_event, notice: t("expenses.flash.quick_created")
     else
       load_quick_form_collections
+      flash.now[:alert] = result.error_message
       render :quick_new, status: :unprocessable_entity
     end
   end
