@@ -2,10 +2,16 @@ Rails.application.routes.draw do
   resource :session
   resource :registration, only: [ :new, :create ]
   resource :settings, only: [ :edit, :update ]
+  get "finance", to: "finance#index", as: :finance
   namespace :settings do
-    namespace :finance do
-      resources :categories, controller: "/categories"
-    end
+    get "finance", to: redirect("/finance")
+    get "finance/categories", to: redirect("/finance/categories")
+    get "finance/categories/new", to: redirect("/finance/categories/new")
+    get "finance/categories/:id", to: redirect { |params, _request| "/finance/categories/#{params[:id]}" }
+    get "finance/categories/:id/edit", to: redirect { |params, _request| "/finance/categories/#{params[:id]}/edit" }
+    get "finance/accounts", to: redirect("/finance/accounts")
+    get "finance/liabilities", to: redirect("/finance/liabilities")
+    get "finance/entries", to: redirect("/finance/entries")
   end
   resources :passwords, param: :token
   get "dashboard/index"
