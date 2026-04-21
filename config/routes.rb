@@ -29,6 +29,21 @@ Rails.application.routes.draw do
   #
   resources :expense_templates
 
+  namespace :finance do
+    root to: "finance#index"
+    resources :categories, controller: "/categories"
+    resources :financial_accounts, controller: "/financial/accounts"
+    resources :financial_liabilities, controller: "/financial/liabilities" do
+      member do
+        get :charge
+        post :record_charge
+        get :payment
+        post :record_payment
+      end
+    end
+    resources :financial_entries, only: [ :index, :show, :new, :create, :destroy ], controller: "/financial/entries"
+  end
+
   resources :budget_periods do
     resources :budget_line_items
     resources :expenses, only: [ :new, :create ]
