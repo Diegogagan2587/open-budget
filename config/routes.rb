@@ -46,9 +46,11 @@ Rails.application.routes.draw do
       end
     end
     member do
+      get :loan_summary
       get :receive
       patch :receive
       post :apply_all
+      post :pay_liability
     end
   end
 

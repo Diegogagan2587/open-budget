@@ -1,5 +1,5 @@
 class IncomeEventsController < ApplicationController
-  before_action :set_income_event, only: [ :show, :edit, :update, :destroy, :receive, :apply_all ]
+  before_action :set_income_event, only: [ :show, :edit, :update, :destroy, :receive, :apply_all, :loan_summary, :pay_liability ]
   before_action :set_budget_period, only: [ :index, :new, :create ]
 
   def index
@@ -31,6 +31,15 @@ class IncomeEventsController < ApplicationController
   end
 
   def show
+    @planned_expenses = @income_event.planned_expenses_ordered
+    @direct_expenses = @income_event.expenses.where(planned_expense_id: nil).order(date: :desc)
+    @loan_payment_schedules = @income_event.loan_payment_schedules_ordered if @income_event.loan?
+    @pending_liabilities = Financial::Liability.for_account(Current.account).active.select { |liability| liability.current_balance.positive? }
+    @active_financial_accounts = Financial::Asset.for_account(Current.account).active.order(:name)
+  end
+
+  def loan_summary
+    @loan_payment_schedules = @income_event.loan_payment_schedules_ordered
     @planned_expenses = @income_event.planned_expenses_ordered
     @direct_expenses = @income_event.expenses.where(planned_expense_id: nil).order(date: :desc)
   end
@@ -94,6 +103,26 @@ class IncomeEventsController < ApplicationController
     redirect_to @income_event, notice: t("income_events.flash.applied_all")
   end
 
+  def pay_liability
+    liability = Financial::Liability.for_account(Current.account).find_by(id: liability_payment_params[:financial_liability_id])
+    source_account = Financial::Asset.for_account(Current.account).active.find_by(id: liability_payment_params[:financial_account_id])
+
+    service = Financial::Liabilities::RecordPaymentService.call(
+      liability: liability,
+      source_account: source_account,
+      amount: liability_payment_params[:amount],
+      description: liability_payment_params[:description].presence || "Payment from #{@income_event.description}",
+      entry_date: liability_payment_params[:entry_date],
+      income_event: @income_event
+    )
+
+    if service.success?
+      redirect_to @income_event, notice: "Liability payment applied"
+    else
+      redirect_to @income_event, alert: service.error_message
+    end
+  end
+
   private
 
   def set_income_event
@@ -105,10 +134,34 @@ class IncomeEventsController < ApplicationController
   end
 
   def income_event_params
-    params.expect(income_event: [ :expected_date, :expected_amount, :description, :status, :budget_period_id ])
+    params.expect(income_event: [
+      :expected_date,
+      :expected_amount,
+      :description,
+      :status,
+      :budget_period_id,
+      :income_type,
+      :loan_amount,
+      :interest_rate,
+      :number_of_payments,
+      :payment_frequency,
+      :payment_amount,
+      :lender_name,
+      :notes
+    ])
   end
 
   def receive_params
     params.expect(income_event: [ :received_date, :received_amount ])
+  end
+
+  def liability_payment_params
+    params.expect(income_event_liability_payment: [
+      :financial_liability_id,
+      :financial_account_id,
+      :amount,
+      :entry_date,
+      :description
+    ])
   end
 end
