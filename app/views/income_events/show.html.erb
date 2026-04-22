@@ -120,6 +120,14 @@
 <!-- Action Buttons -->
 <div class="flex flex-wrap gap-3 mb-8">
   <%= render Ui::ButtonComponent.new(href: edit_income_event_path(@income_event), label: "Edit", variant: "outline", size: "lg") %>
+  <% if @income_event.loan? %>
+    <%= render Ui::ButtonComponent.new(
+      href: loan_summary_income_event_path(@income_event),
+      label: "Loan Summary",
+      variant: "default",
+      size: "lg"
+    ) %>
+  <% end %>
   <% unless @income_event.is_received? %>
     <%= render Ui::ButtonComponent.new(
       href: receive_income_event_path(@income_event),
@@ -220,6 +228,65 @@
           variant: "default"
         ) %>
       </div>
+    </div>
+  <% end %>
+</div>
+
+<!-- Pending Liability Payments Section -->
+<div class="mb-6">
+  <div class="flex items-center justify-between mb-4">
+    <h2 class="text-2xl font-bold text-gray-900">Pending Liability Payments</h2>
+    <p class="text-sm text-gray-600">Apply payments from this income event to reduce debt balances.</p>
+  </div>
+
+  <% if @pending_liabilities.any? %>
+    <div class="space-y-4">
+      <% @pending_liabilities.each do |liability| %>
+        <div class="bg-white rounded-lg border border-gray-200 p-4">
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-3">
+            <div>
+              <h3 class="font-semibold text-gray-900"><%= liability.name %></h3>
+              <p class="text-sm text-gray-600"><%= liability.liability_type.humanize %></p>
+            </div>
+            <div class="text-right">
+              <p class="text-xs text-gray-500">Current owed</p>
+              <p class="text-lg font-bold text-red-600"><%= number_to_currency(liability.current_balance) %></p>
+            </div>
+          </div>
+
+          <%= form_with url: pay_liability_income_event_path(@income_event), method: :post, local: true, class: "grid grid-cols-1 md:grid-cols-5 gap-3" do %>
+            <%= hidden_field_tag "income_event_liability_payment[financial_liability_id]", liability.id %>
+
+            <div class="md:col-span-2">
+              <%= label_tag "income_event_liability_payment_financial_account_id_#{liability.id}", "Pay from account", class: "block text-xs font-medium text-gray-600 mb-1" %>
+              <%= select_tag "income_event_liability_payment[financial_account_id]", options_from_collection_for_select(@active_financial_accounts, :id, :name), include_blank: "Select account", class: "border rounded px-3 py-2 w-full", required: true, id: "income_event_liability_payment_financial_account_id_#{liability.id}" %>
+            </div>
+
+            <div>
+              <%= label_tag "income_event_liability_payment_amount_#{liability.id}", "Amount", class: "block text-xs font-medium text-gray-600 mb-1" %>
+              <%= number_field_tag "income_event_liability_payment[amount]", liability.current_balance, step: 0.01, min: 0.01, max: liability.current_balance, class: "border rounded px-3 py-2 w-full", required: true, id: "income_event_liability_payment_amount_#{liability.id}" %>
+            </div>
+
+            <div>
+              <%= label_tag "income_event_liability_payment_entry_date_#{liability.id}", "Date", class: "block text-xs font-medium text-gray-600 mb-1" %>
+              <%= date_field_tag "income_event_liability_payment[entry_date]", Date.current, class: "border rounded px-3 py-2 w-full", required: true, id: "income_event_liability_payment_entry_date_#{liability.id}" %>
+            </div>
+
+            <div>
+              <%= label_tag "income_event_liability_payment_description_#{liability.id}", "Description", class: "block text-xs font-medium text-gray-600 mb-1" %>
+              <%= text_field_tag "income_event_liability_payment[description]", "Payment to #{liability.name}", class: "border rounded px-3 py-2 w-full", id: "income_event_liability_payment_description_#{liability.id}" %>
+            </div>
+
+            <div class="md:col-span-5 flex justify-end">
+              <%= submit_tag "Apply payment", class: "px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700", data: { turbo_confirm: "Apply payment to #{liability.name}? Please verify source account and amount before continuing." } %>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="text-center py-8 bg-white rounded-xl border-2 border-dashed border-gray-300">
+      <p class="text-sm text-gray-500">No pending liabilities with outstanding balances.</p>
     </div>
   <% end %>
 </div>
