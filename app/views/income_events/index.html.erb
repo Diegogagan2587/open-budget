@@ -195,6 +195,9 @@
                 </svg>
               <% end %>
               <%= render Ui::ButtonComponent.new(href: edit_income_event_path(income_event), label: "Edit", variant: "outline", size: "sm", css_class: "w-full sm:w-auto justify-center") %>
+              <% if income_event.loan? %>
+                <%= render Ui::ButtonComponent.new(href: loan_summary_income_event_path(income_event), label: "Loan Summary", variant: "outline", size: "sm", css_class: "w-full sm:w-auto justify-center") %>
+              <% end %>
             </div>
             <div class="flex flex-col gap-2 w-full sm:w-auto sm:flex-row sm:flex-wrap sm:justify-end">
               <% unless income_event.is_received? %>
