@@ -80,10 +80,21 @@
         href: apply_income_event_planned_expense_path(@income_event, @planned_expense),
         label: "Apply",
         variant: "default",
-        data: { turbo_method: :patch }
+        data: {
+          turbo_method: :patch,
+          turbo_confirm: "Apply this planned expense now? This will create an expense record for #{number_to_currency(@planned_expense.amount)}."
+        }
       ) %>
     <% end %>
-    <%= render Ui::ButtonComponent.new(href: [@income_event, @planned_expense], label: "Delete", variant: "destructive", method: :delete) %>
+    <%= render Ui::ButtonComponent.new(
+      href: [@income_event, @planned_expense],
+      label: "Delete",
+      variant: "destructive",
+      method: :delete,
+      data: {
+        turbo_confirm: "Delete this planned expense? This action cannot be undone."
+      }
+    ) %>
   </div>
 </div>
 
