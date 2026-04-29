@@ -1,0 +1,36 @@
+<p style="color: green"><%= notice %></p>
+
+<div class="mb-4">
+  <%= link_to "← Back", finance_financial_entries_path, class: "text-blue-500 hover:underline" %>
+</div>
+
+<h1 class="text-2xl font-bold mb-4"><%= @financial_entry.description %></h1>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+  <div class="bg-gray-50 p-4 rounded">
+    <p class="text-sm text-gray-600">Type</p>
+    <p class="font-semibold"><%= @financial_entry.entry_type.humanize %></p>
+  </div>
+  <div class="bg-gray-50 p-4 rounded">
+    <p class="text-sm text-gray-600">Date</p>
+    <p class="font-semibold"><%= @financial_entry.entry_date %></p>
+  </div>
+  <div class="bg-gray-50 p-4 rounded">
+    <p class="text-sm text-gray-600">Amount</p>
+    <p class="font-semibold"><%= number_to_currency(@financial_entry.amount) %></p>
+  </div>
+  <div class="bg-gray-50 p-4 rounded">
+    <p class="text-sm text-gray-600">Account Effect</p>
+    <p class="font-semibold"><%= number_to_currency(@financial_entry.account_delta) %></p>
+  </div>
+</div>
+
+<div class="mb-4 flex space-x-2">
+  <%= render Ui::ButtonComponent.new(
+    href: finance_financial_entry_path(@financial_entry),
+    label: "Delete",
+    variant: "destructive",
+    method: :delete,
+    data: { turbo_confirm: "Are you sure?" }
+  ) %>
+</div>
