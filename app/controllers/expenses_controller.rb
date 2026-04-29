@@ -2,6 +2,7 @@ class ExpensesController < ApplicationController
   before_action :set_budget_period, only: [ :new, :create ]
   before_action :set_income_event_context, only: [ :quick_new, :quick_create ]
   before_action :set_expense, only: %i[ show edit update destroy ]
+  before_action :load_finance_account_collections, only: [ :new, :create, :edit, :update, :quick_new, :quick_create ]
 
 
   def index
@@ -47,18 +48,25 @@ class ExpensesController < ApplicationController
 
     # Auto-suggest budget_period from income_event if income_event is set and budget_period is not
     if @expense.income_event_id.present? && @expense.budget_period_id.blank?
-      income_event = IncomeEvent.find(@expense.income_event_id)
+      income_event = IncomeEvent.for_account(Current.account).find(@expense.income_event_id)
       @expense.budget_period_id = income_event.budget_period_id if income_event.budget_period_id
     end
 
     respond_to do |format|
-      if @expense.save
+      result = Expenses::RecordExecutionService.call(
+        expense: @expense,
+        financial_account_id: expense_params[:financial_account_id],
+        financial_liability_id: expense_params[:financial_liability_id]
+      )
+
+      if result.success?
         target = @expense.budget_period || @expense
         format.html { redirect_to target, notice: t("expenses.flash.created") }
         format.json { render :show, status: :created, location: @expense }
       else
         # Load income events for form re-render on error
         @income_events = IncomeEvent.for_account(Current.account).order(expected_date: :desc)
+        flash.now[:alert] = result.error_message
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @expense.errors, status: :unprocessable_entity }
       end
@@ -72,10 +80,17 @@ class ExpensesController < ApplicationController
     @expense.income_event = @income_event
     @expense.budget_period ||= @income_event.budget_period
 
-    if @expense.save
+    result = Expenses::RecordExecutionService.call(
+      expense: @expense,
+      financial_account_id: quick_expense_params[:financial_account_id],
+      financial_liability_id: quick_expense_params[:financial_liability_id]
+    )
+
+    if result.success?
       redirect_to @income_event, notice: t("expenses.flash.quick_created")
     else
       load_quick_form_collections
+      flash.now[:alert] = result.error_message
       render :quick_new, status: :unprocessable_entity
     end
   end
@@ -102,6 +117,7 @@ class ExpensesController < ApplicationController
       else
         # Load income events for form re-render on error
         @income_events = IncomeEvent.for_account(Current.account).order(expected_date: :desc)
+        load_finance_account_collections
         format.html { render :edit, status: :unprocessable_entity }
         format.json { render json: @expense.errors, status: :unprocessable_entity }
       end
@@ -126,7 +142,7 @@ class ExpensesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def expense_params
-      params.expect(expense: [ :date, :amount, :description, :category_id, :budget_period_id, :income_event_id ])
+      params.expect(expense: [ :date, :amount, :description, :category_id, :budget_period_id, :income_event_id, :financial_account_id, :financial_liability_id ])
     end
 
     def set_budget_period
@@ -140,11 +156,16 @@ class ExpensesController < ApplicationController
     end
 
     def quick_expense_params
-      params.expect(expense: [ :date, :amount, :description, :category_id, :budget_period_id ])
+      params.expect(expense: [ :date, :amount, :description, :category_id, :budget_period_id, :financial_account_id, :financial_liability_id ])
     end
 
     def load_quick_form_collections
       @categories = Category.for_account(Current.account).order(:name)
       @budget_periods = BudgetPeriod.for_account(Current.account).order(start_date: :desc)
+    end
+
+    def load_finance_account_collections
+      @financial_accounts = Financial::Asset.for_account(Current.account).active.order(:name)
+      @financial_liabilities = Financial::Liability.for_account(Current.account).active.order(:name)
     end
 end
