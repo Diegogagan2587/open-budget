@@ -5,14 +5,17 @@ Rails.application.routes.draw do
   get "finance", to: "finance#index", as: :finance
   namespace :settings do
     get "finance", to: redirect("/finance")
-    get "finance/categories", to: redirect("/finance/categories")
-    get "finance/categories/new", to: redirect("/finance/categories/new")
-    get "finance/categories/:id", to: redirect { |params, _request| "/finance/categories/#{params[:id]}" }
-    get "finance/categories/:id/edit", to: redirect { |params, _request| "/finance/categories/#{params[:id]}/edit" }
+    get "finance/categories", to: redirect("/finance/categories"), as: :finance_categories
+    get "finance/categories/new", to: redirect("/finance/categories/new"), as: :new_finance_category
+    get "finance/categories/:id", to: redirect { |params, _request| "/finance/categories/#{params[:id]}" }, as: :finance_category
+    get "finance/categories/:id/edit", to: redirect { |params, _request| "/finance/categories/#{params[:id]}/edit" }, as: :edit_finance_category
     get "finance/accounts", to: redirect("/finance/accounts")
     get "finance/liabilities", to: redirect("/finance/liabilities")
     get "finance/entries", to: redirect("/finance/entries")
   end
+  # Explicit helpers for legacy expectations used in tests
+  get "settings/finance/categories/new", to: redirect("/finance/categories/new"), as: :new_settings_finance_category
+  get "settings/finance/categories/:id/edit", to: redirect { |params, _request| "/finance/categories/#{params[:id]}/edit" }, as: :edit_settings_finance_category
   resources :passwords, param: :token
   get "dashboard/index"
   # resources :budget_line_items
