@@ -2,11 +2,20 @@ Rails.application.routes.draw do
   resource :session
   resource :registration, only: [ :new, :create ]
   resource :settings, only: [ :edit, :update ]
+  get "finance", to: "finance#index", as: :finance
   namespace :settings do
-    namespace :finance do
-      resources :categories, controller: "/categories"
-    end
+    get "finance", to: redirect("/finance")
+    get "finance/categories", to: redirect("/finance/categories"), as: :finance_categories
+    get "finance/categories/new", to: redirect("/finance/categories/new"), as: :new_finance_category
+    get "finance/categories/:id", to: redirect { |params, _request| "/finance/categories/#{params[:id]}" }, as: :finance_category
+    get "finance/categories/:id/edit", to: redirect { |params, _request| "/finance/categories/#{params[:id]}/edit" }, as: :edit_finance_category
+    get "finance/accounts", to: redirect("/finance/accounts")
+    get "finance/liabilities", to: redirect("/finance/liabilities")
+    get "finance/entries", to: redirect("/finance/entries")
   end
+  # Explicit helpers for legacy expectations used in tests
+  get "settings/finance/categories/new", to: redirect("/finance/categories/new"), as: :new_settings_finance_category
+  get "settings/finance/categories/:id/edit", to: redirect { |params, _request| "/finance/categories/#{params[:id]}/edit" }, as: :edit_settings_finance_category
   resources :passwords, param: :token
   get "dashboard/index"
   # resources :budget_line_items
@@ -28,6 +37,21 @@ Rails.application.routes.draw do
   # root "posts#index"
   #
   resources :expense_templates
+
+  namespace :finance do
+    root to: "finance#index"
+    resources :categories, controller: "/categories"
+    resources :financial_accounts, controller: "/financial/accounts"
+    resources :financial_liabilities, controller: "/financial/liabilities" do
+      member do
+        get :charge
+        post :record_charge
+        get :payment
+        post :record_payment
+      end
+    end
+    resources :financial_entries, only: [ :index, :show, :new, :create, :destroy ], controller: "/financial/entries"
+  end
 
   resources :budget_periods do
     resources :budget_line_items
