@@ -20,6 +20,7 @@ module Financial
       if @financial_account.save
         redirect_to finance_financial_account_path(@financial_account), notice: "Financial account created"
       else
+        flash.now[:alert] = @financial_account.errors.full_messages.to_sentence
         render :new, status: :unprocessable_entity
       end
     end
@@ -47,7 +48,7 @@ module Financial
     end
 
     def financial_account_params
-      params.expect(financial_account: [ :name, :account_type, :status, :opening_balance, :notes ])
+      params.require(:financial_asset).permit(:name, :account_type, :status, :opening_balance, :notes)
     end
   end
 end
