@@ -7,6 +7,7 @@ class Financial::Entry < ApplicationRecord
   belongs_to :financial_account, class_name: "Financial::Asset", optional: true
   belongs_to :counterparty_financial_account, class_name: "Financial::Asset", optional: true
   belongs_to :financial_liability, class_name: "Financial::Liability", optional: true
+  belongs_to :planned_expense, optional: true
   belongs_to :expense, optional: true
   belongs_to :income_event, optional: true
 
@@ -97,6 +98,10 @@ class Financial::Entry < ApplicationRecord
 
     if financial_liability.present? && financial_liability.account_id != account_id
       errors.add(:financial_liability, "must belong to the current account")
+    end
+
+    if planned_expense.present? && planned_expense.account_id != account_id
+      errors.add(:planned_expense, "must belong to the current account")
     end
 
     if expense.present? && expense.account_id != account_id
