@@ -1,6 +1,7 @@
 class PlannedExpensesController < ApplicationController
   before_action :set_income_event
   before_action :set_planned_expense, only: [ :show, :edit, :update, :destroy, :apply, :move ]
+  before_action :load_route_collections, only: [ :new, :create, :edit, :update ]
 
   def index
     @planned_expenses = @income_event.planned_expenses_ordered
@@ -33,6 +34,7 @@ class PlannedExpensesController < ApplicationController
       else
         @expense_templates = ExpenseTemplate.includes(:category).all
         @income_events = IncomeEvent.all.order(:expected_date)
+        load_route_collections
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @planned_expense.errors, status: :unprocessable_entity }
       end
@@ -65,6 +67,7 @@ class PlannedExpensesController < ApplicationController
       else
         @expense_templates = ExpenseTemplate.for_account(Current.account).includes(:category).all
         @income_events = IncomeEvent.for_account(Current.account).order(:expected_date)
+        load_route_collections
         format.html { render :edit, status: :unprocessable_entity }
         format.json { render json: @planned_expense.errors, status: :unprocessable_entity }
       end
@@ -81,8 +84,13 @@ class PlannedExpensesController < ApplicationController
   end
 
   def apply
-    @planned_expense.apply!
-    redirect_to income_event_planned_expenses_path(@income_event), notice: t("planned_expenses.flash.applied")
+    result = PlannedExpenses::ExecuteService.call(planned_expense: @planned_expense)
+
+    if result.success?
+      redirect_to income_event_planned_expenses_path(@income_event), notice: t("planned_expenses.flash.applied")
+    else
+      redirect_to income_event_planned_expenses_path(@income_event), alert: result.error_message
+    end
   end
 
   def move
@@ -122,6 +130,22 @@ class PlannedExpensesController < ApplicationController
   end
 
   def planned_expense_params
-    params.expect(planned_expense: [ :category_id, :description, :amount, :notes, :status, :position, :expense_template_id, :income_event_id ])
+    params.expect(planned_expense: [
+      :category_id,
+      :description,
+      :amount,
+      :notes,
+      :status,
+      :position,
+      :expense_template_id,
+      :income_event_id,
+      :source_selection,
+      :destination_selection
+    ])
+  end
+
+  def load_route_collections
+    @financial_accounts = Financial::Asset.for_account(Current.account).order(:name)
+    @financial_liabilities = Financial::Liability.for_account(Current.account).order(:name)
   end
 end
