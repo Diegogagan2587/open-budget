@@ -19,7 +19,11 @@ class PlannedExpense < ApplicationRecord
   validates :description, presence: true
   validates :amount, presence: true, numericality: { greater_than: 0 }
   validates :status, presence: true
-  validate :financial_routing_is_valid
+  validate :financial_routing_is_valid, if: -> {
+    source_selection.present? || destination_selection.present? ||
+    financial_account_id.present? || counterparty_financial_account_id.present? ||
+    financial_liability_id.present?
+  }
 
   scope :by_position, -> { order(:position, :created_at) }
   scope :by_status, ->(status) { where(status: status) }
@@ -180,12 +184,10 @@ class PlannedExpense < ApplicationRecord
   end
 
   def financial_routing_is_valid
-    if source_selection.blank?
-      errors.add(:source_selection, "must be selected")
-    end
-
+    # Require at least one source when any routing information is present
     if financial_account.blank? && financial_liability.blank?
       errors.add(:source_selection, "must be selected")
+      return
     end
 
     if financial_liability.present? && financial_account.blank? && destination_selection.present?
