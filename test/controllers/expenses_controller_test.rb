@@ -101,4 +101,64 @@ class ExpensesControllerTest < ActionDispatch::IntegrationTest
     assert_select "h1", /Quick Add Direct Expense/
     assert_select "form[action='#{income_event_direct_expenses_path(@income_event)}']"
   end
+
+  test "should delete expense from show page and remove linked financial entry" do
+    sign_in
+
+    financial_account = Financial::Asset.create!(
+      account: @account,
+      name: "Checking",
+      account_type: "checking",
+      status: "active",
+      opening_balance: 0
+    )
+
+    planned_expense = PlannedExpense.create!(
+      account: @account,
+      income_event: @income_event,
+      category: @category,
+      description: "Taxi",
+      amount: 48.75,
+      status: "paid"
+    )
+
+    expense = Expense.create!(
+      account: @account,
+      category: @category,
+      budget_period: @budget_period,
+      income_event: @income_event,
+      planned_expense: planned_expense,
+      financial_account: financial_account,
+      date: Date.current,
+      amount: 48.75,
+      description: "Taxi"
+    )
+
+    financial_entry = Financial::Entry.create!(
+      account: @account,
+      financial_account: financial_account,
+      expense: expense,
+      income_event: @income_event,
+      entry_type: "outflow",
+      entry_date: expense.date,
+      amount: expense.amount,
+      description: expense.description
+    )
+
+    get expense_path(expense)
+
+    assert_response :success
+    assert_select "a[href='#{expense_path(expense)}'][data-turbo-method='delete']"
+
+    assert_difference("Expense.count", -1) do
+      assert_difference("Financial::Entry.count", -1) do
+        delete expense_path(expense)
+      end
+    end
+
+    assert_redirected_to expenses_path
+    assert_nil Expense.find_by(id: expense.id)
+    assert_nil Financial::Entry.find_by(id: financial_entry.id)
+    assert_equal "pending_to_pay", planned_expense.reload.status
+  end
 end

@@ -7,9 +7,11 @@ class Expense < ApplicationRecord
   belongs_to :financial_account, class_name: "Financial::Asset", optional: true
   belongs_to :financial_liability, class_name: "Financial::Liability", optional: true
   belongs_to :planned_expense, optional: true
+  has_one :financial_entry, class_name: "Financial::Entry", inverse_of: :expense, dependent: :destroy
   has_one :shopping_item, dependent: :nullify
 
   before_validation :set_account, on: :create
+  after_destroy :restore_planned_expense_status
 
   scope :for_account, ->(account) { where(account: account) }
 
@@ -25,5 +27,11 @@ class Expense < ApplicationRecord
     return if financial_account.blank? || financial_liability.blank?
 
     errors.add(:base, "Select either an asset account or a liability account, not both")
+  end
+
+  def restore_planned_expense_status
+    return unless planned_expense.present?
+
+    planned_expense.update!(status: "pending_to_pay")
   end
 end
