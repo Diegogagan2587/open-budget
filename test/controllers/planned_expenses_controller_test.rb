@@ -7,6 +7,22 @@ class PlannedExpensesControllerTest < ActionDispatch::IntegrationTest
     @income_event = income_events(:one)
     @category = categories(:one)
 
+    @source_account = Financial::Asset.create!(
+      name: "Controller Checking",
+      account: @account,
+      account_type: "checking",
+      status: "active",
+      opening_balance: 1000.00
+    )
+
+    @destination_account = Financial::Asset.create!(
+      name: "Controller Savings",
+      account: @account,
+      account_type: "savings",
+      status: "active",
+      opening_balance: 250.00
+    )
+
     # Create session for authentication
     @session = @user.sessions.create!(
       user_agent: "Test Agent",
@@ -38,6 +54,8 @@ class PlannedExpensesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "h1", "New Planned Expense"
     assert_select "form"
+    assert_select "select[name='planned_expense[source_selection]']"
+    assert_select "select[name='planned_expense[destination_selection]']"
   end
 
   test "new action should load income events for assignment" do
@@ -72,12 +90,37 @@ class PlannedExpensesControllerTest < ActionDispatch::IntegrationTest
           category_id: @category.id,
           description: "Test Expense",
           amount: 100.00,
-          status: "pending_to_pay"
+          status: "pending_to_pay",
+          source_selection: "asset:#{@source_account.id}"
         }
       }
     end
 
     assert_redirected_to income_event_planned_expenses_path(@income_event)
+  end
+
+  test "apply action creates routed transfer entry" do
+    sign_in
+    planned_expense = PlannedExpense.create!(
+      income_event: @income_event,
+      category: @category,
+      account: @account,
+      description: "Move funds to savings",
+      amount: 125.00,
+      status: "pending_to_pay",
+      financial_account: @source_account,
+      counterparty_financial_account: @destination_account
+    )
+
+    assert_no_difference("Expense.count") do
+      assert_difference("Financial::Entry.count", 1) do
+        patch apply_income_event_planned_expense_path(@income_event, planned_expense)
+      end
+    end
+
+    assert_redirected_to income_event_planned_expenses_path(@income_event)
+    assert_equal "transferred", planned_expense.reload.status
+    assert_equal planned_expense.id, planned_expense.financial_entry.planned_expense_id
   end
 
   test "should not create planned expense with invalid data" do
@@ -106,7 +149,8 @@ class PlannedExpensesControllerTest < ActionDispatch::IntegrationTest
       account: @account,
       description: "Rent",
       amount: 250.50,
-      status: "pending_to_pay"
+      status: "pending_to_pay",
+      source_selection: "asset:#{@source_account.id}"
     )
 
     get edit_income_event_planned_expense_path(@income_event, planned_expense)
