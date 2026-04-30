@@ -34,12 +34,17 @@
     <p><%= t("dashboard.expense_templates_description") %></p>
   <% end %>
 
+  <%= link_to finance_path, class: "block p-4 border rounded hover:shadow" do %>
+    <h2 class="text-xl">🏦 Finance</h2>
+    <p>Accounts, liabilities, entries, and how repayments fit into the flow.</p>
+  <% end %>
+
   <%= link_to expenses_path, class: "block p-4 border rounded hover:shadow" do %>
     <h2 class="text-xl">💸 <%= t("dashboard.expenses_title") %></h2>
     <p><%= t("dashboard.expenses_description") %></p>
   <% end %>
 
-  <%= link_to settings_finance_categories_path, class: "block p-4 border rounded hover:shadow" do %>
+  <%= link_to finance_categories_path, class: "block p-4 border rounded hover:shadow" do %>
     <h2 class="text-xl">🏷️ <%= t("dashboard.categories_title") %></h2>
     <p><%= t("dashboard.categories_description") %></p>
   <% end %>
