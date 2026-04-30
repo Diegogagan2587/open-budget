@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_17_093000) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_30_193000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -173,6 +173,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_17_093000) do
     t.bigint "financial_liability_id"
     t.bigint "income_event_id"
     t.text "notes"
+    t.bigint "planned_expense_id"
     t.datetime "updated_at", null: false
     t.index ["account_id", "entry_date"], name: "index_financial_entries_on_account_id_and_entry_date"
     t.index ["account_id"], name: "index_financial_entries_on_account_id"
@@ -182,6 +183,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_17_093000) do
     t.index ["financial_account_id"], name: "index_financial_entries_on_financial_account_id"
     t.index ["financial_liability_id"], name: "index_financial_entries_on_financial_liability_id"
     t.index ["income_event_id"], name: "index_financial_entries_on_income_event_id"
+    t.index ["planned_expense_id"], name: "index_financial_entries_on_planned_expense_id"
   end
 
   create_table "financial_liabilities", force: :cascade do |t|
@@ -290,9 +292,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_17_093000) do
     t.bigint "account_id", null: false
     t.decimal "amount", precision: 10, scale: 2, null: false
     t.bigint "category_id", null: false
+    t.bigint "counterparty_financial_account_id"
     t.datetime "created_at", null: false
     t.string "description", null: false
     t.bigint "expense_template_id"
+    t.bigint "financial_account_id"
+    t.bigint "financial_liability_id"
     t.bigint "income_event_id", null: false
     t.text "notes"
     t.integer "position"
@@ -301,7 +306,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_17_093000) do
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_planned_expenses_on_account_id"
     t.index ["category_id"], name: "index_planned_expenses_on_category_id"
+    t.index ["counterparty_financial_account_id"], name: "index_planned_expenses_on_counterparty_financial_account_id"
     t.index ["expense_template_id"], name: "index_planned_expenses_on_expense_template_id"
+    t.index ["financial_account_id"], name: "index_planned_expenses_on_financial_account_id"
+    t.index ["financial_liability_id"], name: "index_planned_expenses_on_financial_liability_id"
     t.index ["income_event_id"], name: "index_planned_expenses_on_income_event_id"
     t.index ["shopping_item_id"], name: "index_planned_expenses_on_shopping_item_id"
   end
@@ -490,6 +498,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_17_093000) do
   add_foreign_key "financial_entries", "financial_accounts", column: "counterparty_financial_account_id"
   add_foreign_key "financial_entries", "financial_liabilities"
   add_foreign_key "financial_entries", "income_events"
+  add_foreign_key "financial_entries", "planned_expenses"
   add_foreign_key "financial_liabilities", "accounts"
   add_foreign_key "income_events", "accounts"
   add_foreign_key "income_events", "budget_periods"
@@ -502,6 +511,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_17_093000) do
   add_foreign_key "planned_expenses", "accounts"
   add_foreign_key "planned_expenses", "categories"
   add_foreign_key "planned_expenses", "expense_templates"
+  add_foreign_key "planned_expenses", "financial_accounts"
+  add_foreign_key "planned_expenses", "financial_accounts", column: "counterparty_financial_account_id"
+  add_foreign_key "planned_expenses", "financial_liabilities"
   add_foreign_key "planned_expenses", "income_events"
   add_foreign_key "planned_expenses", "shopping_items"
   add_foreign_key "project_docs", "docs"
