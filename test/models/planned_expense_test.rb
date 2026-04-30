@@ -22,6 +22,30 @@ class PlannedExpenseTest < ActiveSupport::TestCase
     )
 
     @category = Category.create!(name: "Test Category", account: @account)
+
+    @source_account = Financial::Asset.create!(
+      name: "Test Checking",
+      account: @account,
+      account_type: "checking",
+      status: "active",
+      opening_balance: 1000.00
+    )
+
+    @destination_account = Financial::Asset.create!(
+      name: "Test Savings",
+      account: @account,
+      account_type: "savings",
+      status: "active",
+      opening_balance: 200.00
+    )
+
+    @liability = Financial::Liability.create!(
+      name: "Test Credit Card",
+      account: @account,
+      liability_type: "credit_card",
+      status: "active",
+      opening_balance: 500.00
+    )
   end
 
   def teardown
@@ -34,7 +58,8 @@ class PlannedExpenseTest < ActiveSupport::TestCase
       category: @category,
       description: "Test: reassinged planned_expse from expese edit view",
       amount: 100.00,
-      status: "spent"
+      status: "spent",
+      source_selection: "asset:#{@source_account.id}"
     )
 
     # Reload to get the association
@@ -59,7 +84,8 @@ class PlannedExpenseTest < ActiveSupport::TestCase
       category: @category,
       description: "Test paid expense",
       amount: 50.00,
-      status: "paid"
+      status: "paid",
+      source_selection: "asset:#{@source_account.id}"
     )
 
     planned_expense.reload
@@ -73,7 +99,8 @@ class PlannedExpenseTest < ActiveSupport::TestCase
       category: @category,
       description: "Test transferred expense",
       amount: 75.00,
-      status: "transferred"
+      status: "transferred",
+      source_selection: "asset:#{@source_account.id}"
     )
 
     planned_expense.reload
@@ -87,7 +114,8 @@ class PlannedExpenseTest < ActiveSupport::TestCase
       category: @category,
       description: "Test pending expense",
       amount: 25.00,
-      status: "pending_to_pay"
+      status: "pending_to_pay",
+      source_selection: "asset:#{@source_account.id}"
     )
 
     assert_nil planned_expense.expense, "Expense should not be created for non-spent status"
@@ -100,7 +128,8 @@ class PlannedExpenseTest < ActiveSupport::TestCase
       category: @category,
       description: "Test expense",
       amount: 100.00,
-      status: "pending_to_pay"
+      status: "pending_to_pay",
+      source_selection: "asset:#{@source_account.id}"
     )
 
     assert_nil planned_expense.expense, "Should not have expense initially"
@@ -120,7 +149,8 @@ class PlannedExpenseTest < ActiveSupport::TestCase
       category: @category,
       description: "Test expense",
       amount: 100.00,
-      status: "spent"
+      status: "spent",
+      source_selection: "asset:#{@source_account.id}"
     )
 
     planned_expense.reload
@@ -141,7 +171,8 @@ class PlannedExpenseTest < ActiveSupport::TestCase
       category: @category,
       description: "Test expense",
       amount: 100.00,
-      status: "pending_to_pay"
+      status: "pending_to_pay",
+      source_selection: "asset:#{@source_account.id}"
     )
 
     assert_nil planned_expense.expense, "Should not have expense initially"
@@ -152,5 +183,57 @@ class PlannedExpenseTest < ActiveSupport::TestCase
     assert planned_expense.expense.present?, "Expense should be created by apply!"
     assert_equal "paid", planned_expense.status
     assert_equal 1, Expense.count
+  end
+
+  test "apply! creates transfer entry when destination account is present" do
+    planned_expense = PlannedExpense.create!(
+      income_event: @income_event,
+      category: @category,
+      description: "Move money to savings",
+      amount: 100.00,
+      status: "pending_to_pay",
+      source_selection: "asset:#{@source_account.id}",
+      financial_account: @source_account,
+      counterparty_financial_account: @destination_account
+    )
+
+    planned_expense.apply!
+    planned_expense.reload
+
+    assert_equal "transferred", planned_expense.status
+    assert_equal 0, Expense.count
+    assert_equal 1, Financial::Entry.count
+
+    entry = planned_expense.financial_entry
+    assert_equal "transfer", entry.entry_type
+    assert_equal @source_account.id, entry.financial_account_id
+    assert_equal @destination_account.id, entry.counterparty_financial_account_id
+    assert_equal planned_expense.id, entry.planned_expense_id
+  end
+
+  test "apply! creates liability payment entry when liability is present" do
+    planned_expense = PlannedExpense.create!(
+      income_event: @income_event,
+      category: @category,
+      description: "Pay credit card",
+      amount: 75.00,
+      status: "pending_to_pay",
+      source_selection: "asset:#{@source_account.id}",
+      financial_account: @source_account,
+      financial_liability: @liability
+    )
+
+    planned_expense.apply!
+    planned_expense.reload
+
+    assert_equal "paid", planned_expense.status
+    assert_equal 0, Expense.count
+    assert_equal 1, Financial::Entry.count
+
+    entry = planned_expense.financial_entry
+    assert_equal "liability_payment", entry.entry_type
+    assert_equal @source_account.id, entry.financial_account_id
+    assert_equal @liability.id, entry.financial_liability_id
+    assert_equal planned_expense.id, entry.planned_expense_id
   end
 end
