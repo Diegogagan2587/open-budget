@@ -73,9 +73,10 @@ Liability < Account
 ### 4.4 Planned Expenses and Transactions
 - Users must be able to create planned expenses against an income event.
 - Planned expenses must support statuses representing the business states future, saved, paid, spent, and transferred; in the current application these may map to existing canonical status values such as `pending_to_pay`, so any rename/refactor must preserve and document the mapping between requirement terminology and stored status values.
+- Users must be able to define the financial routing for a planned expense, including the source account and, when relevant, the destination account or liability being paid down.
 - The system must create a transaction (Expense refactored to Transaction) when a planned expense is executed.
-- The transaction created from planned expense execution should typically use transaction type expense.
-- Users must be able to manually apply a planned expense when needed.
+- The transaction created from planned expense execution must use the appropriate transaction type for the planned action, such as expense, transfer, or debt_payment, rather than always defaulting to expense.
+- Users must be able to manually apply a planned expense when needed, and Apply must use the routing stored on the planned expense rather than requiring a separate decision at execution time.
 - Users must be able to view planned expenses and loan payments in checklist-style views.
 - The system must keep planned obligations visible even after they are executed.
 
@@ -137,6 +138,8 @@ Liability < Account
 - Financial accounts must store account group (asset/liability), subtype, and current balance information.
 - Financial accounts must store subtype-specific properties such as interest rate, fee rules, billing cycle day, payment frequency, number of payments, and scheduled payment amount when applicable.
 - Historical repayment and paid installment data must remain auditable.
+- Seed data must include repeatable example records for planned expense execution scenarios, and those examples must use relative dates so they remain valid over time.
+- Seed examples must be idempotent so they can be re-run without creating duplicate households, accounts, liabilities, or planned expenses.
 
 ## 6. Non-Functional Requirements
 - The app must use Rails conventions and keep controller/model responsibilities separated.
