@@ -44,6 +44,12 @@
         <p class="text-gray-700 bg-gray-50 p-3 rounded-lg"><%= @planned_expense.notes %></p>
       </div>
     <% end %>
+    <% if @planned_expense.routing_summary.present? %>
+      <div class="md:col-span-2">
+        <p class="text-sm font-medium text-gray-500 mb-1">Routing</p>
+        <p class="text-gray-700 bg-emerald-50 p-3 rounded-lg border border-emerald-200"><%= @planned_expense.routing_summary %></p>
+      </div>
+    <% end %>
     <% if @planned_expense.expense_template %>
       <div class="md:col-span-2">
         <p class="text-sm font-medium text-gray-500 mb-1">Template</p>
