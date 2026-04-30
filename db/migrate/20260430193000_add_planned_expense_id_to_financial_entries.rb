@@ -1,0 +1,5 @@
+class AddPlannedExpenseIdToFinancialEntries < ActiveRecord::Migration[8.0]
+  def change
+    add_reference :financial_entries, :planned_expense, null: true, foreign_key: true
+  end
+end
