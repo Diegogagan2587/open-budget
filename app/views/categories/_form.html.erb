@@ -1,4 +1,4 @@
-<% form_url = @category.persisted? ? settings_finance_category_path(@category) : settings_finance_categories_path %>
+<% form_url = @category.persisted? ? finance_category_path(@category) : finance_categories_path %>
 <% form_method = @category.persisted? ? :patch : :post %>
 <%= form_with model: @category, url: form_url, method: form_method, local: true do |form| %>
   <% if @category.errors.any? %>
@@ -19,7 +19,7 @@
 
   <div class="mb-4">
     <%= form.submit class: "px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600" %>
-    <%= link_to t("shared.cancel"), @category.persisted? ? settings_finance_category_path(@category) : settings_finance_categories_path, class: "px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 ml-2" %>
+    <%= link_to t("shared.cancel"), @category.persisted? ? finance_category_path(@category) : finance_categories_path, class: "px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 ml-2" %>
   </div>
 <% end %>
 

@@ -18,6 +18,7 @@ The app is focused on:
 
 ## 3. Core Concepts
 - Household Account: the tenancy boundary used for data isolation
+    - Naming target: this tenancy container should be renamed to Tenant in application language and domain code, with backward-compatible aliases during migration.
 - Budget Period: a time window for planning income and expenses
 - Income Event: an expected or received inflow of money
 - Planned Expense: a future obligation reserved against an income event
@@ -29,6 +30,18 @@ The app is focused on:
 - The current implementation still uses the Expense model as the executed-ledger record; Transaction is the target name after the planned refactor lands.
 - Until that refactor lands, references in this document to the transaction entity describe the future form of the current Expense-ledger model, which must support links to planning and finance records.
 - Financial Account groups must include Asset Accounts and Liability Accounts.
+- Current implementation note: the codebase currently uses separate models/tables for `Financial::Asset` and `Financial::Liability`; the target architecture is a single Financial Account `Financial::Account` entity with `account_group` (asset or liability) plus subtype-specific behavior. some usage examples with STI(Single Table Inheritiance):
+```
+Account.asset?
+Account.liability?
+Account.assets.sum(:balance)
+Account.liabilities.sum(:balance)
+//posible structure werew accoutn is base:
+Account
+Asset < Account
+Liability < Account
+
+```
 - Asset subtypes must include at least debit/checking, savings, and investment.
 - Liability subtypes must include at least credit card, personal loan, and mortgage.
 
@@ -38,6 +51,7 @@ The app is focused on:
 - The system must isolate all data by household account.
 - Users must only see records that belong to their current account.
 - Users must be able to switch between allowed household accounts.
+    - The domain naming migration should move from Account terminology to Tenant terminology for tenancy concerns (for example, Current.tenant and Tenant model aliases), while preserving compatibility in existing APIs during rollout.
 
 ### 4.2 Budget Planning
 - Users must be able to create and manage budget periods.
@@ -67,6 +81,7 @@ The app is focused on:
 
 ### 4.5 Financial Accounts and Transaction Ledger
 - Users must be able to create, name, and manage financial accounts.
+- The long-term model must unify asset and liability records under one financial account entity; separate asset/liability tables are transitional only.
 - Every financial account must have an account group (asset or liability) and a subtype.
 - Users must be able to view accounts grouped by Assets vs Liabilities.
 - Asset account subtypes must support debit/checking, savings, and investment behavior.
@@ -112,6 +127,8 @@ The app is focused on:
 
 ## 5. Data Requirements
 - Every tenant-scoped record must include account ownership.
+    - Data model migration target: replace tenancy-facing naming from account/account_id to tenant/tenant_id in code and schema in phased migrations; maintain compatibility bridges until complete.
+- The financial account schema target must use one account table with `account_group` and subtype fields; any split asset/liability schema should be treated as a migration stage.
 - Planned expenses must optionally map to transactions.
 - Loan payment schedules must store installment state and due dates.
 - Transactions must record transaction type, date, amount, and descriptions.
@@ -144,3 +161,4 @@ The app is focused on:
 - Users can clearly see and manage Asset accounts vs Liability accounts and their subtype-specific obligations.
 - Users can understand the finance workflow without searching through settings.
 - The system reduces missed obligations and financial guesswork.
+    - Tenancy language in UI and documentation is consistently expressed as Tenant rather than Account after migration completion.
