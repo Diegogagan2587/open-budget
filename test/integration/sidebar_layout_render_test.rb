@@ -28,6 +28,6 @@ class SidebarLayoutRenderTest < ActionDispatch::IntegrationTest
     assert_select "div[data-controller='sidebar']", count: 1
     assert_select "aside[data-slot='sidebar']", count: 1
     assert_select "div[data-sidebar-target='panel']", count: 1
-    assert_select "a[href='#{finance_path}'].font-semibold.text-gray-900", count: 1
+    assert_select "a[href='#{finance_path}'][data-active='true']", count: 2
   end
 end

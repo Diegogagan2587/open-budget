@@ -11,6 +11,6 @@ class AppSidebarComponentTest < ViewComponent::TestCase
     assert_includes rendered.text, I18n.t("nav.dashboard")
     assert_includes rendered.text, I18n.t("nav.budgets")
     assert_includes rendered.text, "Finance"
-    assert_equal 1, rendered.css("a[href='#{finance_path}'].font-semibold.text-gray-900").count
+    assert_equal 2, rendered.css("a[href='/finance'][data-active='true']").count
   end
 end

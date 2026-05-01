@@ -6,7 +6,7 @@ class SidebarMenuBadgeComponentTest < ViewComponent::TestCase
   def test_component_renders_badge_span
     rendered = render_inline(SidebarMenuBadgeComponent.new) { "3" }
 
-    assert rendered.css("span").any?
+    assert rendered.css("div[data-slot='sidebar-menu-badge']").any?
     assert_includes rendered.text, "3"
   end
 end
