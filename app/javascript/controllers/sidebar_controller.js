@@ -5,9 +5,10 @@ export default class extends Controller {
   static values = {
     state: String,
   }
+  static STORAGE_KEY = "sidebar:desktopExpanded"
 
   connect() {
-    this.desktopExpanded = this.initialDesktopExpanded()
+    this.desktopExpanded = this.loadDesktopExpandedState()
     this.openMobile = false
     this.boundHandleKeydown = this.handleKeydown.bind(this)
     this.boundCloseOnTurbo = this.close.bind(this)
@@ -27,6 +28,17 @@ export default class extends Controller {
 
   initialDesktopExpanded() {
     return this.hasStateValue ? this.stateValue !== "collapsed" : true
+  }
+
+  loadDesktopExpandedState() {
+    const saved = window.localStorage.getItem(this.constructor.STORAGE_KEY)
+    if (saved === "true") return true
+    if (saved === "false") return false
+    return this.initialDesktopExpanded()
+  }
+
+  persistDesktopExpandedState() {
+    window.localStorage.setItem(this.constructor.STORAGE_KEY, this.desktopExpanded ? "true" : "false")
   }
 
   toggle() {
@@ -51,6 +63,7 @@ export default class extends Controller {
 
   toggleDesktop() {
     this.desktopExpanded = !this.desktopExpanded
+    this.persistDesktopExpandedState()
     this.updateDesktopState()
   }
 
