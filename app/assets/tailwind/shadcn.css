@@ -25,6 +25,14 @@
   --chart-3: 197 37% 24%;
   --chart-4: 43 74% 66%;
   --chart-5: 27 87% 67%;
+  --sidebar-background: 0 0% 100%;
+  --sidebar-foreground: 222.2 84% 4.9%;
+  --sidebar-primary: 222.2 47.6% 11.2%;
+  --sidebar-primary-foreground: 210 40% 98%;
+  --sidebar-accent: 210 40% 96%;
+  --sidebar-accent-foreground: 222.2 47.6% 11.2%;
+  --sidebar-border: 214.3 31.8% 91.4%;
+  --sidebar-ring: 222.2 84% 4.9%;
 }
 
 .dark {
@@ -52,6 +60,14 @@
   --chart-3: 30 80% 55%;
   --chart-4: 280 65% 60%;
   --chart-5: 340 75% 55%;
+  --sidebar-background: 222.2 84% 4.9%;
+  --sidebar-foreground: 210 40% 98%;
+  --sidebar-primary: 210 40% 98%;
+  --sidebar-primary-foreground: 222.2 47.6% 11.2%;
+  --sidebar-accent: 217.2 32.6% 17.5%;
+  --sidebar-accent-foreground: 210 40% 98%;
+  --sidebar-border: 217.2 32.6% 17.5%;
+  --sidebar-ring: 212.7 26.8% 83.9%;
 }
 
 @theme inline {
@@ -79,4 +95,99 @@
   --color-chart-3: hsl(var(--chart-3));
   --color-chart-4: hsl(var(--chart-4));
   --color-chart-5: hsl(var(--chart-5));
+  --color-sidebar-background: hsl(var(--sidebar-background));
+  --color-sidebar-foreground: hsl(var(--sidebar-foreground));
+  --color-sidebar-primary: hsl(var(--sidebar-primary));
+  --color-sidebar-primary-foreground: hsl(var(--sidebar-primary-foreground));
+  --color-sidebar-accent: hsl(var(--sidebar-accent));
+  --color-sidebar-accent-foreground: hsl(var(--sidebar-accent-foreground));
+  --color-sidebar-border: hsl(var(--sidebar-border));
+  --color-sidebar-ring: hsl(var(--sidebar-ring));
+}
+
+@layer utilities {
+  .bg-sidebar {
+    background-color: hsl(var(--sidebar-background));
+  }
+
+  .text-sidebar-foreground {
+    color: hsl(var(--sidebar-foreground));
+  }
+
+  .bg-sidebar-primary {
+    background-color: hsl(var(--sidebar-primary));
+  }
+
+  .text-sidebar-primary-foreground {
+    color: hsl(var(--sidebar-primary-foreground));
+  }
+
+  .bg-sidebar-accent {
+    background-color: hsl(var(--sidebar-accent));
+  }
+
+  .text-sidebar-accent-foreground {
+    color: hsl(var(--sidebar-accent-foreground));
+  }
+
+  .border-sidebar-border {
+    border-color: hsl(var(--sidebar-border));
+  }
+
+  .ring-sidebar-ring {
+    --tw-ring-color: hsl(var(--sidebar-ring));
+  }
+
+  [data-sidebar-target="trigger"][data-trigger-variant="menu"] .hamburger-line {
+    transition: transform 200ms ease, opacity 200ms ease, top 200ms ease;
+    transform-origin: center;
+  }
+
+  [data-sidebar-target="trigger"][data-trigger-variant="menu"][aria-expanded="true"] .hamburger-line-top {
+    top: 7px;
+    transform: rotate(45deg);
+  }
+
+  [data-sidebar-target="trigger"][data-trigger-variant="menu"][aria-expanded="true"] .hamburger-line-middle {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+
+  [data-sidebar-target="trigger"][data-trigger-variant="menu"][aria-expanded="true"] .hamburger-line-bottom {
+    top: 7px;
+    transform: rotate(-45deg);
+  }
+
+  [data-sidebar-collapse-toggle] {
+    transition: transform 200ms ease, margin-top 200ms ease;
+    margin-top: 0;
+  }
+
+  [data-controller="sidebar"][data-state="collapsed"] [data-slot="sidebar-header"] > div {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+
+  [data-controller="sidebar"][data-state="collapsed"] [data-sidebar-collapse-toggle] {
+    margin-top: 0.25rem;
+    transform: translateX(0);
+  }
+
+  [data-sidebar-target="trigger"][data-trigger-variant="collapse"] svg {
+    transition: transform 200ms ease;
+  }
+
+  [data-controller="sidebar"][data-state="collapsed"] [data-sidebar-target="trigger"][data-trigger-variant="collapse"] svg {
+    transform: rotate(180deg);
+  }
+
+  [data-controller="sidebar"][data-state="collapsed"] [data-sidebar-collapse="hide"] {
+    display: none;
+  }
+
+  [data-controller="sidebar"][data-state="collapsed"] [data-sidebar-collapse="dim"] {
+    opacity: 0;
+    pointer-events: none;
+  }
 }
