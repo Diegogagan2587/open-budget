@@ -23,10 +23,23 @@
   </head>
 
   <body>
-    <%= render "layouts/navbar" %>
-    <div class="mx-auto w-full max-w-7xl px-4 pt-4">
-      <%= render "shared/flash" %>
-    </div>
-    <%= yield %>
+    <%= render SidebarProviderComponent.new do %>
+      <%= render AppSidebarComponent.new(current_controller: controller_path) %>
+
+      <div data-sidebar-target="content" class="min-h-screen md:pl-[var(--sidebar-width,16rem)] transition-[padding-left] duration-200 ease-linear">
+        <header class="sticky top-0 z-30 mb-6 border-b border-sidebar-border bg-sidebar p-4 text-sidebar-foreground shadow-sm md:hidden">
+          <div class="container mx-auto flex items-center justify-between gap-4">
+            <div class="min-w-0 font-semibold truncate max-w-[60%]" title="<%= nav_page_title %>"><%= nav_page_title %></div>
+            <%= render SidebarTriggerComponent.new(variant: :menu) %>
+          </div>
+        </header>
+
+        <div class="mx-auto w-full max-w-7xl px-4 pt-4">
+          <%= render "shared/flash" %>
+        </div>
+
+        <%= yield %>
+      </div>
+    <% end %>
   </body>
 </html>

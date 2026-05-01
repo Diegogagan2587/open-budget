@@ -1,0 +1,101 @@
+<%= render SidebarComponent.new do %>
+  <%= render SidebarHeaderComponent.new %>
+
+  <%= render SidebarContentComponent.new do %>
+    <%= render SidebarGroupComponent.new do %>
+      <%= render SidebarGroupLabelComponent.new do %>
+        <%= t("nav.main", default: "Main") %>
+      <% end %>
+
+      <%= render SidebarMenuComponent.new do %>
+        <%= render SidebarMenuItemComponent.new do %>
+          <%= render SidebarMenuButtonComponent.new(href: "/", active: dashboard_active?) do %>
+            <span class="flex size-5 shrink-0 items-center justify-center rounded-md bg-sidebar-primary text-[10px] font-semibold text-sidebar-primary-foreground">D</span>
+            <span data-sidebar-collapse="hide" class="<%= nav_label_classes %>"><%= t("nav.dashboard") %></span>
+          <% end %>
+        <% end %>
+
+        <%= render SidebarMenuItemComponent.new do %>
+          <%= render SidebarMenuButtonComponent.new(href: "/budget_periods", active: active_controller?("budget_periods")) do %>
+            <span class="flex size-5 shrink-0 items-center justify-center rounded-md bg-sidebar-primary text-[10px] font-semibold text-sidebar-primary-foreground">B</span>
+            <span data-sidebar-collapse="hide" class="<%= nav_label_classes %>"><%= t("nav.budgets") %></span>
+          <% end %>
+        <% end %>
+
+        <%= render SidebarMenuItemComponent.new do %>
+          <%= render SidebarMenuButtonComponent.new(href: "/income_events", active: active_controller?("income_events", "planned_expenses")) do %>
+            <span class="flex size-5 shrink-0 items-center justify-center rounded-md bg-sidebar-primary text-[10px] font-semibold text-sidebar-primary-foreground">I</span>
+            <span data-sidebar-collapse="hide" class="<%= nav_label_classes %>"><%= t("nav.incomes") %></span>
+          <% end %>
+        <% end %>
+
+        <%= render SidebarMenuItemComponent.new do %>
+          <%= render SidebarMenuButtonComponent.new(href: "/expenses", active: active_controller?("expenses")) do %>
+            <span class="flex size-5 shrink-0 items-center justify-center rounded-md bg-sidebar-primary text-[10px] font-semibold text-sidebar-primary-foreground">E</span>
+            <span data-sidebar-collapse="hide" class="<%= nav_label_classes %>"><%= t("nav.expenses") %></span>
+          <% end %>
+        <% end %>
+
+        <%= render SidebarMenuItemComponent.new do %>
+          <%= render SidebarMenuButtonComponent.new(href: "/finance", active: finance_active?) do %>
+            <span class="flex size-5 shrink-0 items-center justify-center rounded-md bg-sidebar-primary text-[10px] font-semibold text-sidebar-primary-foreground">F</span>
+            <span data-sidebar-collapse="hide" class="<%= nav_label_classes %>">Finance</span>
+          <% end %>
+        <% end %>
+
+        <%= render SidebarMenuItemComponent.new do %>
+          <%= render SidebarMenuButtonComponent.new(href: "/reports", active: active_controller?("reports")) do %>
+            <span class="flex size-5 shrink-0 items-center justify-center rounded-md bg-sidebar-primary text-[10px] font-semibold text-sidebar-primary-foreground">R</span>
+            <span data-sidebar-collapse="hide" class="<%= nav_label_classes %>"><%= t("nav.reports") %></span>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+
+    <%= render SidebarGroupComponent.new do %>
+      <%= render SidebarGroupLabelComponent.new do %>
+        <%= t("nav.more", default: "More") %>
+      <% end %>
+
+      <%= render SidebarMenuComponent.new do %>
+        <%= render SidebarMenuItemComponent.new do %>
+          <%= render SidebarMenuButtonComponent.new(href: "/task/recurring_tasks", active: controller_path.include?("task")) do %>
+            <span class="flex size-5 shrink-0 items-center justify-center rounded-md bg-sidebar-primary text-[10px] font-semibold text-sidebar-primary-foreground">T</span>
+            <span data-sidebar-collapse="hide" class="<%= nav_label_classes %>"><%= t("nav.tasks") %></span>
+          <% end %>
+        <% end %>
+
+        <%= render SidebarMenuItemComponent.new do %>
+          <%= render SidebarMenuButtonComponent.new(href: "/projects", active: controller_path == "projects/projects") do %>
+            <span class="flex size-5 shrink-0 items-center justify-center rounded-md bg-sidebar-primary text-[10px] font-semibold text-sidebar-primary-foreground">P</span>
+            <span data-sidebar-collapse="hide" class="<%= nav_label_classes %>">Projects</span>
+          <% end %>
+        <% end %>
+
+        <%= render SidebarMenuItemComponent.new do %>
+          <%= render SidebarMenuButtonComponent.new(href: "/docs", active: controller_path == "projects/standalone_docs") do %>
+            <span class="flex size-5 shrink-0 items-center justify-center rounded-md bg-sidebar-primary text-[10px] font-semibold text-sidebar-primary-foreground">D</span>
+            <span data-sidebar-collapse="hide" class="<%= nav_label_classes %>">Docs</span>
+          <% end %>
+        <% end %>
+
+        <%= render SidebarMenuItemComponent.new do %>
+          <%= render SidebarMenuButtonComponent.new(href: "/accounts", active: active_controller?("accounts", "account_memberships")) do %>
+            <span class="flex size-5 shrink-0 items-center justify-center rounded-md bg-sidebar-primary text-[10px] font-semibold text-sidebar-primary-foreground">A</span>
+            <span data-sidebar-collapse="hide" class="<%= nav_label_classes %>"><%= t("nav.accounts") %></span>
+          <% end %>
+        <% end %>
+
+        <%= render SidebarMenuItemComponent.new do %>
+          <%= render SidebarMenuButtonComponent.new(href: edit_settings_path(section: (controller_path == "categories" ? "finance" : nil)), active: settings_active?) do %>
+            <span class="flex size-5 shrink-0 items-center justify-center rounded-md bg-sidebar-primary text-[10px] font-semibold text-sidebar-primary-foreground">S</span>
+            <span data-sidebar-collapse="hide" class="<%= nav_label_classes %>"><%= t("nav.settings") %></span>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <%= render SidebarFooterComponent.new %>
+  <%= render SidebarRailComponent.new %>
+<% end %>
