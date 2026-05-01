@@ -1,0 +1,16 @@
+# frozen_string_literal: true
+
+require "test_helper"
+
+class AppSidebarComponentTest < ViewComponent::TestCase
+  def test_component_renders_sidebar_structure_and_links
+    rendered = render_inline(AppSidebarComponent.new(current_controller: "finance"))
+
+    assert rendered.css("aside[data-slot='sidebar']").any?
+    assert rendered.css("div[data-slot='sidebar-mobile']").any?
+    assert_includes rendered.text, I18n.t("nav.dashboard")
+    assert_includes rendered.text, I18n.t("nav.budgets")
+    assert_includes rendered.text, "Finance"
+    assert_equal 1, rendered.css("a[href='#{finance_path}'].font-semibold.text-gray-900").count
+  end
+end
