@@ -44,4 +44,18 @@ class Financial::EntryTest < ActiveSupport::TestCase
     assert_includes entry.errors[:financial_account], "must be selected"
     assert_includes entry.errors[:financial_liability], "must be selected"
   end
+
+  test "loan disbursement requires origin and one destination" do
+    entry = Financial::Entry.new(
+      account: @account,
+      entry_type: "loan_disbursement",
+      entry_date: Date.current,
+      amount: 50,
+      description: "Loan move"
+    )
+
+    assert_not entry.valid?
+    assert_includes entry.errors[:financial_liability], "must be selected"
+    assert_includes entry.errors[:base], "loan disbursement requires an asset or liability destination"
+  end
 end
