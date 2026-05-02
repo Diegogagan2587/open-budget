@@ -6,6 +6,7 @@ class Financial::Liability < ApplicationRecord
 
   belongs_to :account, class_name: "Account"
   has_many :financial_entries, class_name: "Financial::Entry", foreign_key: :financial_liability_id, dependent: :nullify, inverse_of: :financial_liability
+  has_many :incoming_financial_entries, class_name: "Financial::Entry", foreign_key: :counterparty_financial_liability_id, dependent: :nullify, inverse_of: :counterparty_financial_liability
 
   before_validation :set_account, on: :create
 
@@ -19,7 +20,11 @@ class Financial::Liability < ApplicationRecord
   validates :credit_limit, numericality: { greater_than: 0 }, allow_nil: true
 
   def current_balance
-    opening_balance.to_d + financial_entries.sum(&:liability_delta)
+    entries = Financial::Entry.for_account(account).where(
+      "financial_liability_id = :id OR counterparty_financial_liability_id = :id",
+      id: id
+    )
+    opening_balance.to_d + entries.sum { |entry| entry.liability_delta_for(id) }
   end
 
   def settle_and_archive!
