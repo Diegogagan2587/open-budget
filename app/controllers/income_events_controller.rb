@@ -1,6 +1,7 @@
 class IncomeEventsController < ApplicationController
   before_action :set_income_event, only: [ :show, :edit, :update, :destroy, :receive, :apply_all, :loan_summary, :pay_liability ]
   before_action :set_budget_period, only: [ :index, :new, :create ]
+  before_action :load_loan_route_collections, only: [ :new, :create, :edit, :update ]
 
   def index
     @income_events = if @budget_period
@@ -91,6 +92,15 @@ class IncomeEventsController < ApplicationController
   def receive
     if request.patch? || request.put?
       if @income_event.update(receive_params.merge(status: "received"))
+        if @income_event.loan?
+          disbursement = Loans::DisbursementSyncService.call(@income_event)
+          unless disbursement.success?
+            flash.now[:alert] = disbursement.error_message
+            render :receive, status: :unprocessable_entity
+            return
+          end
+        end
+
         redirect_to @income_event, notice: t("income_events.flash.marked_received")
       else
         render :receive, status: :unprocessable_entity
@@ -99,6 +109,16 @@ class IncomeEventsController < ApplicationController
   end
 
   def apply_all
+    if @income_event.loan?
+      result = Loans::ApplyService.call(@income_event)
+      if result.success?
+        redirect_to @income_event, notice: t("income_events.flash.applied_all")
+      else
+        redirect_to @income_event, alert: result.error_message
+      end
+      return
+    end
+
     @income_event.apply_all!
     redirect_to @income_event, notice: t("income_events.flash.applied_all")
   end
@@ -147,7 +167,9 @@ class IncomeEventsController < ApplicationController
       :payment_frequency,
       :payment_amount,
       :lender_name,
-      :notes
+      :notes,
+      :loan_liability_id,
+      :destination_selection
     ])
   end
 
@@ -163,5 +185,10 @@ class IncomeEventsController < ApplicationController
       :entry_date,
       :description
     ])
+  end
+
+  def load_loan_route_collections
+    @financial_assets = Financial::Asset.for_account(Current.account).active.order(:name)
+    @financial_liabilities = Financial::Liability.for_account(Current.account).active.order(:name)
   end
 end

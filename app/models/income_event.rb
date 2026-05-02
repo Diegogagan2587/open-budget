@@ -1,15 +1,22 @@
 class IncomeEvent < ApplicationRecord
+  attr_accessor :destination_selection
+
   belongs_to :account
   belongs_to :budget_period, optional: true
+  belongs_to :loan_liability, class_name: "Financial::Liability", optional: true
+  belongs_to :loan_disbursement_destination_asset, class_name: "Financial::Asset", optional: true
+  belongs_to :loan_disbursement_destination_liability, class_name: "Financial::Liability", optional: true
   has_many :planned_expenses, dependent: :destroy
   has_many :expenses, dependent: :nullify
   has_many :loan_payment_schedules, foreign_key: :loan_id, dependent: :destroy
+  has_one :loan_disbursement_entry, -> { where(entry_type: "loan_disbursement") }, class_name: "Financial::Entry", inverse_of: :income_event
 
   before_validation :set_account, on: :create
   before_validation :normalize_payment_frequency
   before_validation :apply_loan_defaults
+  before_validation :assign_destination_selection
   before_validation :infer_loan_interest_rate
-  after_save :refresh_loan_payment_schedules, if: :loan?
+  after_commit :sync_loan_side_effects, if: :loan?
 
   scope :for_account, ->(account) { where(account: account) }
   scope :regular, -> { where(income_type: "regular") }
@@ -27,6 +34,8 @@ class IncomeEvent < ApplicationRecord
   validates :payment_amount, numericality: { greater_than: 0 }, allow_nil: true
   validate :loan_terms_present_for_calculation, if: :loan?
   validate :loan_payment_amount_consistency, if: :loan?
+  validate :loan_routing_presence, if: :loan?
+  validate :loan_routing_account_ownership, if: :loan?
 
   scope :pending, -> { where(status: "pending") }
   scope :received, -> { where(status: "received") }
@@ -69,7 +78,10 @@ class IncomeEvent < ApplicationRecord
   end
 
   def apply_all!
-    return if loan?
+    if loan?
+      Loans::ApplyService.call(self)
+      return
+    end
 
     planned_expenses.where.not(status: %w[paid transferred spent]).find_each do |planned_expense|
       planned_expense.apply!
@@ -171,6 +183,14 @@ class IncomeEvent < ApplicationRecord
     interest_rate_estimated
   end
 
+  def destination_selection
+    @destination_selection || selection_for_destination
+  end
+
+  def destination_selection=(value)
+    @destination_selection = value.presence
+  end
+
   private
 
   def set_account
@@ -213,8 +233,10 @@ class IncomeEvent < ApplicationRecord
     loan_payment_schedules.paid.sum(:amount)
   end
 
-  def refresh_loan_payment_schedules
+  def sync_loan_side_effects
     generate_loan_payment_schedules!
+    Loans::PlannedExpenseSyncService.call(self)
+    Loans::DisbursementSyncService.call(self) if status == "applied"
   end
 
   def loan_terms_present_for_calculation
@@ -228,6 +250,53 @@ class IncomeEvent < ApplicationRecord
     return unless payment_amount.to_d * number_of_payments.to_i < loan_amount.to_d
 
     errors.add(:payment_amount, "is too low for the selected number of payments")
+  end
+
+  def assign_destination_selection
+    return if @destination_selection.blank?
+
+    kind, id = @destination_selection.split(":", 2)
+    case kind
+    when "asset"
+      self.loan_disbursement_destination_asset_id = id
+      self.loan_disbursement_destination_liability_id = nil
+    when "liability"
+      self.loan_disbursement_destination_liability_id = id
+      self.loan_disbursement_destination_asset_id = nil
+    end
+  end
+
+  def selection_for_destination
+    if loan_disbursement_destination_asset_id.present?
+      "asset:#{loan_disbursement_destination_asset_id}"
+    elsif loan_disbursement_destination_liability_id.present?
+      "liability:#{loan_disbursement_destination_liability_id}"
+    end
+  end
+
+  def loan_routing_presence
+    errors.add(:loan_liability, "must be selected") if loan_liability.blank?
+
+    destinations = [ loan_disbursement_destination_asset_id, loan_disbursement_destination_liability_id ].compact
+    return if destinations.size == 1
+
+    errors.add(:destination_selection, "must select exactly one destination account")
+  end
+
+  def loan_routing_account_ownership
+    return if account.blank?
+
+    if loan_liability.present? && loan_liability.account_id != account_id
+      errors.add(:loan_liability, "must belong to the current account")
+    end
+
+    if loan_disbursement_destination_asset.present? && loan_disbursement_destination_asset.account_id != account_id
+      errors.add(:loan_disbursement_destination_asset, "must belong to the current account")
+    end
+
+    if loan_disbursement_destination_liability.present? && loan_disbursement_destination_liability.account_id != account_id
+      errors.add(:loan_disbursement_destination_liability, "must belong to the current account")
+    end
   end
 
   def inferred_annual_rate_from_payment

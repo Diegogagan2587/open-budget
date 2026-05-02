@@ -31,6 +31,25 @@ class IncomeEventTest < ActiveSupport::TestCase
     assert_equal 0.0, event.previous_balance
   end
 
+  test "loan requires origin liability and one destination" do
+    loan = IncomeEvent.new(
+      account: @account,
+      description: "Loan",
+      expected_date: Date.current,
+      expected_amount: 1000,
+      income_type: "loan",
+      loan_amount: 1000,
+      number_of_payments: 2,
+      payment_frequency: "monthly",
+      payment_amount: 550,
+      status: "pending"
+    )
+
+    assert_not loan.valid?
+    assert_includes loan.errors[:loan_liability], "must be selected"
+    assert_includes loan.errors[:destination_selection], "must select exactly one destination account"
+  end
+
   test "previous_income_event finds correct previous event by expected_date" do
     event1 = IncomeEvent.create!(
       budget_period: @budget_period,

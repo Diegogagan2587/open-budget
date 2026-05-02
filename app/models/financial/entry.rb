@@ -1,12 +1,13 @@
 class Financial::Entry < ApplicationRecord
   self.table_name = "financial_entries"
 
-  ENTRY_TYPES = %w[inflow outflow transfer liability_charge liability_payment adjustment].freeze
+  ENTRY_TYPES = %w[inflow outflow transfer liability_charge liability_payment loan_disbursement adjustment].freeze
 
-  belongs_to :account, class_name: "Account"
+  belongs_to :account, class_name: "::Account"
   belongs_to :financial_account, class_name: "Financial::Asset", optional: true
   belongs_to :counterparty_financial_account, class_name: "Financial::Asset", optional: true
   belongs_to :financial_liability, class_name: "Financial::Liability", optional: true
+  belongs_to :counterparty_financial_liability, class_name: "Financial::Liability", optional: true
   belongs_to :planned_expense, optional: true
   belongs_to :expense, optional: true
   belongs_to :income_event, optional: true
@@ -26,7 +27,7 @@ class Financial::Entry < ApplicationRecord
 
   def account_delta
     case entry_type
-    when "inflow"
+    when "inflow", "loan_disbursement"
       amount.to_d
     when "outflow", "liability_payment", "transfer"
       -amount.to_d
@@ -45,6 +46,11 @@ class Financial::Entry < ApplicationRecord
       return 0.to_d
     end
 
+    if entry_type == "loan_disbursement"
+      return amount.to_d if self.financial_account_id == financial_account_id
+      return 0.to_d
+    end
+
     return 0.to_d unless self.financial_account_id == financial_account_id
 
     account_delta
@@ -52,13 +58,25 @@ class Financial::Entry < ApplicationRecord
 
   def liability_delta
     case entry_type
-    when "liability_charge"
+    when "liability_charge", "loan_disbursement"
       amount.to_d
     when "liability_payment"
       -amount.to_d
     else
       0.to_d
     end
+  end
+
+  def liability_delta_for(liability_id)
+    if entry_type == "loan_disbursement"
+      return amount.to_d if financial_liability_id == liability_id
+      return -amount.to_d if counterparty_financial_liability_id == liability_id
+      return 0.to_d
+    end
+
+    return 0.to_d unless financial_liability_id == liability_id
+
+    liability_delta
   end
 
   private
@@ -82,6 +100,14 @@ class Financial::Entry < ApplicationRecord
     when "liability_payment"
       errors.add(:financial_account, "must be selected") if financial_account.blank?
       errors.add(:financial_liability, "must be selected") if financial_liability.blank?
+    when "loan_disbursement"
+      errors.add(:financial_liability, "must be selected") if financial_liability.blank?
+      if financial_account.blank? && counterparty_financial_liability.blank?
+        errors.add(:base, "loan disbursement requires an asset or liability destination")
+      end
+      if financial_account.present? && counterparty_financial_liability.present?
+        errors.add(:base, "loan disbursement can have only one destination")
+      end
     end
   end
 
@@ -98,6 +124,10 @@ class Financial::Entry < ApplicationRecord
 
     if financial_liability.present? && financial_liability.account_id != account_id
       errors.add(:financial_liability, "must belong to the current account")
+    end
+
+    if counterparty_financial_liability.present? && counterparty_financial_liability.account_id != account_id
+      errors.add(:counterparty_financial_liability, "must belong to the current account")
     end
 
     if planned_expense.present? && planned_expense.account_id != account_id
