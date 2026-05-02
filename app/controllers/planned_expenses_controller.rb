@@ -20,7 +20,7 @@ class PlannedExpensesController < ApplicationController
   def new
     @planned_expense = @income_event.planned_expenses.build
     @expense_templates = ExpenseTemplate.for_account(Current.account).includes(:category).all
-    @income_events = IncomeEvent.for_account(Current.account).order(:expected_date)
+    @income_events = ordered_income_events_for_reference(@planned_expense.due_date)
   end
 
   def create
@@ -32,8 +32,8 @@ class PlannedExpensesController < ApplicationController
         format.html { redirect_to income_event_planned_expenses_path(@income_event), notice: t("planned_expenses.flash.created") }
         format.json { render :show, status: :created, location: [ @income_event, @planned_expense ] }
       else
-        @expense_templates = ExpenseTemplate.includes(:category).all
-        @income_events = IncomeEvent.all.order(:expected_date)
+        @expense_templates = ExpenseTemplate.for_account(Current.account).includes(:category).all
+        @income_events = ordered_income_events_for_reference(@planned_expense.due_date)
         load_route_collections
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @planned_expense.errors, status: :unprocessable_entity }
@@ -43,7 +43,7 @@ class PlannedExpensesController < ApplicationController
 
   def edit
     @expense_templates = ExpenseTemplate.for_account(Current.account).includes(:category).all
-    @income_events = IncomeEvent.for_account(Current.account).order(:expected_date)
+    @income_events = ordered_income_events_for_reference(@planned_expense.due_date)
   end
 
   def update
@@ -66,7 +66,7 @@ class PlannedExpensesController < ApplicationController
         format.json { render :show, status: :ok, location: [ @income_event, @planned_expense ] }
       else
         @expense_templates = ExpenseTemplate.for_account(Current.account).includes(:category).all
-        @income_events = IncomeEvent.for_account(Current.account).order(:expected_date)
+        @income_events = ordered_income_events_for_reference(@planned_expense.due_date)
         load_route_collections
         format.html { render :edit, status: :unprocessable_entity }
         format.json { render json: @planned_expense.errors, status: :unprocessable_entity }
@@ -134,6 +134,7 @@ class PlannedExpensesController < ApplicationController
       :category_id,
       :description,
       :amount,
+      :due_date,
       :notes,
       :status,
       :position,
@@ -147,5 +148,18 @@ class PlannedExpensesController < ApplicationController
   def load_route_collections
     @financial_accounts = Financial::Asset.for_account(Current.account).order(:name)
     @financial_liabilities = Financial::Liability.for_account(Current.account).order(:name)
+  end
+
+  def ordered_income_events_for_reference(reference_date)
+    events = IncomeEvent.for_account(Current.account).to_a
+    return events.sort_by(&:expected_date) if reference_date.blank?
+
+    same_month, others = events.partition do |event|
+      event.expected_date.year == reference_date.year && event.expected_date.month == reference_date.month
+    end
+    on_or_before, after = same_month.partition { |event| event.expected_date <= reference_date }
+
+    prioritized_same_month = on_or_before.sort_by(&:expected_date).reverse + after.sort_by(&:expected_date)
+    prioritized_same_month + others.sort_by(&:expected_date).reverse
   end
 end
