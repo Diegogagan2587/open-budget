@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_30_193000) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_01_101200) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -164,6 +164,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_30_193000) do
     t.bigint "account_id", null: false
     t.decimal "amount", precision: 12, scale: 2, null: false
     t.bigint "counterparty_financial_account_id"
+    t.bigint "counterparty_financial_liability_id"
     t.datetime "created_at", null: false
     t.string "description", null: false
     t.date "entry_date", null: false
@@ -178,6 +179,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_30_193000) do
     t.index ["account_id", "entry_date"], name: "index_financial_entries_on_account_id_and_entry_date"
     t.index ["account_id"], name: "index_financial_entries_on_account_id"
     t.index ["counterparty_financial_account_id"], name: "index_financial_entries_on_counterparty_financial_account_id"
+    t.index ["counterparty_financial_liability_id"], name: "index_financial_entries_on_counterparty_financial_liability_id"
     t.index ["entry_type"], name: "index_financial_entries_on_entry_type"
     t.index ["expense_id"], name: "index_financial_entries_on_expense_id"
     t.index ["financial_account_id"], name: "index_financial_entries_on_financial_account_id"
@@ -214,6 +216,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_30_193000) do
     t.boolean "interest_rate_estimated", default: false, null: false
     t.string "lender_name"
     t.decimal "loan_amount", precision: 10, scale: 2
+    t.bigint "loan_disbursement_destination_asset_id"
+    t.bigint "loan_disbursement_destination_liability_id"
+    t.bigint "loan_liability_id"
     t.text "notes"
     t.integer "number_of_payments"
     t.decimal "payment_amount", precision: 10, scale: 2
@@ -225,6 +230,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_30_193000) do
     t.index ["account_id"], name: "index_income_events_on_account_id"
     t.index ["budget_period_id"], name: "index_income_events_on_budget_period_id"
     t.index ["income_type"], name: "index_income_events_on_income_type"
+    t.index ["loan_disbursement_destination_asset_id"], name: "index_income_events_on_loan_disbursement_destination_asset_id"
+    t.index ["loan_disbursement_destination_liability_id"], name: "idx_on_loan_disbursement_destination_liability_id_df03d3d9ae"
+    t.index ["loan_liability_id"], name: "index_income_events_on_loan_liability_id"
   end
 
   create_table "inventory_items", force: :cascade do |t|
@@ -295,10 +303,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_30_193000) do
     t.bigint "counterparty_financial_account_id"
     t.datetime "created_at", null: false
     t.string "description", null: false
+    t.date "due_date"
     t.bigint "expense_template_id"
     t.bigint "financial_account_id"
     t.bigint "financial_liability_id"
     t.bigint "income_event_id", null: false
+    t.integer "loan_installment_number"
     t.text "notes"
     t.integer "position"
     t.bigint "shopping_item_id"
@@ -310,6 +320,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_30_193000) do
     t.index ["expense_template_id"], name: "index_planned_expenses_on_expense_template_id"
     t.index ["financial_account_id"], name: "index_planned_expenses_on_financial_account_id"
     t.index ["financial_liability_id"], name: "index_planned_expenses_on_financial_liability_id"
+    t.index ["income_event_id", "loan_installment_number"], name: "index_planned_expenses_on_income_event_and_loan_installment", unique: true, where: "(loan_installment_number IS NOT NULL)"
     t.index ["income_event_id"], name: "index_planned_expenses_on_income_event_id"
     t.index ["shopping_item_id"], name: "index_planned_expenses_on_shopping_item_id"
   end
@@ -497,11 +508,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_30_193000) do
   add_foreign_key "financial_entries", "financial_accounts"
   add_foreign_key "financial_entries", "financial_accounts", column: "counterparty_financial_account_id"
   add_foreign_key "financial_entries", "financial_liabilities"
+  add_foreign_key "financial_entries", "financial_liabilities", column: "counterparty_financial_liability_id"
   add_foreign_key "financial_entries", "income_events"
   add_foreign_key "financial_entries", "planned_expenses"
   add_foreign_key "financial_liabilities", "accounts"
   add_foreign_key "income_events", "accounts"
   add_foreign_key "income_events", "budget_periods"
+  add_foreign_key "income_events", "financial_accounts", column: "loan_disbursement_destination_asset_id"
+  add_foreign_key "income_events", "financial_liabilities", column: "loan_disbursement_destination_liability_id"
+  add_foreign_key "income_events", "financial_liabilities", column: "loan_liability_id"
   add_foreign_key "inventory_items", "accounts"
   add_foreign_key "inventory_items", "categories"
   add_foreign_key "links", "accounts"
