@@ -1,10 +1,18 @@
 <% planned_expense = local_assigns[:planned_expense] || @planned_expense_for_move || @planned_expense %>
+<% reference_date = planned_expense&.due_date %>
+<% ranked_income_events = if reference_date.present?
+  same_month, others = @income_events.partition { |event| event.expected_date.year == reference_date.year && event.expected_date.month == reference_date.month }
+  on_or_before, after = same_month.partition { |event| event.expected_date <= reference_date }
+  on_or_before.sort_by(&:expected_date).reverse + after.sort_by(&:expected_date) + others.sort_by(&:expected_date).reverse
+else
+  @income_events
+end %>
 <%= form_with url: move_income_event_planned_expense_path(@income_event, planned_expense), method: :patch, local: true, class: "space-y-4" do |form| %>
   <div>
     <label class="block text-sm font-medium text-gray-700 mb-2">Move to Income Event</label>
     <select name="target_income_event_id" required class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
       <option value="">Select an income event...</option>
-      <% @income_events.each do |income_event| %>
+      <% ranked_income_events.each do |income_event| %>
         <% next if income_event.id == @income_event.id %>
         <option value="<%= income_event.id %>">
           <%= income_event.description %> - <%= number_to_currency(income_event.expected_amount) %> (Expected: <%= income_event.expected_date.strftime("%b %d, %Y") %>)
@@ -21,4 +29,3 @@
     <%= form.submit "Move Expense", class: "px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors" %>
   </div>
 <% end %>
-
