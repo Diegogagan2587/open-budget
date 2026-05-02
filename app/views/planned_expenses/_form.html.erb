@@ -95,20 +95,22 @@
       </svg>
       Financial Routing
     </h3>
-    <% account_options = grouped_options_for_select({
+    <% account_option_groups = {
       "Asset Accounts" => (@financial_accounts || []).map { |account| [account.name, "asset:#{account.id}"] },
       "Liability Accounts" => (@financial_liabilities || []).map { |liability| [liability.name, "liability:#{liability.id}"] }
-    }, @planned_expense.source_selection) %>
+    } %>
+    <% source_account_options = grouped_options_for_select(account_option_groups, @planned_expense.source_selection) %>
+    <% destination_account_options = grouped_options_for_select(account_option_groups, @planned_expense.destination_selection) %>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white rounded-lg p-4 border border-emerald-200">
       <div>
         <%= form.label :source_selection, "Source account", class: "block text-sm font-medium text-gray-700 mb-2" %>
-        <%= form.select :source_selection, account_options, { include_blank: "Select source account" }, { class: "block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500" } %>
+        <%= form.select :source_selection, source_account_options, { include_blank: "Select source account" }, { class: "block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500" } %>
         <p class="mt-1 text-xs text-gray-500">Choose the account used to pay or move the money.</p>
       </div>
 
       <div>
         <%= form.label :destination_selection, "Destination account", class: "block text-sm font-medium text-gray-700 mb-2" %>
-        <%= form.select :destination_selection, account_options, { include_blank: "Leave blank for a normal expense" }, { class: "block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500" } %>
+        <%= form.select :destination_selection, destination_account_options, { include_blank: "Leave blank for a normal expense" }, { class: "block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500" } %>
         <p class="mt-1 text-xs text-gray-500">Use this only for transfers or debt payments.</p>
       </div>
     </div>
@@ -139,6 +141,11 @@
           <%= form.number_field :amount, step: 0.01, class: "block w-full pl-7 rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500", data: { template_selector_target: "amountField" }, placeholder: "0.00" %>
         </div>
         <p class="mt-1 text-xs text-gray-500" data-template-selector-target="amountHint"></p>
+      </div>
+
+      <div>
+        <%= form.label :due_date, "Due date", class: "block text-sm font-medium text-gray-700 mb-2" %>
+        <%= form.date_field :due_date, class: "block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" %>
       </div>
     </div>
 
