@@ -57,8 +57,8 @@ export default class extends Controller {
                eventDate.getMonth() === selectedMonth)
     })
 
-    // Show same-month events first, then other months
-    this.updateIncomeEventOptionsWithOtherMonths(sameMonthEvents, otherMonthEvents)
+    const prioritizedSameMonth = this.prioritizeSameMonthEvents(sameMonthEvents, selectedDate)
+    this.updateIncomeEventOptionsWithOtherMonths(prioritizedSameMonth, otherMonthEvents)
 
     const loc = this.intlLocale()
     // Show helpful message
@@ -139,6 +139,25 @@ export default class extends Controller {
     } else if (currentValue) {
       select.value = ""
     }
+  }
+
+  prioritizeSameMonthEvents(events, selectedDate) {
+    const cutoff = selectedDate.getTime()
+    const beforeOrOn = []
+    const after = []
+
+    events.forEach(event => {
+      const eventTime = new Date(event.expected_date).getTime()
+      if (eventTime <= cutoff) {
+        beforeOrOn.push(event)
+      } else {
+        after.push(event)
+      }
+    })
+
+    beforeOrOn.sort((a, b) => new Date(b.expected_date) - new Date(a.expected_date))
+    after.sort((a, b) => new Date(a.expected_date) - new Date(b.expected_date))
+    return beforeOrOn.concat(after)
   }
 
   monthKeyFromExpectedDate(expectedDate) {
