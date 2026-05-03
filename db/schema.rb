@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_01_101200) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_02_120100) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -127,6 +127,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_01_101200) do
     t.decimal "amount", precision: 10, scale: 2
     t.bigint "budget_period_id", null: false
     t.bigint "category_id", null: false
+    t.bigint "counterparty_financial_account_id"
+    t.bigint "counterparty_financial_liability_id"
     t.datetime "created_at", null: false
     t.date "date"
     t.string "description"
@@ -139,6 +141,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_01_101200) do
     t.index ["account_id"], name: "index_expenses_on_account_id"
     t.index ["budget_period_id"], name: "index_expenses_on_budget_period_id"
     t.index ["category_id"], name: "index_expenses_on_category_id"
+    t.index ["counterparty_financial_account_id"], name: "index_expenses_on_counterparty_financial_account_id"
+    t.index ["counterparty_financial_liability_id"], name: "index_expenses_on_counterparty_financial_liability_id"
     t.index ["financial_account_id"], name: "index_expenses_on_financial_account_id"
     t.index ["financial_liability_id"], name: "index_expenses_on_financial_liability_id"
     t.index ["income_event_id"], name: "index_expenses_on_income_event_id"
@@ -225,6 +229,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_01_101200) do
     t.string "payment_frequency"
     t.decimal "received_amount", precision: 10, scale: 2
     t.date "received_date"
+    t.bigint "regular_income_destination_asset_id"
+    t.bigint "regular_income_destination_liability_id"
     t.string "status", default: "pending", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_income_events_on_account_id"
@@ -233,6 +239,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_01_101200) do
     t.index ["loan_disbursement_destination_asset_id"], name: "index_income_events_on_loan_disbursement_destination_asset_id"
     t.index ["loan_disbursement_destination_liability_id"], name: "idx_on_loan_disbursement_destination_liability_id_df03d3d9ae"
     t.index ["loan_liability_id"], name: "index_income_events_on_loan_liability_id"
+    t.index ["regular_income_destination_asset_id"], name: "index_income_events_on_regular_income_destination_asset_id"
+    t.index ["regular_income_destination_liability_id"], name: "index_income_events_on_regular_income_destination_liability_id"
   end
 
   create_table "inventory_items", force: :cascade do |t|
@@ -498,7 +506,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_01_101200) do
   add_foreign_key "expenses", "budget_periods"
   add_foreign_key "expenses", "categories"
   add_foreign_key "expenses", "financial_accounts"
+  add_foreign_key "expenses", "financial_accounts", column: "counterparty_financial_account_id"
   add_foreign_key "expenses", "financial_liabilities"
+  add_foreign_key "expenses", "financial_liabilities", column: "counterparty_financial_liability_id"
   add_foreign_key "expenses", "income_events"
   add_foreign_key "expenses", "income_events", column: "loan_id"
   add_foreign_key "expenses", "planned_expenses"
@@ -515,8 +525,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_01_101200) do
   add_foreign_key "income_events", "accounts"
   add_foreign_key "income_events", "budget_periods"
   add_foreign_key "income_events", "financial_accounts", column: "loan_disbursement_destination_asset_id"
+  add_foreign_key "income_events", "financial_accounts", column: "regular_income_destination_asset_id"
   add_foreign_key "income_events", "financial_liabilities", column: "loan_disbursement_destination_liability_id"
   add_foreign_key "income_events", "financial_liabilities", column: "loan_liability_id"
+  add_foreign_key "income_events", "financial_liabilities", column: "regular_income_destination_liability_id"
   add_foreign_key "inventory_items", "accounts"
   add_foreign_key "inventory_items", "categories"
   add_foreign_key "links", "accounts"
