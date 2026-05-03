@@ -52,28 +52,22 @@
       </div>
     </div>
 
+    <% account_option_groups = {
+      "Asset Accounts" => (@financial_accounts || []).map { |asset| ["#{asset.name} (#{asset.account_type.humanize})", "asset:#{asset.id}"] },
+      "Liability Accounts" => (@financial_liabilities || []).map { |liability| ["#{liability.name} (#{liability.liability_type.humanize})", "liability:#{liability.id}"] }
+    } %>
+    <% source_options = grouped_options_for_select(account_option_groups, @expense.source_selection) %>
+    <% destination_options = grouped_options_for_select(account_option_groups, @expense.destination_selection) %>
     <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
       <div>
-        <%= form.label :account_type, "Account Type", class: "block text-sm font-medium text-gray-700 mb-2" %>
-        <%= select_tag :account_type,
-              options_for_select([["Asset account", "asset"], ["Liability account", "liability"]], @expense.financial_liability_id.present? ? "liability" : "asset"),
-              class: "block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500",
-              data: { expense_form_target: "accountTypeSelect", action: "change->expense-form#toggleFinanceAccountFields" } %>
-        <p class="mt-1 text-xs text-gray-500">Choose where this expense is being charged from.</p>
+        <%= form.label :source_selection, "Source account", class: "block text-sm font-medium text-gray-700 mb-2" %>
+        <%= form.select :source_selection, source_options, { include_blank: "Select source account" }, { class: "block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" } %>
+        <p class="mt-1 text-xs text-gray-500">Choose the account where this expense is charged from.</p>
       </div>
-    </div>
-
-    <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div data-expense-form-target="assetAccountSection" class="space-y-2">
-        <%= form.label :financial_account_id, "Asset account", class: "block text-sm font-medium text-gray-700 mb-2" %>
-        <%= form.collection_select :financial_account_id, @financial_accounts, :id, lambda { |fa| "#{fa.name} (#{fa.account_type.humanize})" }, { include_blank: "Select asset account" }, { class: "block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" } %>
-        <p class="mt-1 text-xs text-gray-500">Use for debit/checking/savings payments.</p>
-      </div>
-
-      <div data-expense-form-target="liabilityAccountSection" class="space-y-2 hidden">
-        <%= form.label :financial_liability_id, "Liability account", class: "block text-sm font-medium text-gray-700 mb-2" %>
-        <%= form.collection_select :financial_liability_id, @financial_liabilities, :id, lambda { |fl| "#{fl.name} (#{fl.liability_type.humanize})" }, { include_blank: "Select liability account" }, { class: "block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" } %>
-        <p class="mt-1 text-xs text-gray-500">Use for credit cards and personal credit / loan accounts.</p>
+      <div>
+        <%= form.label :destination_selection, "Destination account", class: "block text-sm font-medium text-gray-700 mb-2" %>
+        <%= form.select :destination_selection, destination_options, { include_blank: "Leave blank for a normal expense" }, { class: "block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" } %>
+        <p class="mt-1 text-xs text-gray-500">Use only for transfers or liability payments.</p>
       </div>
     </div>
 

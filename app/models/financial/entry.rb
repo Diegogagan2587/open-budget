@@ -68,6 +68,11 @@ class Financial::Entry < ApplicationRecord
   end
 
   def liability_delta_for(liability_id)
+    if entry_type == "inflow"
+      return -amount.to_d if counterparty_financial_liability_id == liability_id
+      return 0.to_d
+    end
+
     if entry_type == "loan_disbursement"
       return amount.to_d if financial_liability_id == liability_id
       return -amount.to_d if counterparty_financial_liability_id == liability_id
@@ -87,7 +92,14 @@ class Financial::Entry < ApplicationRecord
 
   def required_links_by_type
     case entry_type
-    when "inflow", "outflow", "adjustment"
+    when "inflow"
+      if financial_account.blank? && counterparty_financial_liability.blank?
+        errors.add(:base, "inflow requires an asset or liability destination")
+      end
+      if financial_account.present? && counterparty_financial_liability.present?
+        errors.add(:base, "inflow can have only one destination")
+      end
+    when "outflow", "adjustment"
       errors.add(:financial_account, "must be selected") if financial_account.blank?
     when "transfer"
       errors.add(:financial_account, "must be selected") if financial_account.blank?

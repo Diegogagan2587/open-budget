@@ -73,4 +73,45 @@ class IncomeEventsControllerTest < ActionDispatch::IntegrationTest
     assert_equal @destination_asset.id, entry.financial_account_id
     assert_equal 1000.to_d, entry.amount.to_d
   end
+
+  test "regular income persists destination and syncs inflow on receive" do
+    sign_in
+    destination_asset = Financial::Asset.create!(
+      account: @account,
+      name: "Payroll",
+      account_type: "checking",
+      status: "active",
+      opening_balance: 0
+    )
+
+    assert_difference("IncomeEvent.count", 1) do
+      post income_events_path, params: {
+        income_event: {
+          description: "Salary",
+          expected_date: Date.current,
+          expected_amount: 2000,
+          status: "pending",
+          income_type: "regular",
+          destination_selection: "asset:#{destination_asset.id}"
+        }
+      }
+    end
+
+    income_event = IncomeEvent.order(:created_at).last
+    assert_equal destination_asset.id, income_event.regular_income_destination_asset_id
+    assert_nil Financial::Entry.find_by(income_event: income_event, entry_type: "inflow")
+
+    patch receive_income_event_path(income_event), params: {
+      income_event: {
+        received_date: Date.current,
+        received_amount: 2100
+      }
+    }
+
+    income_event.reload
+    entry = Financial::Entry.find_by(income_event: income_event, entry_type: "inflow")
+    assert_not_nil entry
+    assert_equal 2100.to_d, entry.amount
+    assert_equal destination_asset.id, entry.financial_account_id
+  end
 end

@@ -6,10 +6,13 @@ class IncomeEvent < ApplicationRecord
   belongs_to :loan_liability, class_name: "Financial::Liability", optional: true
   belongs_to :loan_disbursement_destination_asset, class_name: "Financial::Asset", optional: true
   belongs_to :loan_disbursement_destination_liability, class_name: "Financial::Liability", optional: true
+  belongs_to :regular_income_destination_asset, class_name: "Financial::Asset", optional: true
+  belongs_to :regular_income_destination_liability, class_name: "Financial::Liability", optional: true
   has_many :planned_expenses, dependent: :destroy
   has_many :expenses, dependent: :nullify
   has_many :loan_payment_schedules, foreign_key: :loan_id, dependent: :destroy
   has_one :loan_disbursement_entry, -> { where(entry_type: "loan_disbursement") }, class_name: "Financial::Entry", inverse_of: :income_event
+  has_one :regular_income_entry, -> { where(entry_type: "inflow", expense_id: nil, planned_expense_id: nil) }, class_name: "Financial::Entry", inverse_of: :income_event
 
   before_validation :set_account, on: :create
   before_validation :normalize_payment_frequency
@@ -17,6 +20,8 @@ class IncomeEvent < ApplicationRecord
   before_validation :assign_destination_selection
   before_validation :infer_loan_interest_rate
   after_commit :sync_loan_side_effects, if: :loan?
+  after_commit :sync_regular_income_transaction, unless: :loan?
+  after_destroy_commit :remove_regular_income_transaction
 
   scope :for_account, ->(account) { where(account: account) }
   scope :regular, -> { where(income_type: "regular") }
@@ -36,6 +41,8 @@ class IncomeEvent < ApplicationRecord
   validate :loan_payment_amount_consistency, if: :loan?
   validate :loan_routing_presence, if: :loan?
   validate :loan_routing_account_ownership, if: :loan?
+  validate :regular_income_destination_presence, if: :regular_income_destination_set?
+  validate :regular_income_destination_account_ownership, unless: :loan?
 
   scope :pending, -> { where(status: "pending") }
   scope :received, -> { where(status: "received") }
@@ -256,21 +263,36 @@ class IncomeEvent < ApplicationRecord
     return if @destination_selection.blank?
 
     kind, id = @destination_selection.split(":", 2)
-    case kind
-    when "asset"
-      self.loan_disbursement_destination_asset_id = id
-      self.loan_disbursement_destination_liability_id = nil
-    when "liability"
-      self.loan_disbursement_destination_liability_id = id
-      self.loan_disbursement_destination_asset_id = nil
+    if loan?
+      case kind
+      when "asset"
+        self.loan_disbursement_destination_asset_id = id
+        self.loan_disbursement_destination_liability_id = nil
+      when "liability"
+        self.loan_disbursement_destination_liability_id = id
+        self.loan_disbursement_destination_asset_id = nil
+      end
+    else
+      case kind
+      when "asset"
+        self.regular_income_destination_asset_id = id
+        self.regular_income_destination_liability_id = nil
+      when "liability"
+        self.regular_income_destination_liability_id = id
+        self.regular_income_destination_asset_id = nil
+      end
     end
   end
 
   def selection_for_destination
-    if loan_disbursement_destination_asset_id.present?
+    if loan? && loan_disbursement_destination_asset_id.present?
       "asset:#{loan_disbursement_destination_asset_id}"
-    elsif loan_disbursement_destination_liability_id.present?
+    elsif loan? && loan_disbursement_destination_liability_id.present?
       "liability:#{loan_disbursement_destination_liability_id}"
+    elsif regular_income_destination_asset_id.present?
+      "asset:#{regular_income_destination_asset_id}"
+    elsif regular_income_destination_liability_id.present?
+      "liability:#{regular_income_destination_liability_id}"
     end
   end
 
@@ -297,6 +319,39 @@ class IncomeEvent < ApplicationRecord
     if loan_disbursement_destination_liability.present? && loan_disbursement_destination_liability.account_id != account_id
       errors.add(:loan_disbursement_destination_liability, "must belong to the current account")
     end
+  end
+
+  def regular_income_destination_presence
+    destinations = [ regular_income_destination_asset_id, regular_income_destination_liability_id ].compact
+    return if destinations.size == 1
+
+    errors.add(:destination_selection, "must select exactly one destination account")
+  end
+
+  def regular_income_destination_set?
+    !loan? && (regular_income_destination_asset_id.present? || regular_income_destination_liability_id.present?)
+  end
+
+  def regular_income_destination_account_ownership
+    return if account.blank?
+
+    if regular_income_destination_asset.present? && regular_income_destination_asset.account_id != account_id
+      errors.add(:regular_income_destination_asset, "must belong to the current account")
+    end
+
+    if regular_income_destination_liability.present? && regular_income_destination_liability.account_id != account_id
+      errors.add(:regular_income_destination_liability, "must belong to the current account")
+    end
+  end
+
+  def sync_regular_income_transaction
+    IncomeEvents::TransactionSyncService.call(self)
+  end
+
+  def remove_regular_income_transaction
+    return if loan?
+
+    IncomeEvents::TransactionSyncService.remove_for(self)
   end
 
   def inferred_annual_rate_from_payment

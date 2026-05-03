@@ -55,6 +55,8 @@ class ExpensesController < ApplicationController
     respond_to do |format|
       result = Expenses::RecordExecutionService.call(
         expense: @expense,
+        source_selection: expense_params[:source_selection],
+        destination_selection: expense_params[:destination_selection],
         financial_account_id: expense_params[:financial_account_id],
         financial_liability_id: expense_params[:financial_liability_id]
       )
@@ -82,6 +84,8 @@ class ExpensesController < ApplicationController
 
     result = Expenses::RecordExecutionService.call(
       expense: @expense,
+      source_selection: quick_expense_params[:source_selection],
+      destination_selection: quick_expense_params[:destination_selection],
       financial_account_id: quick_expense_params[:financial_account_id],
       financial_liability_id: quick_expense_params[:financial_liability_id]
     )
@@ -142,7 +146,7 @@ class ExpensesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def expense_params
-      params.expect(expense: [ :date, :amount, :description, :category_id, :budget_period_id, :income_event_id, :financial_account_id, :financial_liability_id ])
+      params.expect(expense: [ :date, :amount, :description, :category_id, :budget_period_id, :income_event_id, :financial_account_id, :financial_liability_id, :source_selection, :destination_selection ])
     end
 
     def set_budget_period
@@ -156,7 +160,7 @@ class ExpensesController < ApplicationController
     end
 
     def quick_expense_params
-      params.expect(expense: [ :date, :amount, :description, :category_id, :budget_period_id, :financial_account_id, :financial_liability_id ])
+      params.expect(expense: [ :date, :amount, :description, :category_id, :budget_period_id, :financial_account_id, :financial_liability_id, :source_selection, :destination_selection ])
     end
 
     def load_quick_form_collections
