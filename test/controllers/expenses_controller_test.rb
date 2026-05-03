@@ -62,6 +62,13 @@ class ExpensesControllerTest < ActionDispatch::IntegrationTest
 
   test "should create quick direct expense for selected income event" do
     sign_in
+    financial_account = Financial::Asset.create!(
+      account: @account,
+      name: "Checking",
+      account_type: "checking",
+      status: "active",
+      opening_balance: 0
+    )
 
     assert_difference("Expense.count", 1) do
       post income_event_direct_expenses_path(@income_event), params: {
@@ -70,7 +77,8 @@ class ExpensesControllerTest < ActionDispatch::IntegrationTest
           date: Date.current,
           category_id: @category.id,
           budget_period_id: @budget_period.id,
-          description: "Taxi"
+          description: "Taxi",
+          source_selection: "asset:#{financial_account.id}"
         }
       }
     end
@@ -92,7 +100,8 @@ class ExpensesControllerTest < ActionDispatch::IntegrationTest
           date: Date.current,
           category_id: nil,
           budget_period_id: nil,
-          description: ""
+          description: "",
+          source_selection: ""
         }
       }
     end
