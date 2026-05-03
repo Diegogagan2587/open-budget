@@ -6,8 +6,10 @@ module Expenses
       new(...).call
     end
 
-    def initialize(expense:, financial_account_id: nil, financial_liability_id: nil)
+    def initialize(expense:, source_selection: nil, destination_selection: nil, financial_account_id: nil, financial_liability_id: nil)
       @expense = expense
+      @source_selection = source_selection
+      @destination_selection = destination_selection
       @financial_account_id = financial_account_id
       @financial_liability_id = financial_liability_id
     end
@@ -18,6 +20,8 @@ module Expenses
       ActiveRecord::Base.transaction do
         expense.financial_account = asset_account if asset_account.present?
         expense.financial_liability = liability if liability.present?
+        expense.source_selection = source_selection if source_selection.present?
+        expense.destination_selection = destination_selection
         expense.save!
 
         created_entry = build_entry
@@ -29,7 +33,7 @@ module Expenses
 
     private
 
-    attr_reader :expense, :financial_account_id, :financial_liability_id
+    attr_reader :expense, :source_selection, :destination_selection, :financial_account_id, :financial_liability_id
 
     def asset_account
       @asset_account ||= Financial::Asset.for_account(expense.account).find_by(id: financial_account_id)
@@ -40,10 +44,34 @@ module Expenses
     end
 
     def build_entry
-      if liability.present?
+      if expense.transfer?
         Financial::Entry.create!(
           account: expense.account,
-          financial_liability: liability,
+          financial_account: expense.financial_account,
+          counterparty_financial_account: expense.counterparty_financial_account,
+          expense: expense,
+          income_event: expense.income_event,
+          entry_type: "transfer",
+          entry_date: expense.date,
+          amount: expense.amount,
+          description: expense.description
+        )
+      elsif expense.debt_payment?
+        Financial::Entry.create!(
+          account: expense.account,
+          financial_account: expense.financial_account,
+          financial_liability: expense.counterparty_financial_liability,
+          expense: expense,
+          income_event: expense.income_event,
+          entry_type: "liability_payment",
+          entry_date: expense.date,
+          amount: expense.amount,
+          description: expense.description
+        )
+      elsif expense.financial_liability.present?
+        Financial::Entry.create!(
+          account: expense.account,
+          financial_liability: expense.financial_liability,
           expense: expense,
           income_event: expense.income_event,
           entry_type: "liability_charge",
@@ -51,10 +79,10 @@ module Expenses
           amount: expense.amount,
           description: expense.description
         )
-      elsif asset_account.present?
+      elsif expense.financial_account.present?
         Financial::Entry.create!(
           account: expense.account,
-          financial_account: asset_account,
+          financial_account: expense.financial_account,
           expense: expense,
           income_event: expense.income_event,
           entry_type: "outflow",
