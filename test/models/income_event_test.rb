@@ -289,6 +289,67 @@ class IncomeEventTest < ActiveSupport::TestCase
     assert_equal(4000.0, event3.effective_remaining_budget)
   end
 
+  test "regular received income with asset destination creates and syncs one inflow entry" do
+    destination_asset = Financial::Asset.create!(
+      account: @account,
+      name: "Checking",
+      account_type: "checking",
+      status: "active",
+      opening_balance: 0
+    )
+
+    income = IncomeEvent.create!(
+      account: @account,
+      description: "Salary",
+      expected_date: Date.current,
+      expected_amount: 1000,
+      received_date: Date.current,
+      received_amount: 1000,
+      status: "received",
+      destination_selection: "asset:#{destination_asset.id}"
+    )
+
+    entry = Financial::Entry.find_by(income_event: income, entry_type: "inflow")
+    assert_not_nil entry
+    assert_equal destination_asset.id, entry.financial_account_id
+
+    assert_no_difference("Financial::Entry.where(income_event_id: #{income.id}, entry_type: 'inflow').count") do
+      income.update!(received_amount: 1200)
+    end
+
+    entry.reload
+    assert_equal 1200.to_d, entry.amount
+  end
+
+  test "regular received income with liability destination reduces liability balance and is removed when pending" do
+    destination_liability = Financial::Liability.create!(
+      account: @account,
+      name: "Card",
+      liability_type: "credit_card",
+      status: "active",
+      opening_balance: 500
+    )
+
+    income = IncomeEvent.create!(
+      account: @account,
+      description: "Debt payoff",
+      expected_date: Date.current,
+      expected_amount: 200,
+      received_date: Date.current,
+      received_amount: 200,
+      status: "received",
+      destination_selection: "liability:#{destination_liability.id}"
+    )
+
+    entry = Financial::Entry.find_by(income_event: income, entry_type: "inflow")
+    assert_not_nil entry
+    assert_equal destination_liability.id, entry.counterparty_financial_liability_id
+    assert_equal 300.to_d, destination_liability.current_balance
+
+    income.update!(status: "pending")
+    assert_nil Financial::Entry.find_by(id: entry.id)
+  end
+
   test "previous_balance handles events across year boundaries" do
     event1 = IncomeEvent.create!(
       budget_period: @budget_period,
