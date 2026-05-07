@@ -4,6 +4,6 @@
   <%= render "form", recurring_task: @recurring_task, task_areas: @task_areas, task_area_id_filter: params[:task_area_id] %>
 
   <p class="mt-4">
-    <%= link_to t("shared.back"), task_recurring_tasks_path(task_area_id: params[:task_area_id]), class: "text-blue-600 hover:underline" %>
+    <%= link_to t("shared.back"), task_root_path(task_area_id: params[:task_area_id]), class: "text-blue-600 hover:underline" %>
   </p>
 </div>

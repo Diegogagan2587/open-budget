@@ -1,7 +1,7 @@
 <%
   task_area_id_filter = local_assigns[:task_area_id_filter]
   index_path_options = task_area_id_filter.present? ? { task_area_id: task_area_id_filter } : {}
-  cancel_path = task_recurring_tasks_path(index_path_options)
+  cancel_path = task_root_path(index_path_options)
 %>
 <%= form_with model: recurring_task, url: recurring_task.persisted? ? task_recurring_task_path(recurring_task, index_path_options) : task_recurring_tasks_path(index_path_options), method: recurring_task.persisted? ? :patch : :post, local: true do |form| %>
   <% if recurring_task.errors.any? %>

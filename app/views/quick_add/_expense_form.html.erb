@@ -1,0 +1,45 @@
+<%= form_with url: quick_add_create_expense_path, local: false, data: { turbo: true } do |f| %>
+  <div class="space-y-3">
+    <div>
+      <label class="block text-sm font-medium text-foreground mb-1">Description</label>
+      <%= render Ui::InputComponent.new(name: "expense[description]", placeholder: "Groceries", value: @expense&.description) %>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-foreground mb-1">Amount</label>
+      <%= render Ui::InputComponent.new(name: "expense[amount]", type: "number", placeholder: "0.00", value: @expense&.amount) %>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-foreground mb-1">From account</label>
+      <%= render Ui::SelectComponent.new(
+        name: "expense[origin]",
+        options: (
+          (Current.account&.financial_accounts || []).map { |a| ["💰 #{a.name}", "asset_#{a.id}"] } +
+          (Current.account&.financial_liabilities || []).map { |l| ["💳 #{l.name}", "liability_#{l.id}"] }
+        ),
+        selected: nil,
+        include_blank: "Select account"
+      ) %>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-foreground mb-1">Category</label>
+      <%= render Ui::SelectComponent.new(
+        name: "expense[category_id]",
+        options: Current.account&.categories&.pluck(:name, :id) || [],
+        selected: @expense&.category_id,
+        include_blank: "Select category"
+      ) %>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-foreground mb-1">Date</label>
+      <%= render Ui::InputComponent.new(name: "expense[date]", type: "date", value: @expense&.date || Date.today) %>
+    </div>
+
+    <div class="flex justify-end gap-2 pt-2">
+      <%= render Ui::ButtonComponent.new(label: "Create Expense", variant: :default, type: "submit") %>
+    </div>
+  </div>
+<% end %>

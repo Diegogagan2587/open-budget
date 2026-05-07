@@ -14,7 +14,7 @@
         </li>
       <% end %>
     </ul>
-    <%= link_to t("task.recurring_tasks.index.title"), task_recurring_tasks_path, class: "text-blue-600 hover:underline text-sm" %>
+    <%= link_to t("task.recurring_tasks.index.title"), task_root_path, class: "text-blue-600 hover:underline text-sm" %>
   </section>
 <% end %>
 
@@ -49,7 +49,7 @@
     <p><%= t("dashboard.categories_description") %></p>
   <% end %>
 
-  <%= link_to task_recurring_tasks_path, class: "block p-4 border rounded hover:shadow" do %>
+  <%= link_to task_root_path, class: "block p-4 border rounded hover:shadow" do %>
     <h2 class="text-xl">✓ <%= t("nav.tasks") %></h2>
     <p><%= t("task.recurring_tasks.index.title") %></p>
   <% end %>
@@ -76,7 +76,7 @@
   <%= link_to new_income_event_path, class: "block p-4 border rounded hover:shadow col-span-full" do %>
     <h2 class="text-xl">➕ <%= t("dashboard.new_income_event") %></h2>
   <% end %>
-  
+
   <%= link_to new_expense_path, class: "block p-4 border rounded hover:shadow col-span-full" do %>
     <h2 class="text-xl">➕ <%= t("dashboard.add_expense") %></h2>
   <% end %>
@@ -85,3 +85,8 @@
     <h2 class="text-xl">➕ <%= t("dashboard.add_shopping_item") %></h2>
   <% end %>
 </nav>
+
+<%= render QuickAddMenuComponent.new %>
+
+<!-- Modal container for quick-add modals -->
+<div id="quick-add-modal-container"></div>

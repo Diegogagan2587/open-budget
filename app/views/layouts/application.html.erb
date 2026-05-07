@@ -35,7 +35,9 @@
         </header>
 
         <div class="mx-auto w-full max-w-7xl px-4 pt-4">
-          <%= render "shared/flash" %>
+          <div id="flash-container">
+            <%= render "shared/flash" %>
+          </div>
         </div>
 
         <%= yield %>

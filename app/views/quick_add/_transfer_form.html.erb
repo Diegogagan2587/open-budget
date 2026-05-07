@@ -1,0 +1,40 @@
+<%= form_with url: quick_add_create_transfer_path, local: false, data: { turbo: true } do |f| %>
+  <div class="space-y-3">
+    <div>
+      <label class="block text-sm font-medium text-foreground mb-1">Amount</label>
+      <%= render Ui::InputComponent.new(name: "transfer[amount]", type: "number", placeholder: "0.00", step: "0.01", value: @transfer&.amount) %>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-foreground mb-1\">From Account</label>
+      <% 
+        assets = Current.account&.financial_accounts&.pluck(:name, :id)&.map { |n, id| ["💰 #{n}", "asset_#{id}"] } || []
+        liabilities = Current.account&.financial_liabilities&.pluck(:name, :id)&.map { |n, id| ["💳 #{n}", "liability_#{id}"] } || []
+        from_options = assets + liabilities
+      %>
+      <%= render Ui::SelectComponent.new(
+        name: "transfer[from_type]",
+        options: from_options,
+        selected: @transfer_from_type,
+        include_blank: "Select from account"
+      ) %>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-foreground mb-1">To Account</label>
+      <% 
+        to_options = assets + liabilities
+      %>
+      <%= render Ui::SelectComponent.new(
+        name: "transfer[to_type]",
+        options: to_options,
+        selected: @transfer_to_type,
+        include_blank: "Select to account"
+      ) %>
+    </div>
+
+    <div class="flex justify-end gap-2 pt-2">
+      <%= render Ui::ButtonComponent.new(label: "Create Transfer", variant: :default, type: "submit") %>
+    </div>
+  </div>
+<% end %>
