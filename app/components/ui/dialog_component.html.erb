@@ -1,0 +1,17 @@
+<div class="hidden md:block">
+  <div class="fixed inset-0 flex items-center justify-center z-50">
+    <div class="bg-background rounded-lg shadow-lg w-full max-w-lg max-h-[80vh] overflow-auto">
+      <div class="p-4 border-b bg-muted">
+        <% if @title.present? %>
+          <h3 class="text-lg font-semibold"><%= @title %></h3>
+        <% end %>
+        <% if @description.present? %>
+          <p class="text-sm text-muted-foreground"><%= @description %></p>
+        <% end %>
+      </div>
+      <div class="p-4">
+        <%= content %>
+      </div>
+    </div>
+  </div>
+</div>
