@@ -8,6 +8,7 @@ module Task
     def index
       @recurring_tasks = RecurringTask.for_account(Current.account).pending.by_next_due
       @recurring_tasks = @recurring_tasks.where(task_area_id: params[:task_area_id]) if params[:task_area_id].present?
+      @standalone_tasks = Projects::Task.for_account(Current.account).where(project_id: nil).order(created_at: :desc)
     end
 
     def show
@@ -23,7 +24,7 @@ module Task
       @recurring_task.account = Current.account
 
       if @recurring_task.save
-        redirect_to task_recurring_tasks_path(task_area_id: params[:task_area_id]), notice: t("task.recurring_tasks.flash.created")
+        redirect_to task_root_path(task_area_id: params[:task_area_id]), notice: t("task.recurring_tasks.flash.created")
       else
         render :new, status: :unprocessable_entity
       end
@@ -34,7 +35,7 @@ module Task
 
     def update
       if @recurring_task.update(recurring_task_params)
-        redirect_to task_recurring_tasks_path(task_area_id: params[:task_area_id]), notice: t("task.recurring_tasks.flash.updated")
+        redirect_to task_root_path(task_area_id: params[:task_area_id]), notice: t("task.recurring_tasks.flash.updated")
       else
         render :edit, status: :unprocessable_entity
       end
@@ -42,12 +43,12 @@ module Task
 
     def destroy
       @recurring_task.destroy!
-      redirect_to task_recurring_tasks_path(task_area_id: params[:task_area_id]), status: :see_other, notice: t("task.recurring_tasks.flash.destroyed")
+      redirect_to task_root_path(task_area_id: params[:task_area_id]), status: :see_other, notice: t("task.recurring_tasks.flash.destroyed")
     end
 
     def mark_done
       @recurring_task.mark_done!
-      redirect_to task_recurring_tasks_path(task_area_id: params[:task_area_id]), notice: t("task.recurring_tasks.flash.mark_done")
+      redirect_to task_root_path(task_area_id: params[:task_area_id]), notice: t("task.recurring_tasks.flash.mark_done")
     end
 
     private
