@@ -110,8 +110,10 @@ class Financial::Entry < ApplicationRecord
     when "liability_charge"
       errors.add(:financial_liability, "must be selected") if financial_liability.blank?
     when "liability_payment"
-      errors.add(:financial_account, "must be selected") if financial_account.blank?
       errors.add(:financial_liability, "must be selected") if financial_liability.blank?
+      if financial_account.blank? && income_event.blank?
+        errors.add(:financial_account, "must be selected")
+      end
     when "loan_disbursement"
       errors.add(:financial_liability, "must be selected") if financial_liability.blank?
       if financial_account.blank? && counterparty_financial_liability.blank?
