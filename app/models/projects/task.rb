@@ -3,7 +3,7 @@ module Projects
     STATUSES = %w[blocked backlog in_progress in_review done cancelled].freeze
     PRIORITIES = %w[low medium high].freeze
 
-    belongs_to :project
+    belongs_to :project, optional: true
     belongs_to :account
     belongs_to :user, foreign_key: :owner_id
     has_many :project_docs, through: :project
@@ -16,8 +16,6 @@ module Projects
     validates :task_number, uniqueness: { scope: :account_id, allow_nil: true }
     validates :status, inclusion: { in: STATUSES }
     validates :priority, inclusion: { in: PRIORITIES }
-    validates :project_id, presence: true
-
     scope :for_account, ->(account) { where(account_id: account.id) }
     scope :pending, -> { where(status: %w[blocked backlog in_progress in_review]) }
     scope :completed, -> { where(status: %w[done cancelled]) }
