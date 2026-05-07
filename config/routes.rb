@@ -113,7 +113,10 @@ Rails.application.routes.draw do
   get "reports/spending_by_category", to: "reports#spending_by_category", as: :reports_spending_by_category
   get "reports/category_trends", to: "reports#category_trends", as: :reports_category_trends
 
+  get "/task/recurring_tasks", to: redirect("/task")
+
   namespace :task do
+    root to: "recurring_tasks#index"
     resources :areas, controller: "areas", path: "areas"
     resources :recurring_tasks do
       member do
@@ -133,6 +136,16 @@ Rails.application.routes.draw do
     end
     resources :links, only: [ :index, :show, :new, :create, :edit, :update, :destroy ]
   end
+
+  # Quick-add routes (quick UI modals)
+  get "/quick-add/financial", to: "quick_add#financial", as: :quick_add_financial
+  post "/quick-add/income", to: "quick_add#create_income", as: :quick_add_create_income
+  post "/quick-add/expense", to: "quick_add#create_expense", as: :quick_add_create_expense
+  post "/quick-add/transfer", to: "quick_add#create_transfer", as: :quick_add_create_transfer
+  get "/quick-add/task", to: "quick_add#task", as: :quick_add_task
+  post "/quick-add/task/create", to: "quick_add#create_task", as: :quick_add_create_task
+  get "/quick-add/doc", to: "quick_add#doc", as: :quick_add_doc
+  post "/quick-add/doc/create", to: "quick_add#create_doc", as: :quick_add_create_doc
 
   root "dashboard#index"
 
