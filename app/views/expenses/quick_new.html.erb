@@ -49,6 +49,23 @@
       <%= form.text_field :description, required: true, class: "block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500", placeholder: t("expenses.quick_new.description_placeholder") %>
     </div>
 
+    <% account_option_groups = {
+      "Asset Accounts" => (@financial_accounts || []).map { |asset| ["#{asset.name} (#{asset.account_type.humanize})", "asset:#{asset.id}"] },
+      "Liability Accounts" => (@financial_liabilities || []).map { |liability| ["#{liability.name} (#{liability.liability_type.humanize})", "liability:#{liability.id}"] }
+    } %>
+    <% source_options = grouped_options_for_select(account_option_groups, @expense.source_selection) %>
+    <% destination_options = grouped_options_for_select(account_option_groups, @expense.destination_selection) %>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <%= form.label :source_selection, "Source account", class: "block text-sm font-medium text-gray-700 mb-2" %>
+        <%= form.select :source_selection, source_options, { include_blank: "Select source account" }, { class: "block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" } %>
+      </div>
+      <div>
+        <%= form.label :destination_selection, "Destination account", class: "block text-sm font-medium text-gray-700 mb-2" %>
+        <%= form.select :destination_selection, destination_options, { include_blank: "Leave blank for a normal expense" }, { class: "block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" } %>
+      </div>
+    </div>
+
     <div class="flex items-center justify-end gap-4 pt-2">
       <%= link_to t("expenses.quick_new.cancel"), @income_event, class: "px-4 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200" %>
       <%= form.submit t("expenses.quick_new.save"), class: "px-6 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg shadow-md hover:shadow-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-200 font-medium" %>

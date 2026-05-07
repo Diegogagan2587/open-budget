@@ -33,6 +33,7 @@ module Financial::Liabilities
           category: category,
           budget_period: budget_period,
           income_event: income_event,
+          financial_liability: liability,
           date: entry_date,
           amount: amount,
           description: description
