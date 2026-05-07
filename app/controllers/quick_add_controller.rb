@@ -11,20 +11,9 @@ class QuickAddController < ApplicationController
     @income = Current.account.income_events.new(income_params)
     @income.status = "applied"
     @income.income_type ||= "regular"
+    @income.destination_selection = normalize_financial_destination(params.dig(:income, :destination))
 
-    destination_type, destination_id = parse_financial_type(params.dig(:income, :destination))
-    destination_asset = destination_type == :asset ? Financial::Asset.for_account(Current.account).find_by(id: destination_id) : nil
-    destination_liability = destination_type == :liability ? Financial::Liability.for_account(Current.account).find_by(id: destination_id) : nil
-
-    income_created = ActiveRecord::Base.transaction do
-      @income.save!
-      create_income_entry!(@income, destination_asset:, destination_liability:)
-      true
-    rescue ActiveRecord::RecordInvalid
-      false
-    end
-
-    if income_created
+    if @income.save
       respond_to do |format|
         format.turbo_stream do
           render turbo_stream: [
@@ -186,25 +175,11 @@ class QuickAddController < ApplicationController
     [ type, id_str.to_i ]
   end
 
-  def create_income_entry!(income, destination_asset:, destination_liability:)
-    if destination_asset.blank? && destination_liability.blank?
-      income.errors.add(:base, "Destination account must be selected")
-      raise ActiveRecord::RecordInvalid.new(income)
-    end
+  def normalize_financial_destination(value)
+    type, id = parse_financial_type(value)
+    return nil if type.nil? || id.nil?
 
-    attrs = {
-      account: Current.account,
-      income_event: income,
-      entry_date: income.expected_date || Date.current,
-      amount: income.expected_amount,
-      description: income.description
-    }
-
-    if destination_asset.present?
-      Financial::Entry.create!(attrs.merge(entry_type: "inflow", financial_account: destination_asset))
-    else
-      Financial::Entry.create!(attrs.merge(entry_type: "liability_payment", financial_liability: destination_liability))
-    end
+    "#{type}:#{id}"
   end
 
   def build_transfer_entry(amount:, from_type:, from_id:, to_type:, to_id:)
