@@ -175,15 +175,15 @@ class QuickAddController < ApplicationController
 
   def parse_financial_type(value)
     # value format: "asset_123", "liability_456", "asset:123", or "liability:456"
-    return [nil, nil] if value.blank?
+    return [ nil, nil ] if value.blank?
 
     separator = value.include?(":") ? ":" : "_"
     type_str, id_str = value.split(separator, 2)
     type = type_str == "asset" ? :asset : (type_str == "liability" ? :liability : nil)
 
-    return [nil, nil] if type.nil? || id_str.blank?
+    return [ nil, nil ] if type.nil? || id_str.blank?
 
-    [type, id_str.to_i]
+    [ type, id_str.to_i ]
   end
 
   def create_income_entry!(income, destination_asset:, destination_liability:)
