@@ -170,4 +170,49 @@ class PlannedExpensesControllerTest < ActionDispatch::IntegrationTest
     assert_select "form[data-template-selector-edit-mode-value='true']", 1,
       "Edit form should have edit mode so amount is preserved"
   end
+
+  test "move keeps linked spent expense in sync with new income event" do
+    sign_in
+
+    target_income_event = income_events(:two)
+    budget_period = BudgetPeriod.create!(
+      name: "Move Regression Period",
+      start_date: Date.current.beginning_of_month,
+      end_date: Date.current.end_of_month,
+      account: @account
+    )
+    @income_event.update!(budget_period: budget_period)
+    target_income_event.update!(budget_period: budget_period)
+
+    planned_expense = PlannedExpense.create!(
+      income_event: @income_event,
+      category: @category,
+      account: @account,
+      description: "Regression spent planned expense",
+      amount: 60.00,
+      status: "pending_to_pay",
+      financial_account: @source_account
+    )
+
+    expense = Expense.create!(
+      date: Date.current,
+      amount: planned_expense.amount,
+      description: planned_expense.description,
+      category: @category,
+      budget_period: budget_period,
+      income_event: @income_event,
+      account: @account,
+      planned_expense: planned_expense,
+      financial_account: @source_account
+    )
+
+    patch move_income_event_planned_expense_path(@income_event, planned_expense), params: {
+      target_income_event_id: target_income_event.id
+    }
+
+    assert_redirected_to income_event_planned_expenses_path(target_income_event)
+    assert_equal target_income_event.id, planned_expense.reload.income_event_id
+    assert_equal target_income_event.id, expense.reload.income_event_id
+    assert_equal target_income_event.budget_period_id, expense.budget_period_id
+  end
 end
