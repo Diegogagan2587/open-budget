@@ -192,6 +192,7 @@ class PlannedExpensesController < ApplicationController
 
   def ensure_unique_installment_for!(planned_expense, target_income_event)
     return if planned_expense.loan_installment_number.blank?
+    return if planned_expense.origin_income_event_id.present?
 
     conflict_exists = target_income_event.planned_expenses
       .where(loan_installment_number: planned_expense.loan_installment_number)

@@ -3,6 +3,7 @@ class PlannedExpense < ApplicationRecord
 
   belongs_to :account
   belongs_to :income_event
+  belongs_to :origin_income_event, class_name: "IncomeEvent", optional: true
   belongs_to :category
   belongs_to :expense_template, optional: true
   belongs_to :shopping_item, optional: true

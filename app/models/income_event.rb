@@ -9,6 +9,7 @@ class IncomeEvent < ApplicationRecord
   belongs_to :regular_income_destination_asset, class_name: "Financial::Asset", optional: true
   belongs_to :regular_income_destination_liability, class_name: "Financial::Liability", optional: true
   has_many :planned_expenses, dependent: :destroy
+  has_many :originated_planned_expenses, class_name: "PlannedExpense", foreign_key: :origin_income_event_id, dependent: :nullify
   has_many :expenses, dependent: :nullify
   has_many :loan_payment_schedules, foreign_key: :loan_id, dependent: :destroy
   has_one :loan_disbursement_entry, -> { where(entry_type: "loan_disbursement") }, class_name: "Financial::Entry", inverse_of: :income_event

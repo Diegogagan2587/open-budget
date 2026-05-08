@@ -316,6 +316,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_07_000000) do
     t.bigint "financial_account_id"
     t.bigint "financial_liability_id"
     t.bigint "income_event_id", null: false
+    t.bigint "origin_income_event_id"
     t.integer "loan_installment_number"
     t.text "notes"
     t.integer "position"
@@ -328,8 +329,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_07_000000) do
     t.index ["expense_template_id"], name: "index_planned_expenses_on_expense_template_id"
     t.index ["financial_account_id"], name: "index_planned_expenses_on_financial_account_id"
     t.index ["financial_liability_id"], name: "index_planned_expenses_on_financial_liability_id"
-    t.index ["income_event_id", "loan_installment_number"], name: "index_planned_expenses_on_income_event_and_loan_installment", unique: true, where: "(loan_installment_number IS NOT NULL)"
+    t.index ["income_event_id", "loan_installment_number"], name: "index_planned_expenses_on_income_event_and_loan_installment", unique: true, where: "((loan_installment_number IS NOT NULL) AND (origin_income_event_id IS NULL))"
+    t.index ["origin_income_event_id", "loan_installment_number"], name: "index_planned_expenses_on_origin_income_event_and_loan_installment", unique: true, where: "((loan_installment_number IS NOT NULL) AND (origin_income_event_id IS NOT NULL))"
     t.index ["income_event_id"], name: "index_planned_expenses_on_income_event_id"
+    t.index ["origin_income_event_id"], name: "index_planned_expenses_on_origin_income_event_id"
     t.index ["shopping_item_id"], name: "index_planned_expenses_on_shopping_item_id"
   end
 
@@ -542,6 +545,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_07_000000) do
   add_foreign_key "planned_expenses", "financial_accounts", column: "counterparty_financial_account_id"
   add_foreign_key "planned_expenses", "financial_liabilities"
   add_foreign_key "planned_expenses", "income_events"
+  add_foreign_key "planned_expenses", "income_events", column: "origin_income_event_id"
   add_foreign_key "planned_expenses", "shopping_items"
   add_foreign_key "project_docs", "docs"
   add_foreign_key "project_docs", "projects"
