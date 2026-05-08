@@ -80,7 +80,9 @@
           <% @planned_expenses.each do |planned_expense| %>
             <div class="rounded-lg border border-gray-200 px-4 py-3">
               <div class="flex items-center justify-between gap-3">
-                <span class="text-sm text-gray-900"><%= planned_expense.description %></span>
+                <%= link_to [planned_expense.income_event, planned_expense], class: "text-sm text-blue-700 hover:text-blue-900 hover:underline" do %>
+                  <%= planned_expense.description %>
+                <% end %>
                 <span class="text-sm font-medium text-gray-700"><%= number_to_currency(planned_expense.amount) %></span>
               </div>
               <p class="mt-1 text-xs text-gray-500">
