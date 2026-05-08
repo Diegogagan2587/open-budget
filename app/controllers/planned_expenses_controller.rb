@@ -54,11 +54,8 @@ class PlannedExpensesController < ApplicationController
       if @planned_expense.update(planned_expense_params)
         # If income_event_id changed, redirect to the new income event
         if new_income_event_id.present? && new_income_event_id.to_i != old_income_event.id
-          new_income_event = IncomeEvent.find(new_income_event_id)
-          # Update position if moving to a new income event
-          if @planned_expense.position.nil?
-            @planned_expense.update(position: (new_income_event.planned_expenses.maximum(:position) || 0) + 1)
-          end
+          new_income_event = IncomeEvent.for_account(Current.account).find(new_income_event_id)
+          move_planned_expense_to!(@planned_expense, new_income_event)
           format.html { redirect_to income_event_planned_expenses_path(new_income_event), notice: "Planned expense was successfully moved and updated." }
         else
           format.html { redirect_to income_event_planned_expenses_path(@income_event), notice: t("planned_expenses.flash.updated") }
@@ -71,6 +68,15 @@ class PlannedExpensesController < ApplicationController
         format.html { render :edit, status: :unprocessable_entity }
         format.json { render json: @planned_expense.errors, status: :unprocessable_entity }
       end
+    end
+  rescue ActiveRecord::RecordInvalid => e
+    @planned_expense.errors.add(:base, e.record.errors.full_messages.to_sentence)
+    @expense_templates = ExpenseTemplate.for_account(Current.account).includes(:category).all
+    @income_events = ordered_income_events_for_reference(@planned_expense.due_date)
+    load_route_collections
+    respond_to do |format|
+      format.html { render :edit, status: :unprocessable_entity }
+      format.json { render json: @planned_expense.errors, status: :unprocessable_entity }
     end
   end
 
@@ -108,15 +114,13 @@ class PlannedExpensesController < ApplicationController
       return
     end
 
-    old_income_event = @income_event
-    @planned_expense.update(income_event_id: target_income_event.id)
-
-    # Update position if needed
-    if @planned_expense.position.nil?
-      @planned_expense.update(position: (target_income_event.planned_expenses.maximum(:position) || 0) + 1)
+    ActiveRecord::Base.transaction do
+      move_planned_expense_to!(@planned_expense, target_income_event)
     end
 
     redirect_to income_event_planned_expenses_path(target_income_event), notice: t("planned_expenses.flash.moved_to", description: target_income_event.description)
+  rescue ActiveRecord::RecordInvalid => e
+    redirect_to income_event_planned_expenses_path(@income_event), alert: e.record.errors.full_messages.to_sentence
   end
 
   private
@@ -161,5 +165,24 @@ class PlannedExpensesController < ApplicationController
 
     prioritized_same_month = on_or_before.sort_by(&:expected_date).reverse + after.sort_by(&:expected_date)
     prioritized_same_month + others.sort_by(&:expected_date).reverse
+  end
+
+  def move_planned_expense_to!(planned_expense, target_income_event)
+    planned_expense.update!(income_event_id: target_income_event.id)
+
+    if planned_expense.position.nil?
+      planned_expense.update!(position: (target_income_event.planned_expenses.maximum(:position) || 0) + 1)
+    end
+
+    if planned_expense.expense.present?
+      planned_expense.expense.update!(
+        income_event_id: target_income_event.id,
+        budget_period_id: target_income_event.budget_period_id
+      )
+    end
+
+    return unless planned_expense.financial_entry.present?
+
+    planned_expense.financial_entry.update!(income_event_id: target_income_event.id)
   end
 end
