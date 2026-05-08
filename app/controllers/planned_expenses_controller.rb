@@ -69,6 +69,15 @@ class PlannedExpensesController < ApplicationController
         format.json { render json: @planned_expense.errors, status: :unprocessable_entity }
       end
     end
+  rescue ActiveRecord::RecordInvalid => e
+    @planned_expense.errors.add(:base, e.record.errors.full_messages.to_sentence)
+    @expense_templates = ExpenseTemplate.for_account(Current.account).includes(:category).all
+    @income_events = ordered_income_events_for_reference(@planned_expense.due_date)
+    load_route_collections
+    respond_to do |format|
+      format.html { render :edit, status: :unprocessable_entity }
+      format.json { render json: @planned_expense.errors, status: :unprocessable_entity }
+    end
   end
 
   def destroy
