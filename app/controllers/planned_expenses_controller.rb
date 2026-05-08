@@ -121,6 +121,8 @@ class PlannedExpensesController < ApplicationController
     redirect_to income_event_planned_expenses_path(target_income_event), notice: t("planned_expenses.flash.moved_to", description: target_income_event.description)
   rescue ActiveRecord::RecordInvalid => e
     redirect_to income_event_planned_expenses_path(@income_event), alert: e.record.errors.full_messages.to_sentence
+  rescue ActiveRecord::RecordNotUnique
+    redirect_to income_event_planned_expenses_path(@income_event), alert: move_conflict_message(target_income_event)
   end
 
   private
@@ -168,6 +170,8 @@ class PlannedExpensesController < ApplicationController
   end
 
   def move_planned_expense_to!(planned_expense, target_income_event)
+    ensure_unique_installment_for!(planned_expense, target_income_event)
+
     planned_expense.update!(income_event_id: target_income_event.id)
 
     if planned_expense.position.nil?
@@ -185,4 +189,23 @@ class PlannedExpensesController < ApplicationController
 
     planned_expense.financial_entry.update!(income_event_id: target_income_event.id)
   end
+
+  def ensure_unique_installment_for!(planned_expense, target_income_event)
+    return if planned_expense.loan_installment_number.blank?
+
+    conflict_exists = target_income_event.planned_expenses
+      .where(loan_installment_number: planned_expense.loan_installment_number)
+      .where.not(id: planned_expense.id)
+      .exists?
+
+    return unless conflict_exists
+
+    planned_expense.errors.add(:loan_installment_number, :taken, message: move_conflict_message(target_income_event))
+    raise ActiveRecord::RecordInvalid.new(planned_expense)
+  end
+
+  def move_conflict_message(target_income_event)
+    "Cannot move this planned expense because installment ##{@planned_expense.loan_installment_number} already exists in #{target_income_event.description}."
+  end
+
 end
