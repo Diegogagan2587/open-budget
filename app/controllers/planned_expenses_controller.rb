@@ -114,15 +114,13 @@ class PlannedExpensesController < ApplicationController
       return
     end
 
-    old_income_event = @income_event
-    @planned_expense.update(income_event_id: target_income_event.id)
-
-    # Update position if needed
-    if @planned_expense.position.nil?
-      @planned_expense.update(position: (target_income_event.planned_expenses.maximum(:position) || 0) + 1)
+    ActiveRecord::Base.transaction do
+      move_planned_expense_to!(@planned_expense, target_income_event)
     end
 
     redirect_to income_event_planned_expenses_path(target_income_event), notice: t("planned_expenses.flash.moved_to", description: target_income_event.description)
+  rescue ActiveRecord::RecordInvalid => e
+    redirect_to income_event_planned_expenses_path(@income_event), alert: e.record.errors.full_messages.to_sentence
   end
 
   private
