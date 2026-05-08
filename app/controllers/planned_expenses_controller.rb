@@ -54,11 +54,8 @@ class PlannedExpensesController < ApplicationController
       if @planned_expense.update(planned_expense_params)
         # If income_event_id changed, redirect to the new income event
         if new_income_event_id.present? && new_income_event_id.to_i != old_income_event.id
-          new_income_event = IncomeEvent.find(new_income_event_id)
-          # Update position if moving to a new income event
-          if @planned_expense.position.nil?
-            @planned_expense.update(position: (new_income_event.planned_expenses.maximum(:position) || 0) + 1)
-          end
+          new_income_event = IncomeEvent.for_account(Current.account).find(new_income_event_id)
+          move_planned_expense_to!(@planned_expense, new_income_event)
           format.html { redirect_to income_event_planned_expenses_path(new_income_event), notice: "Planned expense was successfully moved and updated." }
         else
           format.html { redirect_to income_event_planned_expenses_path(@income_event), notice: t("planned_expenses.flash.updated") }
