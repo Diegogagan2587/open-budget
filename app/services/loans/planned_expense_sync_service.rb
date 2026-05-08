@@ -45,6 +45,7 @@ module Loans
       planned.description = "Loan payment ##{schedule.installment_number} - #{loan.description}" if planned.description.blank?
       planned.amount = schedule.amount
       planned.notes ||= "Auto-generated from loan schedule"
+      planned.origin_income_event = loan
       planned.due_date = schedule.due_date
       planned.status ||= "pending_to_pay"
 
