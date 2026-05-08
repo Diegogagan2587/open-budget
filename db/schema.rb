@@ -330,7 +330,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_07_000000) do
     t.index ["financial_account_id"], name: "index_planned_expenses_on_financial_account_id"
     t.index ["financial_liability_id"], name: "index_planned_expenses_on_financial_liability_id"
     t.index ["income_event_id", "loan_installment_number"], name: "index_planned_expenses_on_income_event_and_loan_installment", unique: true, where: "((loan_installment_number IS NOT NULL) AND (origin_income_event_id IS NULL))"
-    t.index ["origin_income_event_id", "loan_installment_number"], name: "index_planned_expenses_on_origin_income_event_and_loan_installment", unique: true, where: "((loan_installment_number IS NOT NULL) AND (origin_income_event_id IS NOT NULL))"
+    t.index ["origin_income_event_id", "loan_installment_number"], name: "idx_planned_expenses_on_origin_event_installment", unique: true, where: "((loan_installment_number IS NOT NULL) AND (origin_income_event_id IS NOT NULL))"
     t.index ["income_event_id"], name: "index_planned_expenses_on_income_event_id"
     t.index ["origin_income_event_id"], name: "index_planned_expenses_on_origin_income_event_id"
     t.index ["shopping_item_id"], name: "index_planned_expenses_on_shopping_item_id"

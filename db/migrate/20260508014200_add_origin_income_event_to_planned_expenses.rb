@@ -15,7 +15,7 @@ class AddOriginIncomeEventToPlannedExpenses < ActiveRecord::Migration[8.0]
       [ :origin_income_event_id, :loan_installment_number ],
       unique: true,
       where: "loan_installment_number IS NOT NULL AND origin_income_event_id IS NOT NULL",
-      name: "index_planned_expenses_on_origin_income_event_and_loan_installment"
+      name: "idx_planned_expenses_on_origin_event_installment"
 
     add_index :planned_expenses,
       [ :income_event_id, :loan_installment_number ],
@@ -26,7 +26,7 @@ class AddOriginIncomeEventToPlannedExpenses < ActiveRecord::Migration[8.0]
 
   def down
     remove_index :planned_expenses,
-      name: "index_planned_expenses_on_origin_income_event_and_loan_installment"
+      name: "idx_planned_expenses_on_origin_event_installment"
 
     remove_index :planned_expenses,
       name: "index_planned_expenses_on_income_event_and_loan_installment"
