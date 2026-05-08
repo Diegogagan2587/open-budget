@@ -159,4 +159,23 @@ class PlannedExpensesController < ApplicationController
     prioritized_same_month = on_or_before.sort_by(&:expected_date).reverse + after.sort_by(&:expected_date)
     prioritized_same_month + others.sort_by(&:expected_date).reverse
   end
+
+  def move_planned_expense_to!(planned_expense, target_income_event)
+    planned_expense.update!(income_event_id: target_income_event.id)
+
+    if planned_expense.position.nil?
+      planned_expense.update!(position: (target_income_event.planned_expenses.maximum(:position) || 0) + 1)
+    end
+
+    if planned_expense.expense.present?
+      planned_expense.expense.update!(
+        income_event_id: target_income_event.id,
+        budget_period_id: target_income_event.budget_period_id
+      )
+    end
+
+    return unless planned_expense.financial_entry.present?
+
+    planned_expense.financial_entry.update!(income_event_id: target_income_event.id)
+  end
 end
