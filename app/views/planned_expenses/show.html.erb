@@ -1,7 +1,7 @@
 <p style="color: green"><%= notice %></p>
 
-<div class="mb-6">
-  <%= link_to income_event_planned_expenses_path(@income_event), class: "inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors mb-4" do %>
+  <div class="mb-6">
+  <%= link_to income_event_planned_expenses_path(@income_event), class: "inline-flex items-center text-accent hover:text-accent-dark transition-colors mb-4" do %>
     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
     </svg>
@@ -9,15 +9,15 @@
   <% end %>
 </div>
 
-<div class="bg-white rounded-xl shadow-md border border-gray-200 p-6 mb-6">
+<div class="bg-card rounded-xl shadow-md border border-border p-6 mb-6">
   <div class="flex items-center justify-between mb-6">
-    <h1 class="text-2xl font-bold text-gray-900">Planned Expense Details</h1>
+    <h1 class="text-2xl font-bold text-foreground">Planned Expense Details</h1>
     <span class="px-3 py-1 rounded-full text-xs font-medium <%= 
       case @planned_expense.status
-      when 'pending_to_pay', 'saved', 'transfer_to_savings' then 'bg-yellow-100 text-yellow-800 border border-yellow-200'
-      when 'transferring' then 'bg-blue-100 text-blue-800 border border-blue-200'
-      when 'paid', 'transferred', 'spent' then 'bg-green-100 text-green-800 border border-green-200'
-      else 'bg-gray-100 text-gray-800 border border-gray-200'
+      when 'pending_to_pay', 'saved', 'transfer_to_savings' then 'bg-warning-soft text-warning border border-warning-soft'
+      when 'transferring' then 'bg-muted text-foreground border border-border'
+      when 'paid', 'transferred', 'spent' then 'bg-success-soft text-success border border-success-soft'
+      else 'bg-muted text-foreground border border-border'
       end
     %>">
       <%= t("activerecord.attributes.planned_expense.status_options.#{@planned_expense.status}") %>
@@ -26,38 +26,38 @@
 
   <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
     <div>
-      <p class="text-sm font-medium text-gray-500 mb-1">Amount</p>
-      <p class="text-2xl font-bold text-gray-900"><%= number_to_currency(@planned_expense.amount) %></p>
-      <p class="text-xs text-gray-500 mt-1"><%= @planned_expense.percentage_of_income.round(1) %>% of income</p>
+      <p class="text-sm font-medium text-muted-foreground mb-1">Amount</p>
+      <p class="text-2xl font-bold text-foreground"><%= number_to_currency(@planned_expense.amount) %></p>
+      <p class="text-xs text-muted-foreground mt-1"><%= @planned_expense.percentage_of_income.round(1) %>% of income</p>
     </div>
     <div>
-      <p class="text-sm font-medium text-gray-500 mb-1">Category</p>
-      <p class="text-lg font-semibold text-gray-900"><%= @planned_expense.category.name %></p>
+      <p class="text-sm font-medium text-muted-foreground mb-1">Category</p>
+      <p class="text-lg font-semibold text-foreground"><%= @planned_expense.category.name %></p>
     </div>
     <div class="md:col-span-2">
-      <p class="text-sm font-medium text-gray-500 mb-1">Description</p>
-      <p class="text-lg text-gray-900"><%= @planned_expense.description %></p>
+      <p class="text-sm font-medium text-muted-foreground mb-1">Description</p>
+      <p class="text-lg text-foreground"><%= @planned_expense.description %></p>
     </div>
     <% if @planned_expense.notes.present? %>
       <div class="md:col-span-2">
-        <p class="text-sm font-medium text-gray-500 mb-1">Notes</p>
-        <p class="text-gray-700 bg-gray-50 p-3 rounded-lg"><%= @planned_expense.notes %></p>
+        <p class="text-sm font-medium text-muted-foreground mb-1">Notes</p>
+        <p class="text-foreground bg-muted/35 p-3 rounded-lg"><%= @planned_expense.notes %></p>
       </div>
     <% end %>
     <% if @planned_expense.routing_summary.present? %>
       <div class="md:col-span-2">
-        <p class="text-sm font-medium text-gray-500 mb-1">Routing</p>
-        <p class="text-gray-700 bg-emerald-50 p-3 rounded-lg border border-emerald-200"><%= @planned_expense.routing_summary %></p>
+        <p class="text-sm font-medium text-muted-foreground mb-1">Routing</p>
+        <p class="text-foreground bg-emerald-50 p-3 rounded-lg border border-emerald-200"><%= @planned_expense.routing_summary %></p>
       </div>
     <% end %>
     <% if @planned_expense.expense_template %>
       <div class="md:col-span-2">
-        <p class="text-sm font-medium text-gray-500 mb-1">Template</p>
+        <p class="text-sm font-medium text-muted-foreground mb-1">Template</p>
         <% progress = @planned_expense.template_progress %>
         <div class="bg-indigo-50 rounded-lg p-4 border border-indigo-200">
           <%= link_to @planned_expense.expense_template, class: "text-indigo-700 hover:text-indigo-900 font-medium flex items-center gap-2 mb-2" do %>
             <% if progress && progress[:complete] %>
-              <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-4 h-4 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
               </svg>
             <% end %>
@@ -76,9 +76,9 @@
     <% end %>
   </div>
 
-  <div class="pt-6 border-t border-gray-200 flex items-center gap-3 flex-wrap">
+    <div class="pt-6 border-t border-border flex items-center gap-3 flex-wrap">
     <%= render Ui::ButtonComponent.new(href: edit_income_event_planned_expense_path(@income_event, @planned_expense), label: "Edit", variant: "outline") %>
-    <button onclick="document.getElementById('move-modal').classList.remove('hidden')" class="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors">
+    <button onclick="document.getElementById('move-modal').classList.remove('hidden')" class="btn btn-secondary">
       Move to...
     </button>
     <% if @planned_expense.expense.nil? %>
@@ -104,17 +104,17 @@
   </div>
 </div>
 
-<div class="bg-gray-50 rounded-xl p-4 border border-gray-200">
-  <p class="text-sm text-gray-600 mb-2">Income Event</p>
-  <%= link_to @income_event.description, @income_event, class: "text-blue-600 hover:text-blue-800 font-medium" %>
+<div class="bg-muted/35 rounded-xl p-4 border border-border">
+  <p class="text-sm text-muted-foreground mb-2">Income Event</p>
+  <%= link_to @income_event.description, @income_event, class: "text-accent hover:text-foreground font-medium" %>
 </div>
 
 <!-- Move Modal -->
 <div id="move-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onclick="if(event.target === this) this.classList.add('hidden')">
-  <div class="bg-white rounded-xl shadow-xl p-6 max-w-md w-full mx-4" onclick="event.stopPropagation()">
+  <div class="bg-card rounded-xl shadow-xl p-6 max-w-md w-full mx-4" onclick="event.stopPropagation()">
     <div class="flex items-center justify-between mb-4">
-      <h2 class="text-xl font-bold text-gray-900">Move Planned Expense</h2>
-      <button onclick="document.getElementById('move-modal').classList.add('hidden')" class="text-gray-400 hover:text-gray-600">
+      <h2 class="text-xl font-bold text-foreground">Move Planned Expense</h2>
+      <button onclick="document.getElementById('move-modal').classList.add('hidden')" class="text-gray-400 hover:text-muted-foreground">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
         </svg>
@@ -123,4 +123,3 @@
     <%= render "move_form" %>
   </div>
 </div>
-

@@ -1,9 +1,9 @@
 <div class="container mx-auto px-4 py-6 space-y-8">
-  <section class="rounded-3xl bg-gradient-to-r from-slate-900 via-slate-800 to-slate-700 text-white p-8 shadow-xl">
+  <section class="rounded-3xl border border-border bg-[linear-gradient(135deg,color-mix(in_oklab,hsl(var(--card))_90%,hsl(var(--background))_10%),hsl(var(--card)))] text-foreground p-8 shadow-sm">
     <div class="max-w-3xl space-y-4">
-      <p class="text-sm uppercase tracking-[0.2em] text-slate-300">Finance hub</p>
+      <p class="text-sm uppercase tracking-[0.16em] text-muted-foreground">Finance hub</p>
       <h1 class="text-3xl font-bold">How money moves in Open Budget</h1>
-      <p class="text-slate-200 text-lg leading-7">
+      <p class="text-muted-foreground text-lg leading-7">
         Income events are still your planning layer. Financial accounts and liabilities are the real balances.
         Planned expenses and loan payments show what you intend to execute, while financial entries record what actually moved.
       </p>
@@ -11,40 +11,40 @@
   </section>
 
   <section class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-    <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-      <p class="text-sm text-gray-500">Categories</p>
-      <p class="mt-2 text-3xl font-bold text-gray-900"><%= @category_count %></p>
-      <p class="mt-2 text-sm text-gray-600">Used by expenses, planned expenses, and entries.</p>
-      <%= link_to "Manage categories", finance_categories_path, class: "mt-4 inline-block text-blue-600 hover:underline" %>
+    <div class="rounded-2xl border border-border bg-card p-5 shadow-sm border-t-4 border-t-primary">
+      <p class="text-sm text-muted-foreground">Categories</p>
+      <p class="mt-2 text-3xl font-bold text-foreground"><%= @category_count %></p>
+      <p class="mt-2 text-sm text-muted-foreground">Used by expenses, planned expenses, and entries.</p>
+      <%= link_to "Manage categories", finance_categories_path, class: "mt-4 inline-block text-accent hover:underline hover:text-accent-dark" %>
     </div>
 
-    <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-      <p class="text-sm text-gray-500">Assets accounts</p>
-      <p class="mt-2 text-3xl font-bold text-gray-900"><%= @financial_account_count %></p>
-      <p class="mt-2 text-sm text-gray-600">Debit, checking, or savings accounts that hold cash.</p>
-      <%= link_to "Manage assets", finance_financial_accounts_path, class: "mt-4 inline-block text-blue-600 hover:underline" %>
+    <div class="rounded-2xl border border-border bg-card p-5 shadow-sm border-t-4 border-t-warning">
+      <p class="text-sm text-muted-foreground">Assets accounts</p>
+      <p class="mt-2 text-3xl font-bold text-foreground"><%= @financial_account_count %></p>
+      <p class="mt-2 text-sm text-muted-foreground">Debit, checking, or savings accounts that hold cash.</p>
+      <%= link_to "Manage assets", finance_financial_accounts_path, class: "mt-4 inline-block text-accent hover:underline hover:text-accent-dark" %>
     </div>
 
-    <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-      <p class="text-sm text-gray-500">Liability Accounts</p>
-      <p class="mt-2 text-3xl font-bold text-gray-900"><%= @financial_liability_count %></p>
-      <p class="mt-2 text-sm text-gray-600">Credit cards and personal credits you want to pay down.
+    <div class="rounded-2xl border border-border bg-card p-5 shadow-sm border-t-4 border-t-secondary-accent">
+      <p class="text-sm text-muted-foreground">Liability Accounts</p>
+      <p class="mt-2 text-3xl font-bold text-foreground"><%= @financial_liability_count %></p>
+      <p class="mt-2 text-sm text-muted-foreground">Credit cards and personal credits you want to pay down.
       </p>
-      <%= link_to "Manage liabilities", finance_financial_liabilities_path, class: "mt-4 inline-block text-blue-600 hover:underline" %>
+      <%= link_to "Manage liabilities", finance_financial_liabilities_path, class: "mt-4 inline-block text-accent hover:underline hover:text-accent-dark" %>
     </div>
 
-    <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-      <p class="text-sm text-gray-500">Entries</p>
-      <p class="mt-2 text-3xl font-bold text-gray-900"><%= @financial_entry_count %></p>
-      <p class="mt-2 text-sm text-gray-600">The audit trail for actual money movements.</p>
-      <%= link_to "View entries", finance_financial_entries_path, class: "mt-4 inline-block text-blue-600 hover:underline" %>
+    <div class="rounded-2xl border border-border bg-card p-5 shadow-sm border-t-4 border-t-success">
+      <p class="text-sm text-muted-foreground">Entries</p>
+      <p class="mt-2 text-3xl font-bold text-foreground"><%= @financial_entry_count %></p>
+      <p class="mt-2 text-sm text-muted-foreground">The audit trail for actual money movements.</p>
+      <%= link_to "View entries", finance_financial_entries_path, class: "mt-4 inline-block text-accent hover:underline hover:text-accent-dark" %>
     </div>
   </section>
 
   <section class="grid grid-cols-1 xl:grid-cols-2 gap-6">
-    <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm space-y-4">
-      <h2 class="text-xl font-semibold text-gray-900">Flow model</h2>
-      <div class="space-y-3 text-sm leading-6 text-gray-700">
+    <div class="rounded-2xl border border-border bg-card p-6 shadow-sm space-y-4">
+      <h2 class="text-xl font-semibold text-foreground">Flow model</h2>
+      <div class="space-y-3 text-sm leading-6 text-foreground">
         <p><strong>1. IncomeEvent</strong> is where you plan or register income.</p>
         <p><strong>2. PlannedExpense</strong> is what you intend to spend from that income.</p>
         <p><strong>3. LoanPaymentSchedule</strong> is a planned debt payment, shown like a checklist item.</p>
@@ -54,9 +54,9 @@
       </div>
     </div>
 
-    <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm space-y-4">
-      <h2 class="text-xl font-semibold text-gray-900">Recommended daily workflow</h2>
-      <ol class="list-decimal list-inside space-y-2 text-sm leading-6 text-gray-700">
+    <div class="rounded-2xl border border-secondary-accent-soft bg-secondary-accent-soft p-6 shadow-sm space-y-4">
+      <h2 class="text-xl font-semibold text-foreground">Recommended daily workflow</h2>
+      <ol class="list-decimal list-inside space-y-2 text-sm leading-6 text-foreground">
         <li>Create or open an income event like salary.</li>
         <li>Plan your normal expenses and check the loan payments you want to cover.</li>
         <li>Open the loan or the income event and mark a payment as paid when you actually send it.</li>
@@ -66,9 +66,9 @@
     </div>
   </section>
 
-  <section class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm space-y-4">
-    <h2 class="text-xl font-semibold text-gray-900">Why this is separate from Settings</h2>
-    <p class="text-sm leading-6 text-gray-700">
+  <section class="rounded-2xl border border-border bg-card p-6 shadow-sm space-y-4">
+    <h2 class="text-xl font-semibold text-foreground">Why this is separate from Settings</h2>
+    <p class="text-sm leading-6 text-foreground">
       Settings are for user preferences and app configuration. Finance is an operating area: balances, debts, payments,
       and execution. Keeping them separate reduces confusion and makes the model easier to understand.
     </p>

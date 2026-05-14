@@ -1,7 +1,7 @@
 <p style="color: green"><%= notice %></p>
 
 <div class="mb-4">
-  <%= link_to "← Back to Shopping List", shopping_items_path, class: "text-blue-500 hover:underline" %>
+  <%= link_to "← Back to Shopping List", shopping_items_path, class: "text-accent hover:underline" %>
 </div>
 
 <h1 class="text-2xl font-bold mb-4"><%= @shopping_item.name %></h1>
@@ -26,50 +26,50 @@
   <% end %>
 </div>
 
-<div class="bg-gray-50 p-4 rounded mb-4">
+<div class="bg-muted/35 p-4 rounded mb-4">
   <h2 class="text-xl font-semibold mb-2">Details</h2>
   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
     <div>
-      <p class="text-sm text-gray-600">Status</p>
+      <p class="text-sm text-muted-foreground">Status</p>
       <p class="font-semibold">
-        <span class="px-2 py-1 rounded text-xs <%= @shopping_item.status == 'pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800' %>">
+        <span class="px-2 py-1 rounded text-xs <%= @shopping_item.status == 'pending' ? 'bg-warning-soft text-warning' : 'bg-success-soft text-success' %>">
           <%= t("activerecord.attributes.shopping_item.status_options.#{@shopping_item.status}") %>
         </span>
       </p>
     </div>
     <div>
-      <p class="text-sm text-gray-600">Type</p>
+      <p class="text-sm text-muted-foreground">Type</p>
       <p class="font-semibold">
-        <span class="px-2 py-1 rounded text-xs bg-gray-100 text-gray-800">
+        <span class="px-2 py-1 rounded text-xs bg-muted text-foreground">
           <%= t("activerecord.attributes.shopping_item.item_type.#{@shopping_item.item_type}") %>
         </span>
       </p>
     </div>
     <div>
-      <p class="text-sm text-gray-600">Category</p>
+      <p class="text-sm text-muted-foreground">Category</p>
       <p class="font-semibold"><%= @shopping_item.category&.name || "-" %></p>
     </div>
     <div>
-      <p class="text-sm text-gray-600">Quantity</p>
+      <p class="text-sm text-muted-foreground">Quantity</p>
       <p class="font-semibold"><%= @shopping_item.quantity || "-" %></p>
     </div>
     <div>
-      <p class="text-sm text-gray-600">Estimated Amount</p>
+      <p class="text-sm text-muted-foreground">Estimated Amount</p>
       <p class="font-semibold"><%= @shopping_item.estimated_amount ? number_to_currency(@shopping_item.estimated_amount) : "-" %></p>
     </div>
     <% if @shopping_item.item_type == "recurring" %>
       <div>
-        <p class="text-sm text-gray-600">Frequency</p>
+        <p class="text-sm text-muted-foreground">Frequency</p>
         <p class="font-semibold"><%= @shopping_item.frequency || "-" %></p>
       </div>
       <div>
-        <p class="text-sm text-gray-600">Last Purchased</p>
+        <p class="text-sm text-muted-foreground">Last Purchased</p>
         <p class="font-semibold"><%= @shopping_item.last_purchased_at ? @shopping_item.last_purchased_at.strftime("%B %d, %Y") : "-" %></p>
       </div>
     <% end %>
     <% if @shopping_item.notes.present? %>
       <div class="col-span-2">
-        <p class="text-sm text-gray-600">Notes</p>
+        <p class="text-sm text-muted-foreground">Notes</p>
         <p class="font-semibold"><%= @shopping_item.notes %></p>
       </div>
     <% end %>
@@ -77,28 +77,28 @@
 </div>
 
 <% if @shopping_item.planned_expense %>
-  <div class="bg-blue-50 p-4 rounded mb-4">
+  <div class="bg-muted/35 p-4 rounded mb-4">
     <h2 class="text-xl font-semibold mb-2">Linked Planned Expense</h2>
-    <p><%= link_to @shopping_item.planned_expense.description, income_event_planned_expense_path(@shopping_item.planned_expense.income_event, @shopping_item.planned_expense), class: "text-blue-500 hover:underline" %></p>
+    <p><%= link_to @shopping_item.planned_expense.description, income_event_planned_expense_path(@shopping_item.planned_expense.income_event, @shopping_item.planned_expense), class: "text-accent hover:underline" %></p>
   </div>
 <% end %>
 
 <% if @shopping_item.expense %>
-  <div class="bg-blue-50 p-4 rounded mb-4">
+  <div class="bg-muted/35 p-4 rounded mb-4">
     <h2 class="text-xl font-semibold mb-2">Linked Expense</h2>
-    <p><%= link_to @shopping_item.expense.description, @shopping_item.expense, class: "text-blue-500 hover:underline" %></p>
+    <p><%= link_to @shopping_item.expense.description, @shopping_item.expense, class: "text-accent hover:underline" %></p>
   </div>
 <% end %>
 
-<div class="bg-white border p-4 rounded mb-4">
+<div class="bg-card border p-4 rounded mb-4">
   <h2 class="text-xl font-semibold mb-2">Budget Integration</h2>
   <div class="flex flex-wrap gap-2 justify-center sm:justify-start">
     <%= link_to t("shopping_items.show.convert_to_planned_expense"), convert_to_planned_expense_shopping_item_path(@shopping_item),
-        class: "inline-flex items-center justify-center w-full sm:w-auto px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600 transition-colors text-center" %>
+        class: "btn btn-secondary w-full sm:w-auto text-center" %>
     <%= link_to t("shopping_items.show.convert_to_expense"), convert_to_expense_shopping_item_path(@shopping_item),
         class: "inline-flex items-center justify-center w-full sm:w-auto px-4 py-2 bg-indigo-500 text-white rounded hover:bg-indigo-600 transition-colors text-center" %>
     <%= link_to t("shopping_items.show.link_to_planned_expense"), link_to_planned_expense_shopping_item_path(@shopping_item),
-        class: "inline-flex items-center justify-center w-full sm:w-auto px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors text-center" %>
+        class: "btn btn-primary w-full sm:w-auto text-center" %>
   </div>
 </div>
 

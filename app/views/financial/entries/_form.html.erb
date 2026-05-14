@@ -1,6 +1,6 @@
 <%= form_with model: @financial_entry, url: finance_financial_entries_path, local: true do |form| %>
   <% if @financial_entry.errors.any? %>
-    <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
+    <div class="bg-danger-soft border border-danger-soft text-danger px-4 py-3 rounded mb-4">
       <h2 class="font-bold"><%= pluralize(@financial_entry.errors.count, "error") %> prohibited this record from being saved:</h2>
       <ul class="list-disc list-inside">
         <% @financial_entry.errors.full_messages.each do |message| %>
@@ -11,57 +11,57 @@
   <% end %>
 
   <div class="mb-4">
-    <%= form.label :entry_type, class: "block text-sm font-medium text-gray-700 mb-1" %>
+    <%= form.label :entry_type, class: "block text-sm font-medium text-foreground mb-1" %>
     <%= form.select :entry_type, Financial::Entry::ENTRY_TYPES.map { |type| [type.humanize, type] }, {}, class: "border rounded px-3 py-2 w-full" %>
   </div>
 
   <div class="mb-4">
-    <%= form.label :entry_date, class: "block text-sm font-medium text-gray-700 mb-1" %>
+    <%= form.label :entry_date, class: "block text-sm font-medium text-foreground mb-1" %>
     <%= form.date_field :entry_date, class: "border rounded px-3 py-2 w-full" %>
   </div>
 
   <div class="mb-4">
-    <%= form.label :amount, class: "block text-sm font-medium text-gray-700 mb-1" %>
+    <%= form.label :amount, class: "block text-sm font-medium text-foreground mb-1" %>
     <%= form.number_field :amount, step: 0.01, class: "border rounded px-3 py-2 w-full" %>
   </div>
 
   <div class="mb-4">
-    <%= form.label :description, class: "block text-sm font-medium text-gray-700 mb-1" %>
+    <%= form.label :description, class: "block text-sm font-medium text-foreground mb-1" %>
     <%= form.text_field :description, class: "border rounded px-3 py-2 w-full" %>
   </div>
 
   <div class="mb-4">
-    <%= form.label :financial_account_id, "Source Account", class: "block text-sm font-medium text-gray-700 mb-1" %>
+    <%= form.label :financial_account_id, "Source Account", class: "block text-sm font-medium text-foreground mb-1" %>
     <%= form.collection_select :financial_account_id, @financial_accounts, :id, :name, { include_blank: true }, { class: "border rounded px-3 py-2 w-full" } %>
   </div>
 
   <div class="mb-4">
-    <%= form.label :counterparty_financial_account_id, "Destination Account", class: "block text-sm font-medium text-gray-700 mb-1" %>
+    <%= form.label :counterparty_financial_account_id, "Destination Account", class: "block text-sm font-medium text-foreground mb-1" %>
     <%= form.collection_select :counterparty_financial_account_id, @financial_accounts, :id, :name, { include_blank: true }, { class: "border rounded px-3 py-2 w-full" } %>
   </div>
 
   <div class="mb-4">
-    <%= form.label :financial_liability_id, "Liability", class: "block text-sm font-medium text-gray-700 mb-1" %>
+    <%= form.label :financial_liability_id, "Liability", class: "block text-sm font-medium text-foreground mb-1" %>
     <%= form.collection_select :financial_liability_id, @financial_liabilities, :id, :name, { include_blank: true }, { class: "border rounded px-3 py-2 w-full" } %>
   </div>
 
   <div class="mb-4">
-    <%= form.label :income_event_id, "Income Event (optional)", class: "block text-sm font-medium text-gray-700 mb-1" %>
+    <%= form.label :income_event_id, "Income Event (optional)", class: "block text-sm font-medium text-foreground mb-1" %>
     <%= form.collection_select :income_event_id, @income_events, :id, :description, { include_blank: true }, { class: "border rounded px-3 py-2 w-full" } %>
   </div>
 
   <div class="mb-4">
-    <%= form.label :expense_id, "Expense (optional)", class: "block text-sm font-medium text-gray-700 mb-1" %>
+    <%= form.label :expense_id, "Expense (optional)", class: "block text-sm font-medium text-foreground mb-1" %>
     <%= form.collection_select :expense_id, @expenses, :id, :description, { include_blank: true }, { class: "border rounded px-3 py-2 w-full" } %>
   </div>
 
   <div class="mb-4">
-    <%= form.label :notes, class: "block text-sm font-medium text-gray-700 mb-1" %>
+    <%= form.label :notes, class: "block text-sm font-medium text-foreground mb-1" %>
     <%= form.text_area :notes, rows: 3, class: "border rounded px-3 py-2 w-full" %>
   </div>
 
   <div class="mb-4">
-    <%= form.submit class: "px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600" %>
-    <%= link_to "Cancel", finance_financial_entries_path, class: "px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 ml-2" %>
+    <%= form.submit class: "px-4 py-2 bg-primary text-white rounded hover:bg-primary" %>
+    <%= link_to "Cancel", finance_financial_entries_path, class: "px-4 py-2 bg-muted text-foreground rounded hover:bg-muted/80 ml-2" %>
   </div>
 <% end %>

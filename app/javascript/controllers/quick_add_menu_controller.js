@@ -6,22 +6,24 @@ export default class extends Controller {
 
   connect() {
     this.modalOpenValue = false
-    // Listen for turbo:submit-end to close modal on successful form submission
+    this.boundFormSubmitHandler = this.handleFormSubmit.bind(this)
+
     const container = document.getElementById("quick-add-modal-container")
     if (container) {
-      container.addEventListener("turbo:submit-end", this.handleFormSubmit.bind(this))
+      container.addEventListener("turbo:submit-end", this.boundFormSubmitHandler)
     }
   }
 
   disconnect() {
     const container = document.getElementById("quick-add-modal-container")
-    if (container) {
-      container.removeEventListener("turbo:submit-end", this.handleFormSubmit.bind(this))
+    if (container && this.boundFormSubmitHandler) {
+      container.removeEventListener("turbo:submit-end", this.boundFormSubmitHandler)
     }
+
+    this.closeMobileMenu()
   }
 
   handleFormSubmit(event) {
-    // If form was successful (2xx response), close modal
     if (event.detail.formSubmission.result.statusCode >= 200 && event.detail.formSubmission.result.statusCode < 300) {
       this.closeModal()
     }
@@ -32,8 +34,7 @@ export default class extends Controller {
     if (this.modalOpenValue) {
       this.closeModal()
     } else {
-      // On mobile, show a small action menu next to the FAB so users can pick Financial/Task/Doc
-      const isMobile = window.matchMedia && window.matchMedia('(max-width: 767px)').matches
+      const isMobile = window.matchMedia && window.matchMedia("(max-width: 767px)").matches
       if (isMobile) {
         this.openMobileMenu(event?.currentTarget || null)
       } else {
@@ -43,19 +44,18 @@ export default class extends Controller {
   }
 
   openMobileMenu(fabEl) {
-    // Prevent multiple menus
-    if (document.getElementById('quick-add-mobile-menu')) return
+    if (document.getElementById("quick-add-mobile-menu")) return
 
-    const menu = document.createElement('div')
-    menu.id = 'quick-add-mobile-menu'
-    menu.className = 'fixed bottom-20 right-6 z-50 flex flex-col items-end gap-2'
+    const menu = document.createElement("div")
+    menu.id = "quick-add-mobile-menu"
+    menu.className = "fixed bottom-24 right-6 z-50 flex min-w-[10rem] flex-col gap-2 rounded-xl border border-border bg-card/95 p-2 shadow-2xl backdrop-blur"
 
-    const makeBtn = (label, handler) => {
-      const btn = document.createElement('button')
-      btn.type = 'button'
-      btn.className = 'inline-flex items-center gap-2 px-3 py-2 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors font-medium text-sm'
-      btn.textContent = label
-      btn.addEventListener('click', e => {
+    const makeBtn = (label, handler, iconPath) => {
+      const btn = document.createElement("button")
+      btn.type = "button"
+      btn.className = "inline-flex items-center gap-2 rounded-md border border-transparent px-3 py-2 text-left text-sm font-medium text-foreground transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      btn.innerHTML = `<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"h-4 w-4 text-accent\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"${iconPath}\" /></svg><span>${label}</span>`
+      btn.addEventListener("click", e => {
         e.preventDefault()
         handler(e)
         this.closeMobileMenu()
@@ -63,26 +63,26 @@ export default class extends Controller {
       return btn
     }
 
-    menu.appendChild(makeBtn('💰 Add', () => this.openFinancial()))
-    menu.appendChild(makeBtn('✓ Task', () => this.openTasks()))
-    menu.appendChild(makeBtn('📄 Doc', () => this.openDocs()))
+    menu.appendChild(makeBtn("Add entry", () => this.openFinancial(), "M12 4v16m8-8H4"))
+    menu.appendChild(makeBtn("Task", () => this.openTasks(), "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"))
+    menu.appendChild(makeBtn("Doc", () => this.openDocs(), "M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"))
 
     document.body.appendChild(menu)
 
-    // Close when clicking outside
-    this._mobileMenuOutsideHandler = (ev) => {
+    this._mobileMenuOutsideHandler = ev => {
       if (!menu.contains(ev.target) && !(fabEl && fabEl.contains(ev.target))) {
         this.closeMobileMenu()
       }
     }
-    setTimeout(() => window.addEventListener('click', this._mobileMenuOutsideHandler))
+
+    setTimeout(() => window.addEventListener("click", this._mobileMenuOutsideHandler))
   }
 
   closeMobileMenu() {
-    const menu = document.getElementById('quick-add-mobile-menu')
+    const menu = document.getElementById("quick-add-mobile-menu")
     if (menu) menu.remove()
     if (this._mobileMenuOutsideHandler) {
-      window.removeEventListener('click', this._mobileMenuOutsideHandler)
+      window.removeEventListener("click", this._mobileMenuOutsideHandler)
       this._mobileMenuOutsideHandler = null
     }
   }

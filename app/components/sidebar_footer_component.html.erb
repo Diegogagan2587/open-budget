@@ -1,4 +1,14 @@
-<div data-slot="sidebar-footer" data-sidebar="footer" class="mt-auto border-t border-sidebar-border p-2">
+<div data-slot="sidebar-footer" data-sidebar="footer" class="mt-auto border-t border-sidebar-border bg-[color-mix(in_oklab,hsl(var(--sidebar-accent))_20%,hsl(var(--sidebar-background))_80%)] p-2">
+  <div class="mb-2 flex items-center justify-between rounded-md border border-sidebar-border bg-sidebar px-2 py-1.5 text-sm text-sidebar-foreground">
+    <span data-sidebar-collapse="hide" data-theme-target="label">Dark mode</span>
+    <%= render Ui::SwitchComponent.new(
+      id: "theme-mode-switch-footer",
+      checked: false,
+      data: { action: "theme#toggle", theme_target: "switch" },
+      aria_label: "Dark mode"
+    ) %>
+  </div>
+
   <% if defined?(authenticated?) && authenticated? %>
     <details class="group rounded-md">
       <summary class="flex cursor-pointer list-none items-center gap-2 rounded-md px-2 py-1.5 text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground">
@@ -28,6 +38,15 @@
         <% end %>
 
         <%= link_to t("nav.settings"), edit_settings_path, class: "block rounded-md px-2 py-1.5 text-sm text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground" %>
+        <div class="flex items-center justify-between rounded-md px-2 py-1.5 text-sm text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground">
+          <span data-theme-target="label">Dark mode</span>
+          <%= render Ui::SwitchComponent.new(
+            id: "theme-mode-switch",
+            checked: false,
+            data: { action: "theme#toggle", theme_target: "switch" },
+            aria_label: "Dark mode"
+          ) %>
+        </div>
         <%= link_to session_path, data: { turbo_method: :delete }, class: "block rounded-md px-2 py-1.5 text-sm text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground" do %>
           <%= t("nav.log_out") %>
         <% end %>

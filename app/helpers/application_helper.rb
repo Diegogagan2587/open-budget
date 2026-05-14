@@ -1,4 +1,12 @@
 module ApplicationHelper
+  THEME_PALETTE_OPTIONS = [
+    [ "Executive Calm", "executive-calm" ],
+    [ "Ocean Depth", "ocean-depth" ],
+    [ "Forest Mint", "forest-mint" ],
+    [ "Sunset Ember", "sunset-ember" ],
+    [ "Shadcn Default", "shadcn-default" ]
+  ].freeze
+
   # Returns the current page title for the navbar (e.g. "Expenses", "New expense").
   # Uses content_for(:nav_title) if set, otherwise derives from controller/action and locale.
   def nav_page_title
@@ -69,5 +77,19 @@ module ApplicationHelper
       tags: %w[h1 h2 h3 h4 h5 h6 p br strong em u del code pre blockquote ul ol li a table thead tbody tr th td hr],
       attributes: { "a" => [ "href", "title" ], "th" => [ "align" ], "td" => [ "align" ] }
     )
+  end
+
+  def theme_palette_options
+    THEME_PALETTE_OPTIONS
+  end
+
+  def current_theme_palette
+    raw_palette = Current.user&.theme_palette.presence || "executive-calm"
+    palette = User::LEGACY_THEME_PALETTE_MAP.fetch(raw_palette, raw_palette)
+    User::THEME_PALETTES.include?(palette) ? palette : "executive-calm"
+  end
+
+  def current_theme_palette_class
+    "palette-#{current_theme_palette}"
   end
 end
