@@ -212,6 +212,8 @@ es:
         other: "%{count} categorías"
       manage_categories: "Gestionar categorías"
     language: "Idioma"
+    theme_palette: "Paleta de color"
+    theme_palette_description: "Elige una paleta inspirada en iOS para esta cuenta. Los cambios se aplican en modo claro y oscuro."
     update: "Guardar cambios"
     updated: "Ajustes actualizados."
     cancel: "Cancelar"
