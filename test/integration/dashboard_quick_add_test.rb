@@ -11,7 +11,7 @@ class DashboardIntegrationTest < ActionDispatch::IntegrationTest
     get root_path
     assert_response :success
     assert_select "div.fixed.right-4.z-40.md\\:hidden[data-controller='quick-add-menu']" # FAB on mobile
-    assert_select "div.fixed.right-5.top-5.z-40.hidden.md\\:flex[data-controller='quick-add-menu']" # Toolbar on desktop
+    assert_select "div.fixed.right-4.z-40.hidden.md\\:flex[data-controller='quick-add-menu']" # Toolbar on desktop
   end
 
   test "quick add links are present on dashboard" do

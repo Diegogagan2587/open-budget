@@ -26,7 +26,7 @@ class QuickAddViewRenderTest < ActionDispatch::IntegrationTest
       # Check for FAB on mobile
       assert_select "div.fixed.right-4.z-40.md\\:hidden[data-controller='quick-add-menu']"
       # Check for desktop quick actions container
-      assert_select "div.fixed.right-5.top-5.z-40.hidden.md\\:flex[data-controller='quick-add-menu']"
+      assert_select "div.fixed.right-4.z-40.hidden.md\\:flex[data-controller='quick-add-menu']"
       # Check for link to quick-add
       assert_select "a[href*='quick-add']"
     end
