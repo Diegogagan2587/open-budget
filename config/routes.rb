@@ -123,6 +123,7 @@ Rails.application.routes.draw do
         patch :mark_done
       end
     end
+    resources :tasks, only: [ :edit, :update ]
   end
 
   scope module: :projects do

@@ -8,7 +8,18 @@ module Task
     def index
       @recurring_tasks = RecurringTask.for_account(Current.account).pending.by_next_due
       @recurring_tasks = @recurring_tasks.where(task_area_id: params[:task_area_id]) if params[:task_area_id].present?
-      @standalone_tasks = Projects::Task.for_account(Current.account).where(project_id: nil).order(created_at: :desc)
+      @projects = Projects::Project.for_account(Current.account).order(:name)
+      @task_status_options = Projects::Task::STATUSES
+      @task_priority_options = Projects::Task::PRIORITIES
+
+      # Get all standalone tasks and filter by project/priority
+      all_tasks = Projects::Task.for_account(Current.account).order(created_at: :desc)
+      all_tasks = all_tasks.by_project(params[:project_id])
+      all_tasks = all_tasks.by_priority(params[:priority])
+
+      # Split into pending and completed
+      @pending_tasks = all_tasks.where(status: %w[blocked backlog in_progress in_review])
+      @completed_tasks = all_tasks.where(status: %w[done cancelled])
     end
 
     def show

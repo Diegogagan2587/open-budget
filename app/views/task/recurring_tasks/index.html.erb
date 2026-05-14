@@ -4,30 +4,76 @@
 <div class="container mx-auto px-4">
   <h1 class="text-2xl font-bold mb-4"><%= t("nav.tasks") %></h1>
 
-  <section class="mb-8 rounded-lg border border-border bg-card p-4 shadow-sm">
-    <div class="mb-3 flex items-center justify-between gap-3">
+  <section class="mb-8 rounded-lg border border-border bg-card p-4 shadow-sm" data-controller="task-tabs" data-task-tabs-active-tab="pending">
+    <div class="mb-4 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
       <div>
-        <h2 class="text-lg font-semibold text-foreground">Standalone tasks</h2>
-        <p class="text-sm text-muted-foreground">These are the tasks created without a project.</p>
+        <h2 class="text-lg font-semibold text-foreground">Task inbox</h2>
+        <p class="text-sm text-muted-foreground">Filter tasks by project or priority. Change status inline to move between pending and completed.</p>
       </div>
-      <%= link_to "New task", task_root_path, class: "inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2 text-white hover:bg-primary transition-colors" %>
     </div>
 
-    <% if @standalone_tasks.any? %>
-      <div class="space-y-3">
-        <% @standalone_tasks.each do |task| %>
-          <div class="rounded-lg border border-border p-4">
-            <h3 class="font-medium text-foreground"><%= task.title %></h3>
-            <% if task.description.present? %>
-              <p class="mt-1 text-sm text-muted-foreground"><%= task.description %></p>
-            <% end %>
-            <p class="mt-2 text-xs text-muted-foreground">Priority: <%= task.priority_label %> · Status: <%= task.status_label %></p>
-          </div>
+    <!-- Tabs -->
+    <div class="mb-4 flex gap-2 border-b border-border">
+      <button type="button" class="px-4 py-2 font-medium text-foreground border-b-2 border-primary" data-action="task-tabs#switchTab" data-tab="pending">
+        Pending
+      </button>
+      <button type="button" class="px-4 py-2 font-medium text-muted-foreground border-b-2 border-transparent hover:text-foreground" data-action="task-tabs#switchTab" data-tab="completed">
+        Completed
+      </button>
+    </div>
+
+    <!-- Filters -->
+    <%= form_with url: task_root_path, method: :get, local: true, class: "mb-4 rounded-xl border border-border bg-background p-4", data: { controller: "autosubmit" } do %>
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div>
+          <label class="mb-2 block text-sm font-medium text-foreground">Project</label>
+          <%= render Ui::SelectComponent.new(
+            name: "project_id",
+            options: [["All projects", "all"], ["Unassigned", "unassigned"]] + @projects.map { |project| [project.name, project.id] },
+            selected: params[:project_id].presence || "all",
+            data: { controller: "autosubmit", action: "change->autosubmit#submit" }
+          ) %>
+        </div>
+
+        <div>
+          <label class="mb-2 block text-sm font-medium text-foreground">Priority</label>
+          <%= render Ui::SelectComponent.new(
+            name: "priority",
+            options: [["All priorities", ""]] + @task_priority_options.map { |priority| [priority.humanize, priority] },
+            selected: params[:priority],
+            data: { controller: "autosubmit", action: "change->autosubmit#submit" }
+          ) %>
+        </div>
+      </div>
+
+      <div class="mt-4 flex flex-wrap gap-2">
+        <%= render Ui::ButtonComponent.new(href: task_root_path, label: "Reset filters", variant: "outline", size: :sm) %>
+      </div>
+    <% end %>
+
+    <!-- Pending Tab -->
+    <div data-task-tabs-target="tab" data-tab-name="pending">
+      <div class="space-y-3" id="pending_tasks">
+        <% @pending_tasks.each do |task| %>
+          <%= render "task/tasks/task_card", task: task, filter_params: params.permit(:project_id, :priority).to_h.symbolize_keys.compact_blank %>
         <% end %>
       </div>
-    <% else %>
-      <div class="rounded-lg border border-dashed border-input p-6 text-sm text-muted-foreground">No standalone tasks yet.</div>
-    <% end %>
+      <div id="pending_empty" class="<%= @pending_tasks.any? ? 'hidden' : '' %> rounded-lg border border-dashed border-input p-6 text-sm text-muted-foreground">
+        No pending tasks match the current filters.
+      </div>
+    </div>
+
+    <!-- Completed Tab -->
+    <div data-task-tabs-target="tab" data-tab-name="completed" class="hidden">
+      <div class="space-y-3" id="completed_tasks">
+        <% @completed_tasks.each do |task| %>
+          <%= render "task/tasks/task_card", task: task, filter_params: params.permit(:project_id, :priority).to_h.symbolize_keys.compact_blank %>
+        <% end %>
+      </div>
+      <div id="completed_empty" class="<%= @completed_tasks.any? ? 'hidden' : '' %> rounded-lg border border-dashed border-input p-6 text-sm text-muted-foreground">
+        No completed tasks.
+      </div>
+    </div>
   </section>
 
   <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center">
@@ -56,4 +102,23 @@
   <% end %>
 
   <%= turbo_frame_tag "task_detail_panel" %>
+</div>
+
+<!-- Task Edit Drawer -->
+<div data-controller="drawer">
+  <!-- Overlay -->
+  <div data-drawer-target="overlay" class="hidden fixed inset-0 bg-black/50 transition-opacity z-40" data-action="click->drawer#overlayClick"></div>
+
+  <!-- Slide Panel -->
+  <div data-drawer-target="panel" class="hidden fixed right-0 top-0 bottom-0 w-full max-w-2xl bg-background shadow-lg z-50 overflow-y-auto transform transition-transform duration-300 translate-x-full">
+    <div class="sticky top-0 border-b border-border bg-background p-4 flex justify-between items-center">
+      <h2 class="text-lg font-semibold text-foreground">Edit Task</h2>
+      <button type="button" class="text-muted-foreground hover:text-foreground" onclick="document.dispatchEvent(new CustomEvent('drawer:close'))">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+    <div data-drawer-target="content" class="p-6"></div>
+  </div>
 </div>

@@ -19,8 +19,20 @@ module Projects
     scope :for_account, ->(account) { where(account_id: account.id) }
     scope :pending, -> { where(status: %w[blocked backlog in_progress in_review]) }
     scope :completed, -> { where(status: %w[done cancelled]) }
-    scope :by_status, ->(status) { where(status: status) if status.present? }
-    scope :by_priority, ->(priority) { where(priority: priority) if priority.present? }
+    scope :by_status, ->(status) { status.present? ? where(status: status) : all }
+    scope :by_priority, ->(priority) { priority.present? ? where(priority: priority) : all }
+    scope :by_project, ->(project_id) do
+      if project_id.blank? || project_id == "all"
+        all
+      elsif project_id == "unassigned"
+        where(project_id: nil)
+      else
+        where(project_id: project_id)
+      end
+    end
+    scope :unassigned, -> { where(project_id: nil) }
+
+    before_save :sync_completed_at, if: :will_save_change_to_status?
 
     def status_label
       I18n.t("tasks.status.#{status}", default: status)
@@ -28,6 +40,10 @@ module Projects
 
     def priority_label
       I18n.t("tasks.priority.#{priority}", default: priority)
+    end
+
+    def project_name
+      project&.name || I18n.t("tasks.project.unassigned", default: "Unassigned")
     end
 
     private
@@ -48,6 +64,20 @@ module Projects
                       1
       end
       self.task_number = "TASK-#{next_number}"
+    end
+
+    def sync_completed_at
+      _, new_status = status_change_to_be_saved
+
+      if completed_status?(new_status)
+        self.completed_at ||= Time.current
+      else
+        self.completed_at = nil
+      end
+    end
+
+    def completed_status?(value)
+      %w[done cancelled].include?(value)
     end
   end
 end
