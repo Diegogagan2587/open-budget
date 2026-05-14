@@ -1,21 +1,20 @@
-<!-- Mobile: Floating quick-add button -->
-<div class="fixed right-4 z-40 md:hidden" style="bottom: calc(1rem + env(safe-area-inset-bottom));" data-controller="quick-add-menu">
+<!-- Quick Action Button: Bottom-right on all sizes -->
+<div class="fixed right-4 z-40" style="bottom: calc(1rem + env(safe-area-inset-bottom));" data-controller="quick-add-menu">
+  <!-- Mobile: Floating button -->
   <button
     type="button"
     data-action="click->quick-add-menu#toggleModal"
     data-quick-add-menu-target="fabButton"
     aria-label="Open quick actions"
-    class="group flex h-14 w-14 items-center justify-center rounded-full border border-primary/35 bg-primary text-primary-foreground shadow-[0_12px_28px_hsl(var(--primary)/0.35)] transition-transform hover:scale-[1.02] hover:bg-primary/92 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+    class="md:hidden group flex h-14 w-14 items-center justify-center rounded-full border border-primary/35 bg-primary text-primary-foreground shadow-[0_12px_28px_hsl(var(--primary)/0.35)] transition-transform hover:scale-[1.02] hover:bg-primary/92 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
   >
     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 transition-transform group-hover:rotate-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
     </svg>
   </button>
-</div>
 
-<!-- Desktop: Global quick actions (icon-first, expand on hover) -->
-<div class="fixed right-5 top-5 z-40 hidden md:flex" data-controller="quick-add-menu">
-  <div class="inline-flex items-center gap-2 rounded-2xl border border-border/90 bg-card/95 p-2 shadow-sm backdrop-blur">
+  <!-- Desktop: Global quick actions -->
+  <div class="hidden md:inline-flex items-center gap-2 rounded-2xl border border-border/90 bg-card/95 p-2 shadow-sm backdrop-blur">
     <%= link_to quick_add_financial_path,
       class: "group inline-flex h-10 w-10 items-center overflow-hidden rounded-xl border border-primary/35 bg-primary px-3 text-primary-foreground shadow-sm transition-all duration-200 hover:w-28 hover:bg-primary/92 focus-visible:w-28 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
       data: { action: "click->quick-add-menu#openFinancial" } do %>
