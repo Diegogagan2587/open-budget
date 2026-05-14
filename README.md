@@ -95,6 +95,12 @@ The Previous Balance feature provides visibility into how financial deficits car
 - **Visual Indicators**: Color-coded displays for negative balances, warnings, and status indicators.
 - **Filtering & Searching**: Filter expenses by date range, category, and description text.
 
+### Color System Inspiration
+- Theme and palette work in this app is inspired by the iOS color reference:
+  - https://laochao.github.io/Colors/ios.html
+- The palette is applied through semantic design tokens (e.g., `primary`, `accent`, `background`, `sidebar-*`) instead of direct one-to-one color flooding.
+- This keeps the UI consistent, accessible, and professional across light and dark modes while preserving iOS-inspired color character.
+
 ## Prerequisites
 
 - Ruby (>= 3.0)
@@ -274,4 +280,3 @@ See `test/models/income_event_test.rb` for full test coverage.
 ## License
 
 MIT © Diego Vidal Lopez
-
