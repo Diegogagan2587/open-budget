@@ -1,19 +1,16 @@
-<div class="fixed inset-0 z-50 flex items-center justify-center md:items-end" data-controller="quick-add-menu">
-  <!-- Backdrop -->
-  <div 
-    class="fixed inset-0 bg-black/50" 
-    data-action="click->quick-add-menu#closeModal"
-  ></div>
+<div class="fixed inset-0 z-50 flex items-center justify-center p-4" data-controller="quick-add-menu">
+  <div class="fixed inset-0 bg-black/50 backdrop-blur-[1px]" data-action="click->quick-add-menu#closeModal"></div>
 
-  <!-- Modal Content -->
-  <div class="relative w-full max-w-lg max-h-[80vh] overflow-y-auto bg-background rounded-t-lg md:rounded-lg shadow-lg md:mb-0 mb-0">
-    <!-- Header with Close Button -->
-    <div class="flex items-center justify-between p-4 border-b">
-      <h2 class="text-lg font-semibold"><%= t("quick_add.title", default: "Quick Add") %></h2>
-      <button 
+  <div class="relative w-full max-w-2xl max-h-[88vh] overflow-y-auto rounded-2xl border border-border bg-card shadow-2xl">
+    <div class="flex items-start justify-between border-b border-border px-5 py-4">
+      <div>
+        <h2 class="text-lg font-semibold text-foreground">Add money movement</h2>
+        <p class="mt-1 text-sm text-muted-foreground">Quickly record income, expense, or transfer from one place.</p>
+      </div>
+      <button
         type="button"
         data-action="click->quick-add-menu#closeModal"
-        class="p-1 hover:bg-accent rounded-md transition-colors"
+        class="rounded-md p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
       >
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -21,52 +18,47 @@
       </button>
     </div>
 
-    <!-- Modal Body -->
-    <div class="p-4">
+    <div class="p-5">
       <div data-controller="quick-add-tabs" class="space-y-4">
-        <!-- Tabs -->
-        <div class="flex gap-1 mb-4 border-b">
-          <button 
+        <div class="grid grid-cols-3 gap-2 rounded-lg border border-border bg-muted/35 p-1">
+          <button
             type="button"
             data-quick-add-tabs-target="tab"
             data-panel="income-panel"
             data-action="click->quick-add-tabs#selectTab"
-            class="px-4 py-2 font-medium text-sm bg-accent text-accent-foreground rounded-t-md"
+            class="rounded-md bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground"
           >
-            💰 Income
+            Income
           </button>
-          <button 
+          <button
             type="button"
             data-quick-add-tabs-target="tab"
             data-panel="expense-panel"
             data-action="click->quick-add-tabs#selectTab"
-            class="px-4 py-2 font-medium text-sm text-muted-foreground hover:text-foreground"
+            class="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-card hover:text-foreground"
           >
-            💸 Expense
+            Expense
           </button>
-          <button 
+          <button
             type="button"
             data-quick-add-tabs-target="tab"
             data-panel="transfer-panel"
             data-action="click->quick-add-tabs#selectTab"
-            class="px-4 py-2 font-medium text-sm text-muted-foreground hover:text-foreground"
+            class="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-card hover:text-foreground"
           >
-            ↔️ Transfer
+            Transfer
           </button>
         </div>
 
-        <!-- Income Panel -->
-        <div id="income-panel" data-quick-add-tabs-target="panel">
+        <div id="income-panel" data-quick-add-tabs-target="panel" class="space-y-4">
           <%= render "quick_add/income_form" %>
         </div>
 
-        <!-- Expense Panel -->
-        <div id="expense-panel" data-quick-add-tabs-target="panel" class="hidden">
+        <div id="expense-panel" data-quick-add-tabs-target="panel" class="hidden space-y-4">
           <%= render "quick_add/expense_form" %>
         </div>
 
-        <!-- Transfer Panel -->
-        <div id="transfer-panel" data-quick-add-tabs-target="panel" class="hidden">
+        <div id="transfer-panel" data-quick-add-tabs-target="panel" class="hidden space-y-4">
           <%= render "quick_add/transfer_form" %>
         </div>
       </div>
