@@ -9,7 +9,7 @@
   <% @accounts.each do |account| %>
     <div class="border rounded p-4 hover:shadow-lg transition-shadow">
       <h2 class="text-xl font-semibold mb-2"><%= account.name %></h2>
-      <p class="text-sm text-gray-600 mb-4">
+      <p class="text-sm text-muted-foreground mb-4">
         <% membership = account.account_memberships.find_by(user: Current.user) %>
         Role: <span class="font-semibold"><%= membership&.role&.capitalize %></span>
       </p>
@@ -24,7 +24,7 @@
           <%= render Ui::ButtonComponent.new(href: edit_account_path(account), label: "Edit", variant: "outline", size: "sm") %>
         <% end %>
         <% if account == current_account %>
-          <span class="px-3 py-1 bg-green-100 text-green-800 text-sm rounded"><%= t("shared.current") %></span>
+          <span class="px-3 py-1 bg-success-soft text-success text-sm rounded"><%= t("shared.current") %></span>
         <% else %>
           <%= form_with url: account_switch_path, method: :post, local: true, class: "inline" do |f| %>
             <%= f.hidden_field :account_id, value: account.id %>
