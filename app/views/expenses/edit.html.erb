@@ -2,8 +2,8 @@
   <h1 class="text-2xl font-bold mb-4"><%= t("expenses.edit.title") %></h1>
 
   <% if @expense.budget_period %>
-  <div class="mb-4 p-3 bg-blue-50 border border-blue-200 rounded">
-    <p class="text-sm text-gray-700">
+  <div class="mb-4 p-3 bg-muted/35 border border-border rounded">
+    <p class="text-sm text-foreground">
       <strong>Periodo presupuestario actual:</strong> <%= @expense.budget_period.name %>
     </p>
   </div>
@@ -11,18 +11,18 @@
 
 <% if @expense.income_event %>
   <div class="mb-4 p-3 bg-purple-50 border border-purple-200 rounded">
-    <p class="text-sm text-gray-700">
+    <p class="text-sm text-foreground">
       <strong>Evento de ingreso actual:</strong> <%= @expense.income_event.description %> - <%= number_to_currency(@expense.income_event.expected_amount) %>
     </p>
   </div>
 <% end %>
 
 <% if @expense.planned_expense %>
-  <div class="mb-4 p-3 bg-green-50 border border-green-200 rounded">
-    <p class="text-sm text-gray-700">
+  <div class="mb-4 p-3 bg-green-50 border border-success-soft rounded">
+    <p class="text-sm text-foreground">
       <strong>Gasto planificado relacionado:</strong> <%= @expense.planned_expense.description %> - <%= number_to_currency(@expense.planned_expense.amount) %>
     </p>
-    <p class="text-xs text-gray-600 mt-1">
+    <p class="text-xs text-muted-foreground mt-1">
       Si cambias el evento de ingreso, el gasto planificado también se actualizará automáticamente.
     </p>
   </div>
