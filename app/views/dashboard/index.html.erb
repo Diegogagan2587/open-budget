@@ -1,92 +1,91 @@
+<section class="space-y-7 p-6 sm:p-8">
+  <header class="rounded-2xl border border-border bg-card p-6 shadow-sm">
+    <div class="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+      <div class="space-y-2">
+        <h1 class="text-2xl font-bold tracking-tight text-foreground sm:text-3xl"><%= t("dashboard.welcome") %></h1>
+        <p class="max-w-2xl text-sm text-muted-foreground sm:text-base">
+          Focus on your next financial move, then navigate to supporting modules.
+        </p>
+      </div>
 
-<h1 class="text-2xl font-bold mb-4"><%= t("dashboard.welcome") %></h1>
+      <div class="grid w-full max-w-xl grid-cols-1 gap-2 sm:grid-cols-2">
+        <%= render Ui::ButtonComponent.new(href: new_expense_path, label: t("dashboard.add_expense"), variant: :default, css_class: "h-10 w-full justify-start") %>
+        <%= render Ui::ButtonComponent.new(href: new_income_event_path, label: t("dashboard.new_income_event"), variant: :outline, css_class: "h-10 w-full justify-start") %>
+        <%= render Ui::ButtonComponent.new(href: new_budget_period_path, label: t("dashboard.new_budget_period"), variant: :outline, css_class: "h-10 w-full justify-start") %>
+        <%= render Ui::ButtonComponent.new(href: new_shopping_item_path, label: t("dashboard.add_shopping_item"), variant: :ghost, css_class: "h-10 w-full justify-start") %>
+      </div>
+    </div>
+  </header>
 
-<% if Current.account && @due_soon_tasks&.any? %>
-  <section class="mb-6 p-4 border rounded bg-gray-50">
-    <h2 class="text-lg font-semibold mb-2"><%= t("task.recurring_tasks.index.title") %></h2>
-    <ul class="list-disc list-inside space-y-1 mb-2">
-      <% @due_soon_tasks.each do |task| %>
-        <li class="<%= 'text-red-600 font-medium' if task.overdue? %>">
-          <%= task.name %>
-          <% if task.next_due_date %>
-            <span class="text-gray-600 text-sm">(<%= l(task.next_due_date, format: :short) %>)</span>
-          <% end %>
-        </li>
+  <% if Current.account && @due_soon_tasks&.any? %>
+    <section class="rounded-xl border border-warning-soft bg-warning-soft p-4">
+      <div class="mb-2 flex items-center justify-between gap-3">
+        <h2 class="text-base font-semibold text-foreground"><%= t("task.recurring_tasks.index.title") %></h2>
+        <%= link_to t("task.recurring_tasks.index.title"), task_root_path, class: "text-sm font-medium text-accent hover:text-accent-dark hover:underline" %>
+      </div>
+      <ul class="space-y-1.5 text-sm">
+        <% @due_soon_tasks.each do |task| %>
+          <li class="flex items-center justify-between gap-3 rounded-md border border-border bg-card px-3 py-2">
+            <span class="min-w-0 truncate <%= 'font-semibold text-danger' if task.overdue? %>"><%= task.name %></span>
+            <% if task.next_due_date %>
+              <span class="shrink-0 text-xs text-muted-foreground"><%= l(task.next_due_date, format: :short) %></span>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+    </section>
+  <% end %>
+
+  <section class="space-y-3">
+    <h2 class="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Core Workspace</h2>
+    <nav class="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
+      <%= link_to expenses_path, class: "group rounded-xl border border-border bg-card p-5 shadow-sm transition-colors hover:bg-muted/35" do %>
+        <h3 class="text-base font-semibold text-foreground">Expenses</h3>
+        <p class="mt-1 text-sm text-muted-foreground"><%= t("dashboard.expenses_description") %></p>
       <% end %>
-    </ul>
-    <%= link_to t("task.recurring_tasks.index.title"), task_root_path, class: "text-blue-600 hover:underline text-sm" %>
+
+      <%= link_to income_events_path, class: "group rounded-xl border border-border bg-card p-5 shadow-sm transition-colors hover:bg-muted/35" do %>
+        <h3 class="text-base font-semibold text-foreground">Income Events</h3>
+        <p class="mt-1 text-sm text-muted-foreground"><%= t("dashboard.income_events_description") %></p>
+      <% end %>
+
+      <%= link_to budget_periods_path, class: "group rounded-xl border border-border bg-card p-5 shadow-sm transition-colors hover:bg-muted/35" do %>
+        <h3 class="text-base font-semibold text-foreground">Budget Periods</h3>
+        <p class="mt-1 text-sm text-muted-foreground"><%= t("dashboard.budget_periods_description") %></p>
+      <% end %>
+
+      <%= link_to finance_path, class: "group rounded-xl border border-border bg-card p-5 shadow-sm transition-colors hover:bg-muted/35" do %>
+        <h3 class="text-base font-semibold text-foreground">Finance</h3>
+        <p class="mt-1 text-sm text-muted-foreground">Accounts, liabilities, entries, and repayment flow.</p>
+      <% end %>
+
+      <%= link_to task_root_path, class: "group rounded-xl border border-border bg-card p-5 shadow-sm transition-colors hover:bg-muted/35" do %>
+        <h3 class="text-base font-semibold text-foreground"><%= t("nav.tasks") %></h3>
+        <p class="mt-1 text-sm text-muted-foreground"><%= t("task.recurring_tasks.index.title") %></p>
+      <% end %>
+
+      <%= link_to reports_path, class: "group rounded-xl border border-border bg-card p-5 shadow-sm transition-colors hover:bg-muted/35" do %>
+        <h3 class="text-base font-semibold text-foreground">Reports</h3>
+        <p class="mt-1 text-sm text-muted-foreground"><%= t("dashboard.reports_description") %></p>
+      <% end %>
+    </nav>
   </section>
-<% end %>
 
-<nav class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-  <%= link_to budget_periods_path, class: "block p-4 border rounded hover:shadow" do %>
-    <h2 class="text-xl">📅 <%= t("dashboard.budget_periods_title") %></h2>
-    <p><%= t("dashboard.budget_periods_description") %></p>
-  <% end %>
-
-  <%= link_to income_events_path, class: "block p-4 border rounded hover:shadow" do %>
-    <h2 class="text-xl">💰 <%= t("dashboard.income_events_title") %></h2>
-    <p><%= t("dashboard.income_events_description") %></p>
-  <% end %>
-
-  <%= link_to expense_templates_path, class: "block p-4 border rounded hover:shadow" do %>
-    <h2 class="text-xl">📋 <%= t("dashboard.expense_templates_title") %></h2>
-    <p><%= t("dashboard.expense_templates_description") %></p>
-  <% end %>
-
-  <%= link_to finance_path, class: "block p-4 border rounded hover:shadow" do %>
-    <h2 class="text-xl">🏦 Finance</h2>
-    <p>Accounts, liabilities, entries, and how repayments fit into the flow.</p>
-  <% end %>
-
-  <%= link_to expenses_path, class: "block p-4 border rounded hover:shadow" do %>
-    <h2 class="text-xl">💸 <%= t("dashboard.expenses_title") %></h2>
-    <p><%= t("dashboard.expenses_description") %></p>
-  <% end %>
-
-  <%= link_to finance_categories_path, class: "block p-4 border rounded hover:shadow" do %>
-    <h2 class="text-xl">🏷️ <%= t("dashboard.categories_title") %></h2>
-    <p><%= t("dashboard.categories_description") %></p>
-  <% end %>
-
-  <%= link_to task_root_path, class: "block p-4 border rounded hover:shadow" do %>
-    <h2 class="text-xl">✓ <%= t("nav.tasks") %></h2>
-    <p><%= t("task.recurring_tasks.index.title") %></p>
-  <% end %>
-
-  <%= link_to shopping_items_path, class: "block p-4 border rounded hover:shadow" do %>
-    <h2 class="text-xl">🛒 <%= t("dashboard.shopping_list_title") %></h2>
-    <p><%= t("dashboard.shopping_list_description") %></p>
-  <% end %>
-
-  <%= link_to inventory_items_path, class: "block p-4 border rounded hover:shadow" do %>
-    <h2 class="text-xl">📦 <%= t("dashboard.home_inventory_title") %></h2>
-    <p><%= t("dashboard.home_inventory_description") %></p>
-  <% end %>
-
-  <%= link_to reports_path, class: "block p-4 border rounded hover:shadow" do %>
-    <h2 class="text-xl">📊 <%= t("dashboard.reports_title") %></h2>
-    <p><%= t("dashboard.reports_description") %></p>
-  <% end %>
-
-  <%= link_to new_budget_period_path, class: "block p-4 border rounded hover:shadow col-span-full" do %>
-    <h2 class="text-xl">➕ <%= t("dashboard.new_budget_period") %></h2>
-  <% end %>
-
-  <%= link_to new_income_event_path, class: "block p-4 border rounded hover:shadow col-span-full" do %>
-    <h2 class="text-xl">➕ <%= t("dashboard.new_income_event") %></h2>
-  <% end %>
-
-  <%= link_to new_expense_path, class: "block p-4 border rounded hover:shadow col-span-full" do %>
-    <h2 class="text-xl">➕ <%= t("dashboard.add_expense") %></h2>
-  <% end %>
-
-  <%= link_to new_shopping_item_path, class: "block p-4 border rounded hover:shadow col-span-full" do %>
-    <h2 class="text-xl">➕ <%= t("dashboard.add_shopping_item") %></h2>
-  <% end %>
-</nav>
-
-<%= render QuickAddMenuComponent.new %>
-
-<!-- Modal container for quick-add modals -->
-<div id="quick-add-modal-container"></div>
+  <section class="space-y-3">
+    <h2 class="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Supporting Modules</h2>
+    <nav class="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+      <%= link_to expense_templates_path, class: "rounded-xl border border-border bg-card p-4 text-sm font-medium text-foreground hover:bg-muted/35" do %>
+        <%= t("dashboard.expense_templates_title") %>
+      <% end %>
+      <%= link_to finance_categories_path, class: "rounded-xl border border-border bg-card p-4 text-sm font-medium text-foreground hover:bg-muted/35" do %>
+        <%= t("dashboard.categories_title") %>
+      <% end %>
+      <%= link_to shopping_items_path, class: "rounded-xl border border-border bg-card p-4 text-sm font-medium text-foreground hover:bg-muted/35" do %>
+        <%= t("dashboard.shopping_list_title") %>
+      <% end %>
+      <%= link_to inventory_items_path, class: "rounded-xl border border-border bg-card p-4 text-sm font-medium text-foreground hover:bg-muted/35" do %>
+        <%= t("dashboard.home_inventory_title") %>
+      <% end %>
+    </nav>
+  </section>
+</section>
