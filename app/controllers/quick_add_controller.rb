@@ -36,6 +36,10 @@ class QuickAddController < ApplicationController
 
     @expense = Current.account.expenses.new(expense_params)
     @expense.budget_period = Current.account.budget_periods.first
+    if @expense.income_event_id.present?
+      valid_income_event = Current.account.income_events.exists?(id: @expense.income_event_id)
+      @expense.income_event_id = nil unless valid_income_event
+    end
 
     # Parse optional origin account (asset or liability)
     from_type, from_id = parse_financial_type(params.dig(:expense, :origin))
@@ -151,7 +155,7 @@ class QuickAddController < ApplicationController
   end
 
   def expense_params
-    params.require(:expense).permit(:description, :amount, :category_id, :date)
+    params.require(:expense).permit(:description, :amount, :category_id, :date, :income_event_id)
   end
 
   def task_params

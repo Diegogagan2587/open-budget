@@ -34,6 +34,16 @@
     </div>
 
     <div>
+      <label class="block text-sm font-medium text-foreground mb-1">Income Event (optional)</label>
+      <%= render Ui::SelectComponent.new(
+        name: "expense[income_event_id]",
+        options: (Current.account&.income_events&.by_date || []).map { |ie| ["#{ie.description} (#{ie.expected_date.strftime('%Y-%m-%d')})", ie.id] },
+        selected: @expense&.income_event_id,
+        include_blank: "None"
+      ) %>
+    </div>
+
+    <div>
       <label class="block text-sm font-medium text-foreground mb-1">Date</label>
       <%= render Ui::InputComponent.new(name: "expense[date]", type: "date", value: @expense&.date || Date.today) %>
     </div>

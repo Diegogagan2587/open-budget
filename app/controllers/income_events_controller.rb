@@ -32,7 +32,7 @@ class IncomeEventsController < ApplicationController
   end
 
   def show
-    @planned_expenses = @income_event.originated_planned_expenses
+    @planned_expenses = @income_event.planned_expenses
       .includes(:income_event)
       .order(Arel.sql("COALESCE(planned_expenses.loan_installment_number, 2147483647) ASC"), :due_date, :created_at)
     @direct_expenses = @income_event.expenses.where(planned_expense_id: nil).order(date: :desc)
@@ -43,7 +43,7 @@ class IncomeEventsController < ApplicationController
 
   def loan_summary
     @loan_payment_schedules = @income_event.loan_payment_schedules_ordered
-    @planned_expenses = @income_event.originated_planned_expenses
+    @planned_expenses = @income_event.planned_expenses
       .includes(:income_event)
       .order(Arel.sql("COALESCE(planned_expenses.loan_installment_number, 2147483647) ASC"), :due_date, :created_at)
     @direct_expenses = @income_event.expenses.where(planned_expense_id: nil).order(date: :desc)
