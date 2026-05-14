@@ -170,4 +170,86 @@ class ExpensesControllerTest < ActionDispatch::IntegrationTest
     assert_nil Financial::Entry.find_by(id: financial_entry.id)
     assert_equal "pending_to_pay", planned_expense.reload.status
   end
+
+  test "updating an expense syncs linked financial entry attributes and type" do
+    sign_in
+
+    source_asset = Financial::Asset.create!(
+      account: @account,
+      name: "Checking",
+      account_type: "checking",
+      status: "active",
+      opening_balance: 0
+    )
+
+    destination_liability = Financial::Liability.create!(
+      account: @account,
+      name: "Credit Card",
+      liability_type: "credit_card",
+      status: "active",
+      opening_balance: 0
+    )
+
+    second_income_event = IncomeEvent.create!(
+      description: "Bonus",
+      expected_date: Date.current + 7.days,
+      expected_amount: 1500,
+      status: "pending",
+      account: @account,
+      budget_period: @budget_period
+    )
+
+    expense = Expense.create!(
+      account: @account,
+      category: @category,
+      budget_period: @budget_period,
+      income_event: @income_event,
+      financial_account: source_asset,
+      date: Date.current,
+      amount: 100,
+      description: "Initial expense"
+    )
+
+    entry = Financial::Entry.create!(
+      account: @account,
+      financial_account: source_asset,
+      expense: expense,
+      income_event: @income_event,
+      entry_type: "outflow",
+      entry_date: expense.date,
+      amount: expense.amount,
+      description: expense.description
+    )
+
+    patch expense_path(expense), params: {
+      expense: {
+        date: Date.current + 1.day,
+        amount: 275.40,
+        description: "Updated payment",
+        category_id: @category.id,
+        budget_period_id: @budget_period.id,
+        income_event_id: second_income_event.id,
+        source_selection: "asset:#{source_asset.id}",
+        destination_selection: "liability:#{destination_liability.id}"
+      }
+    }
+
+    assert_redirected_to expense_path(expense)
+
+    expense.reload
+    entry.reload
+
+    assert_equal 275.40, expense.amount.to_f
+    assert_equal "Updated payment", expense.description
+    assert_equal second_income_event.id, expense.income_event_id
+    assert_equal destination_liability.id, expense.counterparty_financial_liability_id
+
+    assert_equal 275.40, entry.amount.to_f
+    assert_equal Date.current + 1.day, entry.entry_date
+    assert_equal "Updated payment", entry.description
+    assert_equal second_income_event.id, entry.income_event_id
+    assert_equal "liability_payment", entry.entry_type
+    assert_equal source_asset.id, entry.financial_account_id
+    assert_equal destination_liability.id, entry.financial_liability_id
+  end
 end

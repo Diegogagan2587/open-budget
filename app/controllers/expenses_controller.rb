@@ -105,20 +105,30 @@ class ExpensesController < ApplicationController
     new_income_event_id = expense_params[:income_event_id]
 
     respond_to do |format|
-      if @expense.update(expense_params)
-        # If income_event_id changed and expense has a planned_expense, sync it
-        if @expense.planned_expense.present?
-          old_id = old_income_event_id.to_i rescue 0
-          new_id = new_income_event_id.present? ? new_income_event_id.to_i : 0
+      begin
+        ActiveRecord::Base.transaction do
+          @expense.update!(expense_params)
 
-          if new_id != old_id && new_income_event_id.present?
-            @expense.planned_expense.update(income_event_id: new_income_event_id)
+          # Keep related financial entry fully in sync with edited expense.
+          if @expense.financial_entry.present?
+            @expense.financial_entry.update!(synced_financial_entry_attributes(@expense))
+          end
+
+          # If income_event_id changed and expense has a planned_expense, sync it
+          if @expense.planned_expense.present?
+            old_id = old_income_event_id.to_i rescue 0
+            new_id = new_income_event_id.present? ? new_income_event_id.to_i : 0
+
+            if new_id != old_id && new_income_event_id.present?
+              @expense.planned_expense.update!(income_event_id: new_income_event_id)
+            end
           end
         end
 
         format.html { redirect_to @expense, notice: t("expenses.flash.updated") }
         format.json { render :show, status: :ok, location: @expense }
-      else
+      rescue ActiveRecord::RecordInvalid => e
+        @expense.errors.add(:base, e.record.errors.full_messages.to_sentence) unless e.record == @expense
         # Load income events for form re-render on error
         @income_events = IncomeEvent.for_account(Current.account).order(expected_date: :desc)
         load_finance_account_collections
@@ -171,5 +181,50 @@ class ExpensesController < ApplicationController
     def load_finance_account_collections
       @financial_accounts = Financial::Asset.for_account(Current.account).active.order(:name)
       @financial_liabilities = Financial::Liability.for_account(Current.account).active.order(:name)
+    end
+
+    def synced_financial_entry_attributes(expense)
+      attrs = {
+        amount: expense.amount,
+        entry_date: expense.date,
+        description: expense.description,
+        income_event_id: expense.income_event_id
+      }
+
+      if expense.transfer?
+        attrs.merge!(
+          entry_type: "transfer",
+          financial_account_id: expense.financial_account_id,
+          counterparty_financial_account_id: expense.counterparty_financial_account_id,
+          financial_liability_id: nil,
+          counterparty_financial_liability_id: nil
+        )
+      elsif expense.debt_payment?
+        attrs.merge!(
+          entry_type: "liability_payment",
+          financial_account_id: expense.financial_account_id,
+          financial_liability_id: expense.counterparty_financial_liability_id,
+          counterparty_financial_account_id: nil,
+          counterparty_financial_liability_id: nil
+        )
+      elsif expense.financial_liability.present?
+        attrs.merge!(
+          entry_type: "liability_charge",
+          financial_account_id: nil,
+          counterparty_financial_account_id: nil,
+          financial_liability_id: expense.financial_liability_id,
+          counterparty_financial_liability_id: nil
+        )
+      else
+        attrs.merge!(
+          entry_type: "outflow",
+          financial_account_id: expense.financial_account_id,
+          counterparty_financial_account_id: nil,
+          financial_liability_id: nil,
+          counterparty_financial_liability_id: nil
+        )
+      end
+
+      attrs
     end
 end
