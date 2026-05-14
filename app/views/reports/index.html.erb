@@ -17,27 +17,27 @@
         show_period: false
       ) %>
 
-  <p class="mb-4 text-sm text-gray-600">
+  <p class="mb-4 text-sm text-muted-foreground">
     <%= t("reports.period_from") %> <strong><%= l(@date_from) %></strong> — <%= t("reports.period_to") %> <strong><%= l(@date_to) %></strong>
   </p>
 
   <div class="space-y-10 mt-8">
-    <section class="bg-white rounded-xl shadow-md border border-gray-200 p-6">
-      <h2 class="text-lg font-semibold text-gray-800 mb-4"><%= t("reports.expenses_over_time") %></h2>
+    <section class="bg-card rounded-xl shadow-md border border-border p-6">
+      <h2 class="text-lg font-semibold text-foreground mb-4"><%= t("reports.expenses_over_time") %></h2>
       <div class="min-h-[300px]">
         <canvas data-controller="charts" data-charts-config-value="<%= h(@chart_expenses_over_time.to_json) %>" style="height: 300px;"></canvas>
       </div>
     </section>
 
-    <section class="bg-white rounded-xl shadow-md border border-gray-200 p-6">
-      <h2 class="text-lg font-semibold text-gray-800 mb-4"><%= t("reports.by_category") %></h2>
+    <section class="bg-card rounded-xl shadow-md border border-border p-6">
+      <h2 class="text-lg font-semibold text-foreground mb-4"><%= t("reports.by_category") %></h2>
       <div class="min-h-[300px]">
         <canvas data-controller="charts" data-charts-config-value="<%= h(@chart_by_category.to_json) %>" style="height: 300px;"></canvas>
       </div>
     </section>
 
-    <section class="bg-white rounded-xl shadow-md border border-gray-200 p-6">
-      <h2 class="text-lg font-semibold text-gray-800 mb-4"><%= t("reports.income_vs_expenses") %></h2>
+    <section class="bg-card rounded-xl shadow-md border border-border p-6">
+      <h2 class="text-lg font-semibold text-foreground mb-4"><%= t("reports.income_vs_expenses") %></h2>
       <div class="min-h-[300px]">
         <canvas data-controller="charts" data-charts-config-value="<%= h(@chart_income_vs_expenses.to_json) %>" style="height: 300px;"></canvas>
       </div>
