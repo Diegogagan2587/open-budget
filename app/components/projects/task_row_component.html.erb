@@ -1,18 +1,18 @@
-<div class="flex items-center justify-between p-3 border-b border-slate-100 hover:bg-slate-50">
+<div class="flex items-center justify-between p-3 border-b border-border hover:bg-muted/35">
   <div class="flex-1">
     <div class="flex items-center gap-3">
-      <span class="text-xs font-mono text-slate-500"><%= task.task_number %></span>
-      <%= link_to task.title, project_task_path(project, task), class: "font-medium text-blue-600 hover:text-blue-800" %>
+      <span class="text-xs font-mono text-muted-foreground"><%= task.task_number %></span>
+      <%= link_to task.title, project_task_path(project, task), class: "font-medium text-accent hover:text-accent-dark" %>
       <%= render StatusBadgeComponent.new(status: task.status, type: :status) %>
       <%= render StatusBadgeComponent.new(status: task.priority, type: :priority) %>
     </div>
-    <p class="text-sm text-slate-600 mt-1"><%= truncate(task.description, length: 80) %></p>
-    <div class="flex items-center gap-4 mt-2 text-xs text-slate-500">
+    <p class="text-sm text-muted-foreground mt-1"><%= truncate(task.description, length: 80) %></p>
+    <div class="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
       <% if task.user %>
         <span>Owner: <%= task.user.name %></span>
       <% end %>
       <% if task.due_date %>
-        <span class="<%= task.due_date < Date.current ? 'text-red-600 font-semibold' : '' %>">
+        <span class="<%= task.due_date < Date.current ? 'text-danger font-semibold' : '' %>">
           Due: <%= task.due_date.strftime("%b %d, %Y") %>
         </span>
       <% end %>
