@@ -1,6 +1,14 @@
 @import "tailwindcss";
 @import "./shadcn.css";
 
+/* Use Poppins from Google Fonts to match diego-blog-w-astro */
+html, body { font-family: 'Poppins', sans-serif; }
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+}
+
 @keyframes slide-in-right {
   from {
     transform: translateX(100%);
@@ -71,7 +79,7 @@
 }
 
 .markdown-content code {
-  background-color: #f1f5f9;
+  background-color: var(--color-muted);
   padding: 0.2em 0.4em;
   border-radius: 3px;
   font-size: 0.9em;
@@ -79,8 +87,8 @@
 }
 
 .markdown-content pre {
-  background-color: #1e293b;
-  color: #e2e8f0;
+  background-color: var(--color-card);
+  color: var(--color-card-foreground);
   padding: 1em;
   border-radius: 5px;
   overflow-x: auto;
@@ -94,51 +102,41 @@
 }
 
 .markdown-content blockquote {
-  border-left: 4px solid #cbd5e1;
+  border-left: 4px solid var(--color-border);
   padding-left: 1em;
   margin-left: 0;
   margin-bottom: 1em;
-  color: #64748b;
+  color: var(--color-muted-foreground);
   font-style: italic;
-}
-
-.markdown-content a {
-  color: #3b82f6;
-  text-decoration: underline;
-}
-
-.markdown-content a:hover {
-  color: #2563eb;
 }
 
 .markdown-content strong {
   font-weight: 700;
 }
 
-.markdown-content em {
-  font-style: italic;
+.markdown-content a {
+  color: var(--color-accent);
+  text-decoration: underline;
 }
 
-.markdown-content table {
-  border-collapse: collapse;
-  width: 100%;
-  margin-bottom: 1em;
+.markdown-content a:hover {
+  color: hsl(var(--primary));
 }
 
 .markdown-content th,
 .markdown-content td {
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--color-border);
   padding: 0.5em 1em;
   text-align: left;
 }
 
 .markdown-content th {
-  background-color: #f8fafc;
+  background-color: var(--color-muted);
   font-weight: 600;
 }
 
 .markdown-content hr {
   border: none;
-  border-top: 1px solid #e2e8f0;
+  border-top: 1px solid var(--color-border);
   margin: 1.5em 0;
 }
