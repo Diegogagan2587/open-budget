@@ -10,9 +10,9 @@
   ) %>
 </div>
 
-<table class="min-w-full bg-white border">
+<table class="ui-table">
   <thead>
-    <tr class="bg-gray-100">
+    <tr class="bg-muted">
       <th class="px-4 py-2 text-left">Date</th>
       <th class="px-4 py-2 text-left">Type</th>
       <th class="px-4 py-2 text-left">Description</th>
@@ -28,8 +28,8 @@
         <td class="px-4 py-2"><%= financial_entry.description %></td>
         <td class="px-4 py-2"><%= number_to_currency(financial_entry.amount) %></td>
         <td class="px-4 py-2">
-          <%= link_to "View", finance_financial_entry_path(financial_entry), class: "text-blue-500 hover:underline" %>
-          <%= link_to "Delete", finance_financial_entry_path(financial_entry), method: :delete, data: { turbo_confirm: "Are you sure?" }, class: "text-red-500 hover:underline ml-2" %>
+          <%= link_to "View", finance_financial_entry_path(financial_entry), class: "text-accent hover:underline" %>
+          <%= link_to "Delete", finance_financial_entry_path(financial_entry), method: :delete, data: { turbo_confirm: "Are you sure?" }, class: "text-danger hover:underline ml-2" %>
         </td>
       </tr>
     <% end %>
