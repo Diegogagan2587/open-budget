@@ -6,12 +6,26 @@ class BudgetPeriodsController < ApplicationController
   end
 
   def show
+    @planned_expense_status_options = %w[
+      pending_to_pay
+      saved
+      transfer_to_savings
+      transferring
+      paid
+      transferred
+      spent
+    ]
+    @selected_planned_expense_status = params[:planned_expense_status].presence
+    @selected_planned_expense_status = nil unless @planned_expense_status_options.include?(@selected_planned_expense_status)
+
     @income_events = @budget_period.income_events_ordered
-    @planned_expenses = @budget_period
+    planned_expenses_scope = @budget_period
       .planned_expenses
       .includes(:category, :income_event, :expense_template)
       .references(:income_event)
-      .order(
+    planned_expenses_scope = planned_expenses_scope.where(status: @selected_planned_expense_status) if @selected_planned_expense_status.present?
+
+    @planned_expenses = planned_expenses_scope.order(
         Arel.sql("income_events.expected_date ASC"),
         Arel.sql("COALESCE(planned_expenses.position, 2147483647) ASC"),
         Arel.sql("planned_expenses.created_at ASC")

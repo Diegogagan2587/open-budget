@@ -122,6 +122,24 @@
 
 <h2 class="text-xl font-bold mb-4"><%= t("budget_periods.show.all_planned_expenses") %></h2>
 
+<div class="mb-4">
+  <%= form_with url: budget_period_path(@budget_period), method: :get, local: true, class: "flex flex-wrap items-end gap-3" do |f| %>
+    <div>
+      <label for="planned_expense_status" class="block text-sm text-muted-foreground mb-1">Status filter</label>
+      <%= f.select :planned_expense_status,
+        options_for_select(
+          [["All statuses", nil]] + @planned_expense_status_options.map { |status| [t("activerecord.attributes.planned_expense.status_options.#{status}", default: status.humanize), status] },
+          @selected_planned_expense_status
+        ),
+        {},
+        { id: "planned_expense_status", class: "border rounded px-3 py-2 bg-background text-foreground min-w-[220px]" } %>
+    </div>
+    <div>
+      <%= f.submit "Apply", class: "px-4 py-2 rounded bg-primary text-primary-foreground hover:opacity-90" %>
+    </div>
+  <% end %>
+</div>
+
 <% if @planned_expenses.any? %>
   <% @planned_expenses.group_by(&:income_event).each do |income_event, planned_expenses| %>
     <div class="mb-6 border rounded bg-card">
@@ -211,4 +229,3 @@
   </div>
 <% end %>
 </div>
-
