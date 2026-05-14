@@ -32,6 +32,33 @@ module Projects
     end
     scope :unassigned, -> { where(project_id: nil) }
 
+    # Sort scopes
+    scope :by_urgency, lambda {
+      # Overdue first, then high priority, then soonest due date
+      order(
+        Arel.sql("CASE WHEN due_date < CURRENT_DATE THEN 0 ELSE 1 END"),
+        Arel.sql("CASE WHEN priority = 'high' THEN 0 WHEN priority = 'medium' THEN 1 ELSE 2 END"),
+        Arel.sql("CASE WHEN due_date IS NULL THEN 1 ELSE 0 END"),
+        due_date: :asc,
+        created_at: :desc
+      )
+    }
+    scope :by_priority_desc, lambda {
+      order(
+        Arel.sql("CASE WHEN priority = 'high' THEN 0 WHEN priority = 'medium' THEN 1 ELSE 2 END"),
+        Arel.sql("CASE WHEN due_date IS NULL THEN 1 ELSE 0 END"),
+        due_date: :asc
+      )
+    }
+    scope :by_due_date_asc, lambda {
+      order(
+        Arel.sql("CASE WHEN due_date < CURRENT_DATE THEN 0 ELSE 1 END"),
+        Arel.sql("CASE WHEN due_date IS NULL THEN 1 ELSE 0 END"),
+        due_date: :asc
+      )
+    }
+    scope :newest_first, -> { order(created_at: :desc) }
+
     before_save :sync_completed_at, if: :will_save_change_to_status?
 
     def status_label
@@ -44,6 +71,10 @@ module Projects
 
     def project_name
       project&.name || I18n.t("tasks.project.unassigned", default: "Unassigned")
+    end
+
+    def overdue?
+      due_date.present? && due_date < Date.current
     end
 
     private

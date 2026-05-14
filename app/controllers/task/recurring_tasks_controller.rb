@@ -13,13 +13,31 @@ module Task
       @task_priority_options = Projects::Task::PRIORITIES
 
       # Get all standalone tasks and filter by project/priority
-      all_tasks = Projects::Task.for_account(Current.account).order(created_at: :desc)
+      all_tasks = Projects::Task.for_account(Current.account)
       all_tasks = all_tasks.by_project(params[:project_id])
       all_tasks = all_tasks.by_priority(params[:priority])
+
+      # Apply sort order (default: urgency)
+      sort_option = params[:sort]&.to_sym || :urgency
+      case sort_option
+      when :priority
+        all_tasks = all_tasks.by_priority_desc
+      when :due_date
+        all_tasks = all_tasks.by_due_date_asc
+      when :newest
+        all_tasks = all_tasks.newest_first
+      else
+        # Default to urgency
+        all_tasks = all_tasks.by_urgency
+      end
 
       # Split into pending and completed
       @pending_tasks = all_tasks.where(status: %w[blocked backlog in_progress in_review])
       @completed_tasks = all_tasks.where(status: %w[done cancelled])
+
+      # Pass sort state to view
+      @current_sort = sort_option
+      @sort_options = [ "urgency", "priority", "due_date", "newest" ]
     end
 
     def show

@@ -24,7 +24,7 @@
 
     <!-- Filters -->
     <%= form_with url: task_root_path, method: :get, local: true, class: "mb-4 rounded-xl border border-border bg-background p-4", data: { controller: "autosubmit" } do %>
-      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
         <div>
           <label class="mb-2 block text-sm font-medium text-foreground">Project</label>
           <%= render Ui::SelectComponent.new(
@@ -41,6 +41,21 @@
             name: "priority",
             options: [["All priorities", ""]] + @task_priority_options.map { |priority| [priority.humanize, priority] },
             selected: params[:priority],
+            data: { controller: "autosubmit", action: "change->autosubmit#submit" }
+          ) %>
+        </div>
+
+        <div>
+          <label class="mb-2 block text-sm font-medium text-foreground">Sort by</label>
+          <%= render Ui::SelectComponent.new(
+            name: "sort",
+            options: [
+              ["Urgency (Default)", "urgency"],
+              ["Priority", "priority"],
+              ["Due Date", "due_date"],
+              ["Newest First", "newest"]
+            ],
+            selected: @current_sort.to_s,
             data: { controller: "autosubmit", action: "change->autosubmit#submit" }
           ) %>
         </div>
