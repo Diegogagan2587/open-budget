@@ -21,9 +21,9 @@
 
     <%# Desktop: table %>
     <div class="hidden md:block overflow-x-auto">
-      <table class="min-w-full bg-white border">
+      <table class="ui-table">
         <thead>
-          <tr class="bg-gray-100">
+          <tr class="bg-muted">
             <th class="px-4 py-2 text-left"><%= t("budget_periods.table.name") %></th>
             <th class="px-4 py-2 text-left"><%= t("budget_periods.table.period_type") %></th>
             <th class="px-4 py-2 text-left"><%= t("budget_periods.table.start_date") %></th>
@@ -43,13 +43,13 @@
               <td class="px-4 py-2"><%= budget_period.end_date %></td>
               <td class="px-4 py-2"><%= number_to_currency(budget_period.total_income) %></td>
               <td class="px-4 py-2"><%= number_to_currency(budget_period.total_planned) %></td>
-              <td class="px-4 py-2 <%= budget_period.remaining_budget < 0 ? 'text-red-600' : 'text-green-600' %>">
+              <td class="px-4 py-2 <%= budget_period.remaining_budget < 0 ? 'text-danger' : 'text-success' %>">
                 <%= number_to_currency(budget_period.remaining_budget) %>
               </td>
               <td class="px-4 py-2">
-                <%= link_to t("shared.view"), budget_period, class: "text-blue-500 hover:underline" %>
-                <%= link_to t("shared.edit"), edit_budget_period_path(budget_period), class: "text-blue-500 hover:underline ml-2" %>
-                <%= link_to t("budget_periods.show.income_events"), budget_period_income_events_path(budget_period), class: "text-green-500 hover:underline ml-2" %>
+                <%= link_to t("shared.view"), budget_period, class: "text-accent hover:underline" %>
+                <%= link_to t("shared.edit"), edit_budget_period_path(budget_period), class: "text-accent hover:underline ml-2" %>
+                <%= link_to t("budget_periods.show.income_events"), budget_period_income_events_path(budget_period), class: "text-success hover:underline ml-2" %>
               </td>
             </tr>
           <% end %>
@@ -57,8 +57,8 @@
       </table>
     </div>
   <% else %>
-    <div class="text-center py-12 bg-white rounded-xl border-2 border-dashed border-gray-300">
-      <p class="text-gray-600 mb-4"><%= t("budget_periods.index.empty_message") %></p>
+    <div class="text-center py-12 bg-card rounded-xl border-2 border-dashed border-input">
+      <p class="text-muted-foreground mb-4"><%= t("budget_periods.index.empty_message") %></p>
       <%= render Ui::ButtonComponent.new(
         href: new_budget_period_path,
         label: t("budget_periods.new_budget_period"),
