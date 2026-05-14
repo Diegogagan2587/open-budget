@@ -31,21 +31,6 @@ function resolveHslVarAlpha(cssName, alpha) {
   return raw ? `hsl(${raw} / ${alpha})` : undefined
 }
 
-function applyShadcnChartDatasetColors(datasets) {
-  if (!Array.isArray(datasets)) return
-  for (const ds of datasets) {
-    const n = ds.shadcnChartIndex
-    if (n == null || n < 1 || n > 5) continue
-    const key = `--chart-${n}`
-    const stroke = resolveHslVar(key)
-    if (stroke) {
-      ds.borderColor = stroke
-      ds.backgroundColor = resolveHslVarAlpha(key, 0.15) || stroke
-    }
-    delete ds.shadcnChartIndex
-  }
-}
-
 function chartAreaWidth(canvas) {
   const el = canvas?.parentElement
   return el?.clientWidth || canvas?.clientWidth || 0
@@ -190,10 +175,6 @@ export default class extends Controller {
 
     const { type, data, options: configOptions } = config
     if (!type || !data) return
-
-    if (this.presetValue === "shadcn-line" && type === "line") {
-      applyShadcnChartDatasetColors(data.datasets)
-    }
 
     const chartCanvas = this.resolveCanvasElement()
     if (!chartCanvas || chartCanvas.tagName !== "CANVAS") return

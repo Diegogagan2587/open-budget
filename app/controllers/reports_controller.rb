@@ -187,11 +187,6 @@ class ReportsController < ApplicationController
     "rgba(#{r}, #{g}, #{b}, #{alpha})"
   end
 
-  # Stable 1..5 for shadcn theme tokens --chart-1 .. --chart-5 (see charts_controller shadcn-line preset).
-  def category_shadcn_chart_index(category_id)
-    (category_id.to_i % 5) + 1
-  end
-
   def require_account
     head :forbidden unless Current.account
   end
@@ -235,13 +230,15 @@ class ReportsController < ApplicationController
 
   def build_category_trends_chart(buckets, categories_summary)
     datasets = categories_summary.map do |cat|
+      color = category_chart_rgb(cat[:category_id])
       {
         label: cat[:category_name],
         data: cat[:amounts],
         fill: false,
         tension: 0.35,
         pointRadius: 0,
-        shadcnChartIndex: category_shadcn_chart_index(cat[:category_id])
+        borderColor: color,
+        backgroundColor: color
       }
     end
     {
