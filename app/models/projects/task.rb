@@ -4,6 +4,7 @@ module Projects
     PRIORITIES = %w[low medium high].freeze
 
     belongs_to :project, optional: true
+    belongs_to :taskable, polymorphic: true, optional: true
     belongs_to :account
     belongs_to :user, foreign_key: :owner_id
     has_many :project_docs, through: :project
