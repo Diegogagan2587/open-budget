@@ -126,6 +126,20 @@ Rails.application.routes.draw do
     resources :tasks, only: [ :edit, :update ]
   end
 
+  namespace :career do
+    root to: "dashboard#index"
+    resources :companies, only: [:index, :create]
+    resources :job_applications do
+      member do
+        post :create_task
+        post :create_suggested_task
+        post :create_document
+        post :create_meeting
+        post :create_event
+      end
+    end
+  end
+
   scope module: :projects do
     resources :projects do
       resources :tasks
