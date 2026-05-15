@@ -1,5 +1,6 @@
 class Meeting < ApplicationRecord
   belongs_to :account
+  belongs_to :meetingable, polymorphic: true, optional: true
   has_many :project_meetings, dependent: :destroy
   has_many :projects, through: :project_meetings
 
