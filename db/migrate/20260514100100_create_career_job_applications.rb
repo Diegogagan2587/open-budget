@@ -23,8 +23,8 @@ class CreateCareerJobApplications < ActiveRecord::Migration[8.1]
       t.timestamps
     end
 
-    add_index :career_job_applications, [:account_id, :status]
-    add_index :career_job_applications, [:account_id, :found_on]
-    add_index :career_job_applications, [:account_id, :applied_on]
+    add_index :career_job_applications, [ :account_id, :status ]
+    add_index :career_job_applications, [ :account_id, :found_on ]
+    add_index :career_job_applications, [ :account_id, :applied_on ]
   end
 end

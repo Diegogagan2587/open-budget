@@ -38,7 +38,7 @@ module Career
 
         Result.new(true, job_application, [])
       rescue ActiveRecord::RecordInvalid => e
-        Result.new(false, job_application, [e.message])
+        Result.new(false, job_application, [ e.message ])
       end
 
       private

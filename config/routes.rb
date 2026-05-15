@@ -128,7 +128,7 @@ Rails.application.routes.draw do
 
   namespace :career do
     root to: "dashboard#index"
-    resources :companies, only: [:index, :create]
+    resources :companies, only: [ :index, :create ]
     resources :job_applications do
       member do
         post :create_task

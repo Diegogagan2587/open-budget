@@ -1,6 +1,6 @@
 module Career
   class JobApplicationsController < ApplicationController
-    before_action :set_job_application, only: [:show, :edit, :update, :create_task, :create_suggested_task, :create_document, :create_meeting, :create_event]
+    before_action :set_job_application, only: [ :show, :edit, :update, :create_task, :create_suggested_task, :create_document, :create_meeting, :create_event ]
 
     def index
       @status = params[:status]
@@ -18,8 +18,8 @@ module Career
       @job_applications = @job_applications.needs_action if @needs_action
       @job_applications = @job_applications.recent_first
 
-      @sources = Career::JobApplication.for_account(Current.account).where.not(source: [nil, ""]).distinct.order(:source).pluck(:source)
-      @remote_types = Career::JobApplication.for_account(Current.account).where.not(remote_type: [nil, ""]).distinct.order(:remote_type).pluck(:remote_type)
+      @sources = Career::JobApplication.for_account(Current.account).where.not(source: [ nil, "" ]).distinct.order(:source).pluck(:source)
+      @remote_types = Career::JobApplication.for_account(Current.account).where.not(remote_type: [ nil, "" ]).distinct.order(:remote_type).pluck(:remote_type)
     end
 
     def show

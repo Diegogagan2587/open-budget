@@ -11,7 +11,7 @@ class CreateCareerEvents < ActiveRecord::Migration[8.1]
       t.timestamps
     end
 
-    add_index :career_events, [:account_id, :event_type]
-    add_index :career_events, [:career_job_application_id, :occurred_at]
+    add_index :career_events, [ :account_id, :event_type ]
+    add_index :career_events, [ :career_job_application_id, :occurred_at ]
   end
 end

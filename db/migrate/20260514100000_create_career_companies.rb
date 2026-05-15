@@ -10,6 +10,6 @@ class CreateCareerCompanies < ActiveRecord::Migration[8.1]
       t.timestamps
     end
 
-    add_index :career_companies, [:account_id, :name]
+    add_index :career_companies, [ :account_id, :name ]
   end
 end
