@@ -23,6 +23,10 @@ class AppSidebarComponent < ViewComponent::Base
     active_controller?("settings", "categories")
   end
 
+  def career_active?
+    current_controller.start_with?("career/")
+  end
+
   def nav_label_classes
     "truncate"
   end
