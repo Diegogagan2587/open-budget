@@ -3,6 +3,7 @@ module Projects
     DOC_TYPES = %w[file link note].freeze
 
     belongs_to :account
+    belongs_to :documentable, polymorphic: true, optional: true
     has_many :project_docs, dependent: :destroy
     has_many :projects, through: :project_docs
     has_many :doc_links, dependent: :destroy

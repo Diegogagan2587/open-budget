@@ -92,4 +92,16 @@ module ApplicationHelper
   def current_theme_palette_class
     "palette-#{current_theme_palette}"
   end
+
+  def safe_external_url(url)
+    value = url.to_s.strip
+    return nil if value.blank?
+
+    parsed = URI.parse(value)
+    return nil unless parsed.is_a?(URI::HTTP) || parsed.is_a?(URI::HTTPS)
+
+    parsed.to_s
+  rescue URI::InvalidURIError
+    nil
+  end
 end
