@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_14_094000) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_14_102000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -57,6 +57,59 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_14_094000) do
     t.index ["account_id"], name: "index_budget_periods_on_account_id"
   end
 
+  create_table "career_companies", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.datetime "created_at", null: false
+    t.string "linkedin_url"
+    t.string "name", null: false
+    t.text "notes"
+    t.datetime "updated_at", null: false
+    t.string "website_url"
+    t.index ["account_id", "name"], name: "index_career_companies_on_account_id_and_name"
+    t.index ["account_id"], name: "index_career_companies_on_account_id"
+  end
+
+  create_table "career_events", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.bigint "career_job_application_id", null: false
+    t.datetime "created_at", null: false
+    t.string "event_type", null: false
+    t.jsonb "metadata", default: {}, null: false
+    t.datetime "occurred_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id", "event_type"], name: "index_career_events_on_account_id_and_event_type"
+    t.index ["account_id"], name: "index_career_events_on_account_id"
+    t.index ["career_job_application_id", "occurred_at"], name: "idx_on_career_job_application_id_occurred_at_c935b5682c"
+    t.index ["career_job_application_id"], name: "index_career_events_on_career_job_application_id"
+  end
+
+  create_table "career_job_applications", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.date "applied_on"
+    t.bigint "career_company_id", null: false
+    t.datetime "created_at", null: false
+    t.string "currency", default: "USD", null: false
+    t.integer "fit_score"
+    t.date "found_on"
+    t.text "job_description"
+    t.text "job_url"
+    t.string "location"
+    t.text "notes"
+    t.integer "priority", default: 0, null: false
+    t.string "remote_type"
+    t.string "role_title", null: false
+    t.integer "salary_max"
+    t.integer "salary_min"
+    t.string "source"
+    t.string "status", default: "saved", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id", "applied_on"], name: "index_career_job_applications_on_account_id_and_applied_on"
+    t.index ["account_id", "found_on"], name: "index_career_job_applications_on_account_id_and_found_on"
+    t.index ["account_id", "status"], name: "index_career_job_applications_on_account_id_and_status"
+    t.index ["account_id"], name: "index_career_job_applications_on_account_id"
+    t.index ["career_company_id"], name: "index_career_job_applications_on_career_company_id"
+  end
+
   create_table "categories", force: :cascade do |t|
     t.bigint "account_id", null: false
     t.datetime "created_at", null: false
@@ -100,12 +153,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_14_094000) do
     t.datetime "created_at", null: false
     t.bigint "created_by_id"
     t.string "doc_type", default: "note", null: false
+    t.bigint "documentable_id"
+    t.string "documentable_type"
     t.string "title", null: false
     t.datetime "updated_at", null: false
     t.string "url"
     t.index ["account_id", "title"], name: "index_docs_on_account_id_and_title", unique: true
     t.index ["account_id"], name: "index_docs_on_account_id"
     t.index ["created_by_id"], name: "index_docs_on_created_by_id"
+    t.index ["documentable_type", "documentable_id"], name: "index_docs_on_documentable"
   end
 
   create_table "expense_templates", force: :cascade do |t|
@@ -296,11 +352,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_14_094000) do
     t.datetime "end_time"
     t.string "location"
     t.string "meeting_url"
+    t.bigint "meetingable_id"
+    t.string "meetingable_type"
     t.datetime "start_time", null: false
     t.string "title", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id", "title"], name: "index_meetings_on_account_id_and_title"
     t.index ["account_id"], name: "index_meetings_on_account_id"
+    t.index ["meetingable_type", "meetingable_id"], name: "index_meetings_on_meetingable"
     t.index ["start_time"], name: "index_meetings_on_start_time"
   end
 
@@ -463,19 +522,24 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_14_094000) do
     t.datetime "created_at", null: false
     t.text "description"
     t.date "due_date"
+    t.jsonb "metadata", default: {}, null: false
     t.bigint "owner_id", null: false
     t.string "priority", default: "medium", null: false
     t.bigint "project_id"
     t.string "status", default: "backlog", null: false
     t.string "task_number", null: false
+    t.bigint "taskable_id"
+    t.string "taskable_type"
     t.string "title", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id", "task_number"], name: "index_tasks_on_account_id_and_task_number", unique: true
     t.index ["account_id"], name: "index_tasks_on_account_id"
+    t.index ["metadata"], name: "index_tasks_on_metadata", using: :gin
     t.index ["priority"], name: "index_tasks_on_priority"
     t.index ["project_id", "task_number"], name: "index_tasks_on_project_id_and_task_number", unique: true
     t.index ["project_id"], name: "index_tasks_on_project_id"
     t.index ["status"], name: "index_tasks_on_status"
+    t.index ["taskable_type", "taskable_id"], name: "index_tasks_on_taskable"
   end
 
   create_table "users", force: :cascade do |t|
@@ -495,6 +559,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_14_094000) do
   add_foreign_key "budget_line_items", "budget_periods"
   add_foreign_key "budget_line_items", "categories"
   add_foreign_key "budget_periods", "accounts"
+  add_foreign_key "career_companies", "accounts"
+  add_foreign_key "career_events", "accounts"
+  add_foreign_key "career_events", "career_job_applications"
+  add_foreign_key "career_job_applications", "accounts"
+  add_foreign_key "career_job_applications", "career_companies"
   add_foreign_key "categories", "accounts"
   add_foreign_key "doc_docs", "docs"
   add_foreign_key "doc_docs", "docs", column: "related_doc_id"
