@@ -36,6 +36,6 @@ class Career::JobApplications::CreateServiceTest < ActiveSupport::TestCase
     )
 
     assert result.success?
-    assert_equal existing.id, result.job_application.company_id
+    assert_equal existing.id, result.job_application.company.id
   end
 end
