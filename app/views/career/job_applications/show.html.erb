@@ -21,7 +21,14 @@
       <p><strong>Found on:</strong> <%= @job_application.found_on %></p>
       <p><strong>Applied on:</strong> <%= @job_application.applied_on %></p>
       <% if @job_application.job_url.present? %>
-        <p><strong>Job URL:</strong> <%= link_to @job_application.job_url, @job_application.job_url, class: "text-accent hover:underline", target: "_blank", rel: "noreferrer" %></p>
+        <% safe_job_url = safe_external_url(@job_application.job_url) %>
+        <p><strong>Job URL:</strong>
+          <% if safe_job_url.present? %>
+            <%= link_to @job_application.job_url, safe_job_url, class: "text-accent hover:underline", target: "_blank", rel: "noreferrer" %>
+          <% else %>
+            <span class="text-muted-foreground">Invalid URL</span>
+          <% end %>
+        </p>
       <% end %>
     </div>
 
