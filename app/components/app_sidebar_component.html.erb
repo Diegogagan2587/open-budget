@@ -49,6 +49,13 @@
             <span data-sidebar-collapse="hide" class="<%= nav_label_classes %>"><%= t("nav.reports") %></span>
           <% end %>
         <% end %>
+
+        <%= render SidebarMenuItemComponent.new do %>
+          <%= render SidebarMenuButtonComponent.new(href: "/career", active: career_active?) do %>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" class="text-sidebar-foreground/90" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 20h16M6 16l4-4 3 3 5-6"/><circle cx="6" cy="16" r="1.2"/><circle cx="10" cy="12" r="1.2"/><circle cx="13" cy="15" r="1.2"/><circle cx="18" cy="9" r="1.2"/></svg>
+            <span data-sidebar-collapse="hide" class="<%= nav_label_classes %>">Career</span>
+          <% end %>
+        <% end %>
       <% end %>
     <% end %>
 
