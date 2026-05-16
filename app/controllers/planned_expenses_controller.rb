@@ -28,10 +28,32 @@ class PlannedExpensesController < ApplicationController
     @planned_expense.position ||= (@income_event.planned_expenses.maximum(:position) || 0) + 1
 
     respond_to do |format|
-      if @planned_expense.save
+      success = false
+      execution_error = nil
+
+      ActiveRecord::Base.transaction do
+        success = @planned_expense.save
+        raise ActiveRecord::Rollback unless success
+
+        if final_status?(@planned_expense.status)
+          execution = PlannedExpenses::ExecuteService.call(
+            planned_expense: @planned_expense,
+            target_status: @planned_expense.status
+          )
+          unless execution.success?
+            execution_error = execution.error_message
+            @planned_expense.errors.add(:base, execution_error)
+            raise ActiveRecord::Rollback
+          end
+        end
+      end
+
+      if success && execution_error.blank?
+
         format.html { redirect_to income_event_planned_expenses_path(@income_event), notice: t("planned_expenses.flash.created") }
         format.json { render :show, status: :created, location: [ @income_event, @planned_expense ] }
       else
+        flash.now[:alert] = execution_error if execution_error.present?
         @expense_templates = ExpenseTemplate.for_account(Current.account).includes(:category).all
         @income_events = ordered_income_events_for_reference(@planned_expense.due_date)
         load_route_collections
