@@ -1,4 +1,6 @@
 class PlannedExpense < ApplicationRecord
+  FINAL_STATUSES = %w[spent paid transferred].freeze
+
   attr_accessor :source_selection, :destination_selection
 
   belongs_to :account
