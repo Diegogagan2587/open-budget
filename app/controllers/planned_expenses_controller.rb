@@ -125,6 +125,19 @@ class PlannedExpensesController < ApplicationController
     redirect_to income_event_planned_expenses_path(@income_event), alert: move_conflict_message(target_income_event)
   end
 
+  def create_transaction
+    result = PlannedExpenses::ExecuteService.call(
+      planned_expense: @planned_expense,
+      target_status: (@planned_expense.final_status? ? @planned_expense.status : nil)
+    )
+
+    if result.success?
+      redirect_to income_event_planned_expense_path(@income_event, @planned_expense), notice: "Transaction created"
+    else
+      redirect_to income_event_planned_expense_path(@income_event, @planned_expense), alert: result.error_message
+    end
+  end
+
   private
 
   def set_income_event
