@@ -66,6 +66,18 @@ class PlannedExpense < ApplicationRecord
     result.expense || result.entry
   end
 
+  def self.final_status?(value)
+    FINAL_STATUSES.include?(value.to_s)
+  end
+
+  def final_status?
+    self.class.final_status?(status)
+  end
+
+  def transaction_missing?
+    final_status? && financial_entry.blank?
+  end
+
   def template_progress
     return nil unless expense_template
 
