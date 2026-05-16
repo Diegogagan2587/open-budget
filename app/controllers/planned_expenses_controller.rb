@@ -1,6 +1,6 @@
 class PlannedExpensesController < ApplicationController
   before_action :set_income_event
-  before_action :set_planned_expense, only: [ :show, :edit, :update, :destroy, :apply, :move ]
+  before_action :set_planned_expense, only: [ :show, :edit, :update, :destroy, :apply, :move, :create_transaction ]
   before_action :load_route_collections, only: [ :new, :create, :edit, :update ]
 
   def index
