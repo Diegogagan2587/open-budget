@@ -243,4 +243,8 @@ class PlannedExpensesController < ApplicationController
   def move_conflict_message(target_income_event)
     "Cannot move this planned expense because installment ##{@planned_expense.loan_installment_number} already exists in #{target_income_event.description}."
   end
+
+  def final_status?(value)
+    %w[paid spent transferred].include?(value.to_s)
+  end
 end
