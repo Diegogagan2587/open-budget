@@ -6,9 +6,10 @@ module PlannedExpenses
       new(...).call
     end
 
-    def initialize(planned_expense:, entry_date: Date.current)
+    def initialize(planned_expense:, entry_date: Date.current, target_status: nil)
       @planned_expense = planned_expense
       @entry_date = entry_date
+      @target_status = target_status
     end
 
     def call
@@ -35,7 +36,7 @@ module PlannedExpenses
 
     private
 
-    attr_reader :planned_expense, :entry_date
+    attr_reader :planned_expense, :entry_date, :target_status
 
     def expense_attributes
       {
