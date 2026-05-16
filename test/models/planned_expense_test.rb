@@ -236,4 +236,37 @@ class PlannedExpenseTest < ActiveSupport::TestCase
     assert_equal @liability.id, entry.financial_liability_id
     assert_equal planned_expense.id, entry.planned_expense_id
   end
+
+  test "execute service is idempotent for transaction creation" do
+    planned_expense = PlannedExpense.create!(
+      income_event: @income_event,
+      category: @category,
+      description: "Idempotent outflow",
+      amount: 45.00,
+      status: "pending_to_pay",
+      source_selection: "asset:#{@source_account.id}"
+    )
+
+    first = PlannedExpenses::ExecuteService.call(planned_expense: planned_expense, target_status: "paid")
+    second = PlannedExpenses::ExecuteService.call(planned_expense: planned_expense, target_status: "paid")
+
+    assert first.success?
+    assert second.success?
+    assert_equal 1, Financial::Entry.where(planned_expense_id: planned_expense.id).count
+  end
+
+  test "execute service fails when regular outflow lacks source account" do
+    planned_expense = PlannedExpense.create!(
+      income_event: @income_event,
+      category: @category,
+      description: "No source",
+      amount: 30.00,
+      status: "pending_to_pay"
+    )
+
+    result = PlannedExpenses::ExecuteService.call(planned_expense: planned_expense, target_status: "paid")
+
+    assert_not result.success?
+    assert result.error_message.present?
+  end
 end
