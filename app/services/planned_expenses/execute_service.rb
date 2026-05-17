@@ -63,28 +63,34 @@ module PlannedExpenses
       expense
     end
 
-    def create_financial_entry!
-      entry = Financial::Entry.new(
-        account: planned_expense.account,
-        income_event: planned_expense.income_event,
-        planned_expense: planned_expense,
-        entry_date: entry_date,
-        amount: planned_expense.amount,
-        description: planned_expense.description
-      )
+    def build_or_update_financial_entry!(expense:)
+      entry = Financial::Entry.find_by(planned_expense_id: planned_expense.id) || planned_expense.financial_entry || Financial::Entry.new
+      entry.account = planned_expense.account
+      entry.income_event = planned_expense.income_event
+      entry.planned_expense = planned_expense
+      entry.expense = expense if expense.present?
+      entry.entry_date = entry_date
+      entry.amount = planned_expense.amount
+      entry.description = planned_expense.description
 
       if planned_expense.transfer?
         entry.entry_type = "transfer"
         entry.financial_account = planned_expense.financial_account
         entry.counterparty_financial_account = planned_expense.counterparty_financial_account
         entry.financial_liability = nil
+        entry.counterparty_financial_liability = nil
       elsif planned_expense.debt_payment?
         entry.entry_type = "liability_payment"
         entry.financial_account = planned_expense.financial_account
         entry.financial_liability = planned_expense.financial_liability
         entry.counterparty_financial_account = nil
+        entry.counterparty_financial_liability = nil
       else
-        raise ActiveRecord::RecordInvalid.new(entry)
+        entry.entry_type = "outflow"
+        entry.financial_account = planned_expense.financial_account
+        entry.financial_liability = nil
+        entry.counterparty_financial_account = nil
+        entry.counterparty_financial_liability = nil
       end
 
       entry.save!
