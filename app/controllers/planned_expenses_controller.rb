@@ -1,6 +1,6 @@
 class PlannedExpensesController < ApplicationController
   before_action :set_income_event
-  before_action :set_planned_expense, only: [ :show, :edit, :update, :destroy, :apply, :move ]
+  before_action :set_planned_expense, only: [ :show, :edit, :update, :destroy, :apply, :move, :create_transaction ]
   before_action :load_route_collections, only: [ :new, :create, :edit, :update ]
 
   def index
@@ -28,10 +28,32 @@ class PlannedExpensesController < ApplicationController
     @planned_expense.position ||= (@income_event.planned_expenses.maximum(:position) || 0) + 1
 
     respond_to do |format|
-      if @planned_expense.save
+      success = false
+      execution_error = nil
+
+      ActiveRecord::Base.transaction do
+        success = @planned_expense.save
+        raise ActiveRecord::Rollback unless success
+
+        if PlannedExpense.final_status?(@planned_expense.status)
+          execution = PlannedExpenses::ExecuteService.call(
+            planned_expense: @planned_expense,
+            target_status: @planned_expense.status
+          )
+          unless execution.success?
+            execution_error = execution.error_message
+            @planned_expense.errors.add(:base, execution_error)
+            raise ActiveRecord::Rollback
+          end
+        end
+      end
+
+      if success && execution_error.blank?
+
         format.html { redirect_to income_event_planned_expenses_path(@income_event), notice: t("planned_expenses.flash.created") }
         format.json { render :show, status: :created, location: [ @income_event, @planned_expense ] }
       else
+        flash.now[:alert] = execution_error if execution_error.present?
         @expense_templates = ExpenseTemplate.for_account(Current.account).includes(:category).all
         @income_events = ordered_income_events_for_reference(@planned_expense.due_date)
         load_route_collections
@@ -49,9 +71,30 @@ class PlannedExpensesController < ApplicationController
   def update
     old_income_event = @income_event
     new_income_event_id = planned_expense_params[:income_event_id]
+    requested_status = planned_expense_params[:status]
+    final_status_requested = PlannedExpense.final_status?(requested_status)
+    attrs = planned_expense_params
+    attrs = attrs.except(:status) if final_status_requested
 
     respond_to do |format|
-      if @planned_expense.update(planned_expense_params)
+      if @planned_expense.update(attrs)
+        if final_status_requested
+          execution = PlannedExpenses::ExecuteService.call(
+            planned_expense: @planned_expense,
+            target_status: requested_status
+          )
+          unless execution.success?
+            @planned_expense.errors.add(:base, execution.error_message)
+            @expense_templates = ExpenseTemplate.for_account(Current.account).includes(:category).all
+            @income_events = ordered_income_events_for_reference(@planned_expense.due_date)
+            load_route_collections
+            flash.now[:alert] = execution.error_message
+            format.html { render :edit, status: :unprocessable_entity }
+            format.json { render json: { error: execution.error_message }, status: :unprocessable_entity }
+            return
+          end
+        end
+
         # If income_event_id changed, redirect to the new income event
         if new_income_event_id.present? && new_income_event_id.to_i != old_income_event.id
           new_income_event = IncomeEvent.for_account(Current.account).find(new_income_event_id)
@@ -123,6 +166,19 @@ class PlannedExpensesController < ApplicationController
     redirect_to income_event_planned_expenses_path(@income_event), alert: e.record.errors.full_messages.to_sentence
   rescue ActiveRecord::RecordNotUnique
     redirect_to income_event_planned_expenses_path(@income_event), alert: move_conflict_message(target_income_event)
+  end
+
+  def create_transaction
+    result = PlannedExpenses::ExecuteService.call(
+      planned_expense: @planned_expense,
+      target_status: (@planned_expense.final_status? ? @planned_expense.status : nil)
+    )
+
+    if result.success?
+      redirect_to income_event_planned_expense_path(@income_event, @planned_expense), notice: "Transaction created"
+    else
+      redirect_to income_event_planned_expense_path(@income_event, @planned_expense), alert: result.error_message
+    end
   end
 
   private

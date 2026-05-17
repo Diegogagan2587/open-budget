@@ -6,24 +6,18 @@ module PlannedExpenses
       new(...).call
     end
 
-    def initialize(planned_expense:, entry_date: Date.current)
+    def initialize(planned_expense:, entry_date: Date.current, target_status: nil)
       @planned_expense = planned_expense
       @entry_date = entry_date
+      @target_status = target_status
     end
 
     def call
       return failure("Planned expense is required") if planned_expense.blank?
 
       ActiveRecord::Base.transaction do
-        if transaction_routing?
-          expense = nil
-          entry = create_financial_entry!
-        else
-          expense = planned_expense.expense || Expense.new
-          expense.assign_attributes(expense_attributes)
-          expense.save!
-          entry = nil
-        end
+        expense = build_or_update_expense_if_needed
+        entry = build_or_update_financial_entry!(expense: expense)
 
         planned_expense.update!(status: status_after_execution) unless planned_expense.status == status_after_execution
 
@@ -35,7 +29,7 @@ module PlannedExpenses
 
     private
 
-    attr_reader :planned_expense, :entry_date
+    attr_reader :planned_expense, :entry_date, :target_status
 
     def expense_attributes
       {
@@ -52,28 +46,44 @@ module PlannedExpenses
       }
     end
 
-    def create_financial_entry!
-      entry = Financial::Entry.new(
-        account: planned_expense.account,
-        income_event: planned_expense.income_event,
-        planned_expense: planned_expense,
-        entry_date: entry_date,
-        amount: planned_expense.amount,
-        description: planned_expense.description
-      )
+    def build_or_update_expense_if_needed
+      return nil if transaction_routing?
+      return nil if planned_expense.income_event.budget_period.blank?
+
+      expense = Expense.find_by(planned_expense_id: planned_expense.id) || planned_expense.expense || Expense.new
+      expense.assign_attributes(expense_attributes)
+      expense.save!
+      expense
+    end
+
+    def build_or_update_financial_entry!(expense:)
+      entry = Financial::Entry.find_by(planned_expense_id: planned_expense.id) || planned_expense.financial_entry || Financial::Entry.new
+      entry.account = planned_expense.account
+      entry.income_event = planned_expense.income_event
+      entry.planned_expense = planned_expense
+      entry.expense = expense if expense.present?
+      entry.entry_date = entry_date
+      entry.amount = planned_expense.amount
+      entry.description = planned_expense.description
 
       if planned_expense.transfer?
         entry.entry_type = "transfer"
         entry.financial_account = planned_expense.financial_account
         entry.counterparty_financial_account = planned_expense.counterparty_financial_account
         entry.financial_liability = nil
+        entry.counterparty_financial_liability = nil
       elsif planned_expense.debt_payment?
         entry.entry_type = "liability_payment"
         entry.financial_account = planned_expense.financial_account
         entry.financial_liability = planned_expense.financial_liability
         entry.counterparty_financial_account = nil
+        entry.counterparty_financial_liability = nil
       else
-        raise ActiveRecord::RecordInvalid.new(entry)
+        entry.entry_type = "outflow"
+        entry.financial_account = planned_expense.financial_account
+        entry.financial_liability = nil
+        entry.counterparty_financial_account = nil
+        entry.counterparty_financial_liability = nil
       end
 
       entry.save!
@@ -85,6 +95,7 @@ module PlannedExpenses
     end
 
     def status_after_execution
+      return target_status if PlannedExpense.final_status?(target_status)
       return "transferred" if planned_expense.transfer?
       return "paid" if planned_expense.debt_payment?
 

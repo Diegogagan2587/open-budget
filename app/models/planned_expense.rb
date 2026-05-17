@@ -1,4 +1,6 @@
 class PlannedExpense < ApplicationRecord
+  FINAL_STATUSES = %w[spent paid transferred].freeze
+
   attr_accessor :source_selection, :destination_selection
 
   belongs_to :account
@@ -30,10 +32,6 @@ class PlannedExpense < ApplicationRecord
   scope :by_status, ->(status) { where(status: status) }
   scope :by_template, ->(template_id) { where(expense_template_id: template_id) }
 
-  # Automatically create expense when status is set to spent/paid/transferred
-  after_create :create_expense_if_spent_on_create
-  after_update :create_expense_if_spent_on_update, if: :saved_change_to_status?
-
   def percentage_of_income
     return 0 if income_event.expected_amount.zero?
     (amount / income_event.expected_amount) * 100
@@ -64,6 +62,18 @@ class PlannedExpense < ApplicationRecord
     result.expense || result.entry
   end
 
+  def self.final_status?(value)
+    FINAL_STATUSES.include?(value.to_s)
+  end
+
+  def final_status?
+    self.class.final_status?(status)
+  end
+
+  def transaction_missing?
+    final_status? && financial_entry.blank?
+  end
+
   def template_progress
     return nil unless expense_template
 
@@ -84,24 +94,6 @@ class PlannedExpense < ApplicationRecord
 
   def set_account
     self.account ||= Current.account if Current.account
-  end
-
-  def create_expense_if_spent_on_create
-    # Create expense if status is spent/paid/transferred on creation
-    create_expense_if_spent
-  end
-
-  def create_expense_if_spent_on_update
-    # Create expense if status changed to spent/paid/transferred on update
-    create_expense_if_spent
-  end
-
-  def create_expense_if_spent
-    # Only create expense if status is spent/paid/transferred and expense doesn't exist
-    # Check database directly to avoid association caching issues
-    if %w[spent paid transferred].include?(status) && !Expense.exists?(planned_expense_id: id) && !Financial::Entry.exists?(planned_expense_id: id)
-      PlannedExpenses::ExecuteService.call(planned_expense: self)
-    end
   end
 
   public

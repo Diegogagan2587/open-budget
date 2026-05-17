@@ -123,6 +123,57 @@ class PlannedExpensesControllerTest < ActionDispatch::IntegrationTest
     assert_equal planned_expense.id, planned_expense.financial_entry.planned_expense_id
   end
 
+  test "update to final status creates transaction for regular outflow" do
+    sign_in
+    planned_expense = PlannedExpense.create!(
+      income_event: @income_event,
+      category: @category,
+      account: @account,
+      description: "Finalize regular expense",
+      amount: 90.00,
+      status: "pending_to_pay",
+      financial_account: @source_account
+    )
+
+    assert_difference("Financial::Entry.count", 1) do
+      patch income_event_planned_expense_path(@income_event, planned_expense), params: {
+        planned_expense: {
+          category_id: @category.id,
+          description: planned_expense.description,
+          amount: planned_expense.amount,
+          status: "paid",
+          source_selection: "asset:#{@source_account.id}"
+        }
+      }
+    end
+
+    assert_redirected_to income_event_planned_expenses_path(@income_event)
+    assert_equal "paid", planned_expense.reload.status
+    assert planned_expense.financial_entry.present?
+  end
+
+  test "create_transaction builds missing entry for final status" do
+    sign_in
+    planned_expense = PlannedExpense.create!(
+      income_event: @income_event,
+      category: @category,
+      account: @account,
+      description: "Missing transaction recovery",
+      amount: 40.00,
+      status: "paid",
+      financial_account: @source_account
+    )
+
+    assert_nil planned_expense.financial_entry
+
+    assert_difference("Financial::Entry.count", 1) do
+      post create_transaction_income_event_planned_expense_path(@income_event, planned_expense)
+    end
+
+    assert_redirected_to income_event_planned_expense_path(@income_event, planned_expense)
+    assert planned_expense.reload.financial_entry.present?
+  end
+
   test "should not create planned expense with invalid data" do
     sign_in
     assert_no_difference("PlannedExpense.count") do
