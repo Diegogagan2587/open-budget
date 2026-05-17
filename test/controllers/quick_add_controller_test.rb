@@ -62,7 +62,7 @@ class QuickAddControllerTest < ActionDispatch::IntegrationTest
       post quick_add_create_expense_path, params: {
         expense: {
           description: "Groceries",
-          amount: 30,
+          amount: 30.45,
           category_id: @category.id,
           date: Date.new(2026, 5, 7),
           origin: "asset_#{@asset_a.id}"
@@ -71,7 +71,7 @@ class QuickAddControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :created
-    assert_equal 70.to_d, @asset_a.reload.current_balance
+    assert_equal 69.55.to_d, @asset_a.reload.current_balance
   end
 
   test "quick add transfer asset to asset updates both balances" do
