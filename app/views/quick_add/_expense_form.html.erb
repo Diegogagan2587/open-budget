@@ -7,7 +7,7 @@
 
     <div>
       <label class="block text-sm font-medium text-foreground mb-1">Amount</label>
-      <%= render Ui::InputComponent.new(name: "expense[amount]", type: "number", placeholder: "0.00", value: @expense&.amount) %>
+      <%= render Ui::InputComponent.new(name: "expense[amount]", type: "number", placeholder: "0.00", step: "0.01", value: @expense&.amount) %>
     </div>
 
     <div>
