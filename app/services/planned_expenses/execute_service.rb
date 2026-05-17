@@ -86,6 +86,7 @@ module PlannedExpenses
     end
 
     def status_after_execution
+      return target_status if PlannedExpense.final_status?(target_status)
       return "transferred" if planned_expense.transfer?
       return "paid" if planned_expense.debt_payment?
 
