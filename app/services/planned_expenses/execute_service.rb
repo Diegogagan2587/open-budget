@@ -53,6 +53,16 @@ module PlannedExpenses
       }
     end
 
+    def build_or_update_expense_if_needed
+      return nil if transaction_routing?
+      return nil if planned_expense.income_event.budget_period.blank?
+
+      expense = Expense.find_by(planned_expense_id: planned_expense.id) || planned_expense.expense || Expense.new
+      expense.assign_attributes(expense_attributes)
+      expense.save!
+      expense
+    end
+
     def create_financial_entry!
       entry = Financial::Entry.new(
         account: planned_expense.account,
