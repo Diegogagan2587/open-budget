@@ -67,6 +67,7 @@ Rails.application.routes.draw do
       member do
         patch :apply
         patch :move
+        post :create_transaction
       end
     end
     member do
