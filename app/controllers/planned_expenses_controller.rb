@@ -35,7 +35,7 @@ class PlannedExpensesController < ApplicationController
         success = @planned_expense.save
         raise ActiveRecord::Rollback unless success
 
-        if final_status?(@planned_expense.status)
+        if PlannedExpense.final_status?(@planned_expense.status)
           execution = PlannedExpenses::ExecuteService.call(
             planned_expense: @planned_expense,
             target_status: @planned_expense.status
@@ -72,7 +72,7 @@ class PlannedExpensesController < ApplicationController
     old_income_event = @income_event
     new_income_event_id = planned_expense_params[:income_event_id]
     requested_status = planned_expense_params[:status]
-    final_status_requested = final_status?(requested_status)
+    final_status_requested = PlannedExpense.final_status?(requested_status)
     attrs = planned_expense_params
     attrs = attrs.except(:status) if final_status_requested
 
@@ -263,9 +263,5 @@ class PlannedExpensesController < ApplicationController
 
   def move_conflict_message(target_income_event)
     "Cannot move this planned expense because installment ##{@planned_expense.loan_installment_number} already exists in #{target_income_event.description}."
-  end
-
-  def final_status?(value)
-    %w[paid spent transferred].include?(value.to_s)
   end
 end
