@@ -16,15 +16,8 @@ module PlannedExpenses
       return failure("Planned expense is required") if planned_expense.blank?
 
       ActiveRecord::Base.transaction do
-        if transaction_routing?
-          expense = nil
-          entry = create_financial_entry!
-        else
-          expense = planned_expense.expense || Expense.new
-          expense.assign_attributes(expense_attributes)
-          expense.save!
-          entry = nil
-        end
+        expense = build_or_update_expense_if_needed
+        entry = build_or_update_financial_entry!(expense: expense)
 
         planned_expense.update!(status: status_after_execution) unless planned_expense.status == status_after_execution
 
